@@ -1,0 +1,130 @@
+EIGRP Deep Dive
+Link: https://youtu.be/e5qYqNX6f0k?si=gmXerzNRwW9iVbTp
+
+commands
+1. sh ip eigrp neighbors
+2. sh ip eigrp neighbors detail
+3. sh ip eigrp interface
+4. sh ip eigrp topology
+
+EIGRP
+Data Structure
+1. Neighbor Table
+2. Interface Table
+3. Topology Table
+
+Timers
+1. Hello Interval 5s(Default)
+2. Hold Timer     15(Default)
+		15s		 ->	15s
+		14s		|	14s
+		13s		|	13s
+		12s			...
+		11s		A
+		10s		|
+		09s		|
+		Hello!  |
+	
+	EIGRP Hold Time vs OSPF Dead Interval
+		OSPF:  specifies how long local router waits for a Hello from an OSPF Neighbor. 				//I'll wait on you
+		EIGRP: tells an EIGRP neighbor how long to wait before considering local router unavailable 	//You wait on me
+	
+**
+Metric Calculation
+(BDRLM) - Big Dogs Really Like Me
+			*By Default - Only Bandwidth and Delay
+B andwidth - based on the weakest link, (ex. from 1Gbps, 100Kbps, and 10Kbps, the 10Kbps is the least-bandwidth.)
+			Formula
+				Bandwidth (BW) = 10^7 / least-bandwidth
+				Unit of Measure: Kbps
+D elay
+R eliability
+L oad
+M TU (Maximum Transmission Unit)
+	
+	Default K values:
+		K1 = 1
+		K2 = 0
+		K3 = 1
+		K4 = 0
+		K5 = 0, if K5 = 0, K5/(K4 + reliability = 1)
+		
+	Full Formula
+	Metric = {K1*BW +[(K2*BW)/(256-load)] + (K3*delay)]*[K5/(K4+reliability)]}*256
+
+**
+EIGRP Path Selection
+
+	|-1gbps (1k cost)[R1]- 10k cost to R3
+	|
+10.1.1.0/24								-[R3]
+	|
+	|-1gbps (1k cost)[R2]- 5k cost to R3
+	
+	R3: 
+		Neighbor: 				R1  &  R2
+		Reported Distance(RD):	1K	   1k	Feasible Successor (Backup)
+		Feasible Distance(FD):  11k	   6k - Successor (Lowest Cost)
+			FD= RD + cost of route to get info
+	
+	Feasability Condition
+		An EIGRP route is a feasible successor route if the RD from the neighbor is less than the FD of the successor route.
+
+	EIGRP Query Process //the moment we run out of Feasible Successor Route//
+		Stuck In Active - routers not recieving a packet because downstream routers are still waiting for further downstream router packets. //Damay Damay. 
+						//Latest versions addressed this problem.
+					after 90s: SIA Query, proactively ask the neighbor again for a response. - SIA Reply
+
+
+	Router Config
+	config t
+		router EIGRP 1 //# is Autonomous System (AS) Number. Needs to match with neighbor EIGRP
+		network 192.168.1.0 0.0.255 //advertise net add space. "Here's an add space. any int whose ip add fall within that add space, and it's up, advert that network."
+		network 192.0.2.0 0.0.0.3 //conf connected network
+		end
+
+**
+EIGRP Stub Routing
+Routers that doesn't connect to other routers.
+
+Stub options
+1. connected 		- routers advert connected routes matched with a network //no query, but still advert
+2. summary	 		- advert summarized routes
+3. static	 		- advert static routes
+4. leak-map name	- routers dynamic prefixes are based on leak-map
+5. redistributed	- router advert redistributed routes
+6. recieve-only		- stub router does not advert any routes
+
+//turn router to a stub and stop hello packets from gig 0/1
+config t
+	router eigrp 1
+	 eigrp stub connected
+	 passive-interface gig 0/1 //no hello packets on gig 0/1 ,for security and performance purposes.
+	 end
+
+**
+Load Balancing
+	8by default, EIGRP will pick the best path, lowest metric.
+	Balance traffic between successor and feasible successor. Instead of feasible successor waiting for successor to fail, it's going to work with it.
+
+conf t
+	router eigrp 1
+	variance 2 //multiply feasible distance of successor by 2, anything (feasible distance)less than the product will be used.
+
+**
+Route Summarization
+can be done on any router
+
+//manual summary
+conf t
+ int gi 0/5
+ ip summary-address eigrp 1//AS Number// 172.16.0.0 255.255.252.0
+end
+
+//auto summary - disadvantage: might summarize a mask that affects unwanted routes.
+conf t
+ router eigrp 1
+ auto-summary
+ end
+
+ 
