@@ -1,0 +1,56 @@
+
+nano /etc/ssh/ssh_config
+
+
+Include /etc/ssh/ssh_config.d/*.conf
+HostKeyAlgorithms +ssh-rsa
+PubkeyAcceptedKeyTypes +ssh-rsa
+
+
+**********************************************************************
+
+nano /etc/ssh/sshd_config
+
+Include /etc/ssh/sshd_config.d/*.conf
+HostKeyAlgorithms +ssh-rsa
+PubkeyAcceptedKeyTypes +ssh-rsa
+
+
+*********************************************************************
+
+sudo systemctl restart sshd
+update-crypto-policies --set LEGACY
+
+************************************************************************
+dnf install python3-pip
+pip3 install paramiko
+
+***********************************************************************
+
+nano ansible.cfg
+
+[paramiko_connection]
+look_for_keys = False
+
+***********************************************************************
+
+ansible-config dump --only-changed -t all
+************************************************************************
+
+nano hosts
+
+[router]
+192.168.108.133
+
+[router:vars]
+ansible_user=admin
+ansible_password=password
+ansible_connection=network_cli
+ansible_port=22
+ansible_network_os=ios
+ansible_ssh_common_args="-o KexAlgorithms=+diffie-hellman-group14-sha1 -o HostKeyAlgorithms=+ssh-rsa"
+
+
+************************************************************************
+ssh -oKexAlgorithms=+diffie-hellman-group14-sha1 admin@192.168.108.135
+

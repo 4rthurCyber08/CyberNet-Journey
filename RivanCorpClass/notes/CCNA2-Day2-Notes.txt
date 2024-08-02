@@ -1,0 +1,164 @@
+Commands
+1. netstat-rn : route print - (cmd) route table - check for internet access and other connections
+2. 
+
+bit = 1 value = 1/8 byte
+byte = 8 bits = 00000000 = 128, 64, 32, 16, 8, 4, 2, 1
+
+//check IP Address of device 
+whatismyipaddress.com
+ipchicken.com
+
+IP ADDRESS (Internet Protocol Address)
+Public/Private IP Address
+NAT - Network Address Translation
+10.0.0.0 - Private (Class A) - 16 million IP Add
+172.16.0.0 - Private (Class B) - 65k IP Add
+192.168.0.0 - Private (Class C) - 254 IP Add
+
+Subnet Mask Class			Default
+Class A		1-126.0.0.0		255.0.0.0
+Class B		128-191			255.255.0.0
+Class C		192.223			255.255.255.0
+
+LAPTOP, MOBILE PHONE, SMART TV - - PLDT MODEM - - CLOUD(INTERNET)
+INSIDE(LAN) - OUTSIDE (WAN)
+
+DHCP States
+	Discover
+	Offer
+	Request
+	Acknowledge
+
+//hindi pwedeng ipamigay ang network IP, broadcast IP (.255), loopback (127.0.0.1 , ::1)
+
+CIDR Class Interdomain Routing (CIDR) = /8, /16, /24, /32, etc.
+/12 = 255.240.0.0 = 10.16.0.0 (16i,increment)
+
+
+
+
+Bits (Binary Digit)
+
+CSI Rivan Method
+C = convert it (number of users to bits)
+	1500 users = 11bits = 11
+S = Subtract (the converted bits to the original CIDR /32)
+	/32 (constant, original CIDR) - 11 = /21 (255.255.248.0)
+I = ipasok sa hiwa... (Using rivan format) "3rd, 8i"
+	ipasok si 8i sa 3rd octet
+	10.0.8.0/21
+
+Finding the IP address range
+Network IP: 10.0.8.0
+First Usable: 10.0.8.1 - add 1 from Network IP
+Last Usable: 10.0.15.254 - subtract 1 from Broadcast
+Broadcast: 10.0.15.255 - substract 1 from Next Network
+Next Network: 10.0.16.0 - x2 ang ipinasok sa hiwa
+
+Eyes of a Network Engineer
+Normal (values 0-9): 8000
+Ipv4 (values 0-255): 8.0.0.0
+Ipv6 (values 0-9, a-f): ::8000
+
+Implementation
+
+*** ex application 01
+config t
+vlan 25
+ name concentrix.com
+ exit
+Int vlan 25
+ no shut
+ ip add 10.0.16.1 255.255.248.0 (First Usable IP)
+ 
+ip dhcp excluded-add 10.0.16.1 10.0.16.100 (Reserve IP)
+ip dhcp pool CONCENTRIX
+ network 10.0.16.0 255.255.248.0 (Network IP)
+ default-router 10.0.16.1 ()
+ domain-name CONCENTRIX.COM
+ dns-server 10.31.1.10
+ option 150 ip 10.31.100.8
+ Int Fa 0/5
+  no switchport
+  switchport
+  switchport mode access
+  switchport access vlan 25
+  end
+
+*** ex application 02 (with implementation on D1, A1, and P1)
+D1:
+conf t
+vlan 20
+ name AccentureVlan
+ exit
+int vlan 20
+ no shut
+ ip add 10.0.64.1 255.255.192.0
+ desc Accenture.com
+ip dhcp excluded-add 10.0.64.1 10.0.64.100
+ip dhcp pool poolAccenture
+ network 10.0.64.0 255.255.192.0
+ default-router 10.0.64.1
+ domain-name ACCENTURE.COM
+ ip name-server 8.8.8.8
+ end
+A1:
+sh vlan br
+conf t
+int e 0/0
+ swi mode acc
+ swi acc vlan 10
+ end
+sh vlan br
+
+P1:
+conf t
+int e 0/0
+ no shut
+ ip add dhcp
+ do sh ip int br | ex una
+ end
+***
+
+AUTOMATION
+ANSIBLE
+
+Commands
+1. sudo su - administrator
+2. ls - list
+3. cd - change directory (cd /etc/ansible)
+	"git clone https://github.com/rivan16/sshansible"
+4. chmod -R 777 /etc/ansible
+5. ip ssh version 2 - enable ssh
+6. clear
+7. nano filename - edit file through linux
+8. vi
+9. cat filename - open file but no edit
+10. ssh admin@10.m.1.4 - fingerprint?yes - need to allow ansible to access routers n switch
+11. ansible-playbook filename - run the file
+
+yum -> dnf
+	
+WinSCP
+	New Site
+		host name - centos ip add from vmware
+		port 22
+		username & pass: centos
+	Left Directory
+		sshansible folder
+	Righ Directory
+		/etc/ansible
+
+***
+#ENABLE SSH CONNECTION
+config t
+ip domain-name rivanit.com
+username admin privilege 15 secret pass
+crypto key generate rsa
+                 512->2048
+ip ssh version 2
+***
+
+
+

@@ -1,0 +1,186 @@
+OSPF Deep Dive
+Link: https://youtu.be/b6RlqXo_qvA?si=U3s0pOOLOwZvAtuv
+
+commands
+1. sh ip protocols
+2. sh ip ospf database
+3. sh ip ospf neighbors
+4. sh ip ospf rib //shows best route with ">"
+5. sh ip ospf interface
+**
+OSPF Cost
+Cost = Reference (BW)BandWidth / Interface BW
+	Reference BW: Default 100mbps
+		RefBW / IntBW(100mbps) = 1  Cost
+		RefBW / IntBW(10mbps)  = 10 Cost
+		
+		Cost cannot be decimal. OSPF Always Round UP
+		RefBW / IntBW(1Gbps)   = 0.1 (Rounded UP) = 1 Cost
+		100mbps != 1gbps OSPF Gets it wrong. Have to manually configure RefBW.
+		
+			conf-t
+			auto-cost reference-bandwidth 100000
+			end
+
+**
+Need for Designated Router
+To reduce the number of unnecessary adjacency
+
+Designated Router
+	Designated Port (DP)
+Backup Designated Router
+	Backup Designated Port (BDP)
+
+224.0.0.5 or FF02::5 = All OSPF Routers
+224.0.0.6 or FF02::6 = All Designated Routers
+
+	Set Router Priority
+	conf t
+	 ip ospf  priority # //1 is highest prior // if 0, not electable//
+	 end
+
+	Set Router ID
+	conf t
+	 router-id 1.1.1.1 //whereas [1.1.1.1] is just a name. NOT IP//
+	 end
+
+**
+OSPF Area
+Need a backbone area
+ all areas must touch the backbone, AREA 0
+
+Link-state Advert and OSPF Area
+
+Point-to-point only have 2 routers. No need to elect a Designated Router.
+
+L T1: O (OSPF), Router LSA created by each router. Contains info aboout router's directly attatched networks. (Advertise every connected interface)
+L T2: O IA (OSPF Inter-Area, came from another area), Network LSA created for each transit network within an area on which DR is elected.
+	  Requirement: 1. Only OSPF Router to OSPF Router
+				   2. A link where you elect a DR
+L T3: Summary LSA provides a listing(NOT a map. Only a list of networks. Does not include how they are interconnected, cost info, etc.) between areas. advertise network in the source area.	
+	Area 0 - |R1 |R2
+	Area 1 - R2|| R3||
+	R2 is Area Border Router (ABR) - has 1 interface in more than 1 area because it's the //border control//
+L T4: Summary ASBR LSA  created by the ABR to inform areas that doesn't have the System Boundary Router (ASBR) on how to reach the ASBR.
+L T5 O E2 (OSPF, External Type 2, came from another Autonomous System (AS)): Autonomous System External LSA created by the ASBR to advertise networks from different autonomous system.
+L T6: lol
+L T7: NSSA(Not-So-Stubby-Area) LSA sent from ASBR into an NSSA to advertise a network from a different AS. --
+L T8: OSPF External Attributes (OSPFv2) & Link Local LSA (OSPFv3). Carries BGP Attributes through OSPF with OSPFv2. Sens IPv6 net info on a link with OSPFv3. --
+L T9: OSPF Link Scope Opaque (OSPFv2) & Intra-Area Prefix (OSPFv3).
+L T10:
+L T11:
+
+Type 1 LSA to (All)R1, R2, and R3 because Type 1 is for everyone(every OSPF Routers).
+Type 2 LSA to R1 & R2 because Area 0 is where a DR is elected.
+Type 3 LSA to Between area 0 and 1. Generate a Type 3 LSA for each router for every router in the other area
+[|R1] - - - [|R2||] - - - [R3||]
+
+What if, R1 gets connected to an EIGRP Network.
+{EIGRP NETWORK} - - [|R1}] - - - [|R2||] - - - [R3||]
+First, R1 Becomes an Autonomous System Boundary Router (ASBR). Becomes a boundary between two (EIGRP|OSPF) autonomous system
+
+Type 4 LSA to Area 1 created by ABR to inform routers how to reach the ASBR(R1).
+Type 5 LSA to (All)Area 0 & Area 1 created by R1(ASBR) because EIGRP was added and needs to adverise networks from a different autonomous system(In this case, EIGRP).
+	OR instead of Type 5 LSA,
+Type 3 Default LSA, Just go to R2 (ABR) the Router that's within the area connected to the different AS, EIGRP, and use it as a default Router for a list of Type 5 LSA info.
+		Area 1 -> Stub Area the area on the edge of a network.
+				  Totaly Stubby Area
+				  Not-So-Stubby Area (NSSA) - When an area is connected to anothe AS
+				  Total Not So Stubby Area (Tottaly NSSA)
+
+{EIGRP NETWORK} - - [|R1}] - - - [|R2||] - - - [//R3||] - - //RIP//
+	Area 1 - becomes NSSA because RIP was connected to it.
+	
+Type 7 LSA Given by R3 to Area 1(NSSA) Routers, all the while ABR (R2) Realizes T7 is just T5 in disguise, R2 turns it into T5 and advertise it to Area 0.
+
+**
+conf t
+ router ospf 1 							//-> (1) local process ID, NOT AS like EIGRP 
+ network 10.1.1.0 0.0.0.255 area 0
+ network 0.0.0.0 255.255.255.255 area 0 //Default
+ passive-interface  gig 0/1			  	//Stub area. Advertise but no sending hello's for security. Prevent someone from attaching another AS and hack the network.
+ auto-cost reference-bandwidth 100000 	//change the RefBW (Required to configure on all routers)
+ end
+ 
+**
+Network Types
+1. Broadcast Type - multi-access network. default type on an ethernet interface. 10s hello
+2. Point-to-point - no DR/BDR. default type on a non-Frame relay serial interface. 10s hello
+3. Non-Broadcast (NBMA) - Devices accessing the same subnet. Have to configure the IP add of Neighbors. 30s Hello
+4. Poin-to-Multipoint -  No DR/BDR just like Point-to-point. 30s Hello
+
+	Compatibility
+	1. Broadcast to Non-Broadcast: requires timer adjustment, make sure timers match.
+
+OSPF Timers
+Timers must match to form a neighborship.
+
+Hello timer: Hello packet being sent between routers. R1 - - - Hello! - - - R2
+Dead timer: How long it takes for routers to not get a Hello! response before being considered Down.
+	OSPF Neighbor States
+	1. Down - sent Hello but not recieved Hello's back.
+	2. Attempt - NBMA Network only. Similar to Down but for NBMA.
+	3. Init - Recieve Hello but lacks info in the Hello packet. Didn't Recieve the routers Hello's yet but is recieving Hello's back.
+	4. 2-Way - neighborship is formed.
+	5. Exstart - Routers on Broadcast are elected. Electing a DR/BDR State.
+	6. Exchange - Adjacent Routers exchange Database Descriptor (DBD, describe the database :3) packets but not LSA.
+	7. Loading - Exchanging LSA, LSR(Request), etc.
+	8. Full - Full adjacency.
+
+
+**
+Route Filtering
+Needs to be done on a specific router. ABR, from prefix-list
+
+	[|R1 lo:1.1.1.1/32] - - - [|R2|| lo:2.2.2.2/32] - - - [R3|| lo:3.3.3.3/32]
+
+	//filter loopbacks of r2 and r3 so r1 doesn't see them.
+	conf t
+	 ip prefix-list NO-LOOPBACKS //Just a name// seq 10 deny 2.2.2.2/32 //the loopback interface being denied
+	 ip prefix-list NO-LOOPBACKS seq 20 deny 3.3.3.3/32 
+	 ip prefix-list NO-LOOPBACKS seq 30 permit 0.0.0.0/0 le 32//less than or equal to 32bits//
+	 router ospf 1
+	 area 0 filter-list prefix NO-LOOPBACKS in //into area 0, prefix-list named NO-LOOPBACKS, inbound direction since R2 goes into area 0 and we don't want the filtered route to enter r1.
+	 
+	SW1 - - [|R1] - - - [|R2||] - - - [R3||] - 10.2.2.0/24 - SW2
+	
+	//filter 10.2.2.0/24 from r1's routing table, but can still appear as an LSA
+	conf t
+	 ip prefix-list FILTER_10.2.2.0 seq 10 deny 10.2.2.0/24
+	 ip prefix-list FILTER_10.2.2.0 seq 20 permit 0.0.0.0/0 le 32
+	 router ospf 1
+	  distribute-list prefix FILTER_10.2.2.0 in
+	  en
+
+**
+Route Summarization
+Summarize Routes to reduce displayed areas. Either within areas or diff AS (For readability)
+commands
+1. summary-address - only for ASBR
+2. area range - only for ABR
+
+(SW1 - - R1 - OSPF AREA 0 - (R2) - OSPF AREA 1 - [R3) - EIGRP - SW2]
+
+	//Summarize routes between AS (OSPF-EIGRP), configured on ASBR
+	conf t
+	 router ospf 1
+	  summary-address 172.18.0.0/24 //command can only be used on ASBR (R3), between 2 AS. 172.18.0.0/24 summmary of all ip add on EIGRP.
+	  end
+
+	//Summarize routes in an area (OspfArea1-OspfArea2), configured on ABR
+	conf t
+	 router ospf 1
+	  area 1 //which area you are filtering the routes// range 172.17.0.0 255.255.252.0 [can specify cost, by default chooses the cost of the route with the least cost]
+	  end
+
+**
+Virtual Links
+If an area is not connected to the backbone, Area 0, then a fix can be applied using vitual link.
+
+SW1 - R1 - R2 - R3 - SW2
+AREA0  -  AREA1  -  AREA2
+  A- - - VirtLink - - -B
+
+conf t
+ area 1 //the area that will have a virual tunnel// virtual-link 3.3.3.3 //point A of the virtual tunnel
+ area 1 virtual-link 2.2.2.2 //point B of the virual tunnel

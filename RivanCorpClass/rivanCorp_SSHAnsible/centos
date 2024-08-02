@@ -1,0 +1,421 @@
+dnf update -y
+
+dnf install epel-release -y
+
+dnf install python
+
+dnf install ansible -y
+
+dnf install telnet -y
+
+dnf install nano -y
+
+dnf install python3-netaddr -y
+
+ansible-galaxy collection install cisco.ios
+*******************************************************************
+@CENTOS - DON'T FORGET TO DO THIS
+
+chmod -R 777 /etc/ansible/
+*******************************************************************
+
+nano /etc/ssh/ssh_config
+
+
+Include /etc/ssh/ssh_config.d/*.conf
+HostKeyAlgorithms +ssh-rsa
+PubkeyAcceptedKeyTypes +ssh-rsa
+
+
+**********************************************************************
+
+nano /etc/ssh/sshd_config
+
+Include /etc/ssh/sshd_config.d/*.conf
+HostKeyAlgorithms +ssh-rsa
+PubkeyAcceptedKeyTypes +ssh-rsa
+
+************************************************************************
+dnf install python3-pip
+pip3 install paramiko
+
+***********************************************************************
+
+nano ansible.cfg
+
+[paramiko_connection]
+look_for_keys = False
+
+***********************************************************************
+
+ansible-config dump --only-changed -t all
+
+***********************************************************************
+sudo systemctl restart sshd
+update-crypto-policies --set LEGACY
+
+***********************************************************************
+
+nano hosts
+
+#COREBABA
+[switch]
+10._.1.4
+
+[switch:vars]
+ansible_user=admin
+ansible_password=pass
+ansible_connection=network_cli
+ansible_port=22
+ansible_network_os=ios
+ansible_ssh_common_args="-oKexAlgorithms=+diffie-hellman-group1-sha1 -c aes256-cbc"
+
+#CUCM
+[cucm]
+10._.100.8
+
+[cucm:vars]
+ansible_user=admin
+ansible_password=pass
+ansible_connection=network_cli
+ansible_port=22
+ansible_network_os=ios
+
+#EDGE
+[edge]
+10._._.1
+
+[edge:vars]
+ansible_user=admin
+ansible_password=pass
+ansible_connection=network_cli
+ansible_port=22
+ansible_network_os=ios
+
+#ACCESS POINT
+[ap]
+10._.10.3
+
+[ap:vars]
+ansible_user=admin
+ansible_password=pass
+ansible_connection=network_cli
+ansible_port=22
+ansible_network_os=ios
+***********************************************************************
+# BASIC CONFIG FO CISCO DEVICES
+
+@@COREbaba
+
+config t
+hostname COREbaba_
+enable secret pass
+service password-encryption
+no logging console
+username admin privilege 15 secret pass
+line console 0
+exec-timeout 0 0
+no login
+line vty 0 14
+transport input all
+login local
+Int Gi 0/1
+no shutdown
+no switchport
+ip add 10._._.4 255.255.255.0
+Int Vlan 1
+no shutdown
+ip add 10._.1.4 255.255.255.0
+description MGMTDATA
+Int Vlan 10
+no shutdown
+ip add 10._.10.4 255.255.255.0
+description WIRELESS
+Int Vlan 50
+no shutdown
+ip add 10._.50.4 255.255.255.0
+description IPCCTV
+Int Vlan 100
+no shutdown
+ip add 10._.100.4 255.255.255.0
+description VOICEVLAN
+end
+conf t
+ip routing
+ip route 0.0.0.0 0.0.0.0 10._._.1
+end
+
+#ENABLE SSH CONNECTION
+config t
+ip domain-name rivanit.com
+username admin privilege 15 secret pass
+crypto key generate rsa
+                 512->2048
+ip ssh version 2
+
+conf t
+crypto key zeroize rsa
+crypto key generate rsa modulus 2048
+
+conf t
+crypto key zeroize rsa
+crypto key generate rsa general-keys modulus 2048
+
+***********************************************************************
+
+@@CUCM
+
+config t
+hostname CUCM_
+enable secret pass
+service password-encryption
+no logging console
+username admin privilege 15 secret pass
+line console 0
+exec-timeout 0 0
+no login
+line vty 0 14
+transport input all
+login local
+Int Fa 0/0
+no shutdown
+ip add 10._.100.8 255.255.255.0 
+end
+conf t
+ip routing
+ip route 0.0.0.0 0.0.0.0 10._.100.4
+end
+
+#ENABLE SSH CONNECTION
+config t
+ip domain-name rivanit.com
+username admin privilege 15 secret pass
+crypto key generate rsa
+                 512->2048
+ip ssh version 2
+
+conf t
+crypto key zeroize rsa
+crypto key generate rsa modulus 2048
+
+conf t
+crypto key zeroize rsa
+crypto key generate rsa general-keys modulus 2048
+
+***********************************************************************
+
+@@EDGE
+
+config t
+hostname EDGE_
+enable secret pass
+service password-encryption
+no logging console
+username admin privilege 15 secret pass
+line console 0
+exec-timeout 0 0
+no login
+line vty 0 14
+transport input all
+login local
+Int Gi 0/0/0
+description INSIDE
+ip add 10._._.1 255.255.255.0
+no shutdown
+Int Gi 0/0/1
+description OUTSIDE
+ip add 200.0.0._ 255.255.255.0
+no shutdown
+Int Loopback 0
+description VIRTUALIP
+ip add _.0.0.1 255.255.255.255
+end
+conf t
+ip routing
+ip route 10._.0.0 255.255.0.0 10._._.4
+end
+
+
+#ENABLE SSH CONNECTION
+config t
+ip domain name rivanit.com
+username admin privilege 15 secret pass
+crypto key generate rsa
+                 512->2048
+ip ssh version 2
+
+!conf t
+!crypto key zeroize rsa
+!crypto key generate rsa modulus 2048
+
+!conf t
+!crypto key zeroize rsa
+!crypto key generate rsa general-keys modulus 2048
+
+
+*********************************************************************
+
+@@ACCESS POINT
+
+config t
+ip domain name rivanit.com
+username admin privilege 15 secret pass
+crypto key generate rsa
+                 512->2048
+ip ssh version 2
+
+**********************************************************************
+TRY THE SSH CONNECTION
+
+CORE BABA 
+
+ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 -c aes256-cbc admin@10._.1.4
+
+************************************************************************
+Create Alias on Linux - FOR COREBABA
+
+nano ~/.bashrc
+alias ssh_short='ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 -c aes256-cbc'
+source ~/.bashrc
+
+ssh_short admin@10.12.1.4
+
+**************************************************************************
+
+ssh admin@10._.12.100.8
+ssh admin@10._._.1
+
+************************************************************************
+OPEN CMD ON WINDOWS SEVER
+
+route add 10.0.0.0 mask 255.0.0.0 10._.1.4
+route add 200.0.0.0 mask 255.255.255.0 10._.1.4
+************************************************************************
+
+
+REMOVE SSH 
+
+ssh-keygen -f "/root/.ssh/known_hosts" -R "10._.1.4"
+ssh-keygen -f "/root/.ssh/known_hosts" -R "10._.100.8"
+ssh-keygen -f "/root/.ssh/known_hosts" -R "10._._.1"
+
+
+
+
+#######################################################################
+# FOR WINDOWS SERVER
+
+
+ALLOW SSH FOR WINDOWS SERVER
+open cmd
+
+powershell
+
+Get-WindowsCapability -Online | ? Name -like 'OpenSSH*'
+
+Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0 
+
+Start-Service -Name "sshd" 
+
+Set-Service -Name "sshd" -StartupType Automatic 
+
+Get-Service -Name "sshd" | Select-Object * 
+
+New-NetFirewallRule -Name "SSH" `
+
+-DisplayName "SSH" `
+-Description "Allow SSH" `
+-Profile Any `
+-Direction Inbound `
+-Action Allow `
+-Protocol TCP `
+-Program Any `
+-LocalAddress Any `
+-RemoteAddress Any `
+-LocalPort 22 `
+-RemotePort Any 
+
+
+
+
+# CENTOS
+
+pip install pywinrm
+
+
+nano hosts
+
+[win22]
+0.0.0.0
+
+[win22:vars]
+ansible_user=administrator
+ansible_password=C1sc0123
+ansible_connection=winrm
+ansible_port=5985
+ansible_winrm_transport=ntlm
+ansible_winrm_server_cert_validation=ignore
+
+
+#SAMPLE YML FILE
+
+---
+- name: Restart Windows Server
+  hosts: win22  # Replace with the appropriate host or group
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: Restart the server
+      win_reboot:
+        reboot_timeout: 600  # Optional, set the reboot timeout in seconds
+#######################################################################
+
+MULTIPLE WINDOWS
+
+nano hosts
+
+[win22]
+server1 ansible_host=192.168.1.101
+server2 ansible_host=192.168.1.102
+server3 ansible_host=192.168.1.103
+# Add more servers as needed
+[win22:vars]
+ansible_user=administrator
+ansible_password=C1sc0123
+ansible_connection=winrm
+ansible_port=5985
+ansible_winrm_transport=ntlm
+ansible_winrm_server_cert_validation=ignore
+
+######################################################################
+YML FILE
+
+---
+- name: Restart Windows Server
+  hosts: 
+    - win1  # Replace with the appropriate host or group
+    - win2
+    - win3
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: Restart the server
+      win_reboot:
+        reboot_timeout: 600  # Optional, set the reboot timeout in seconds
+
+
+OR
+
+
+#######################################################################
+
+---
+- name: Restart Windows Server
+  hosts: 
+    - win22  # Replace with the appropriate host or group
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: Restart the server
+      win_reboot:
+        reboot_timeout: 600  # Optional, set the reboot timeout in second

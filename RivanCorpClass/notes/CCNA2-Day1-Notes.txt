@@ -1,0 +1,62 @@
+Top commands
+1. CRS = copy run start
+2. show run
+3. R = reload
+4. show ip int brief
+5. show ip dhcp binding
+6. show dial-peer voice summary
+   csim start phoneNumber
+7. show cdp neighbors
+  
+
+(yes/no?)         setup/inutil mode 
+   |              ctrl c
+   v
+router>           user/friendzone mode
+   |              enable (ena)
+   v
+router#           privilege/cubao mode
+   |              configure terminal  
+   v
+router(config)#   global/pasig mode
+
+MODES
+
+    Line         Int          Router            DHCP           Telephony            Voie-port            ACL
+line cons 0   int fa0/0   router ospf 1  ip dhcp pool test  telephony-service   voice-port 0/0/0   no access-list 1
+
+Job of a Switch
+1. Power over Ethernet
+2. SVi switch virtual interface
+3. dhcp server
+4. vlan creation, vlan lipat
+5. mac reservation
+
+Static Routing on Windows Server
+Dahil PC = VLAN 1, Cameras Vlan 50 need mag route
+route add 10.0.0.0 mask 255.0.0.0 10.31.1.4
+
+Job of a Call Manager
+1. Analogue Phones
+2. IP Phones
+3. Video Call
+4. incoming + outgoing configuration
+5. IVRS
+
+L7: apps = cisco manager
+L6: codec, G711ulaw, G729ulaw
+L5: SIP, SCCP
+L4: SCCP (Cisco) TCO vs SIO, TCP 200
+L3: ip address
+L2: mac address
+L1: poe 48v, 802.3af
+
+Job of Edge Router
+1. Static Routing
+2. Default Routing
+3. OSPF Routing
+4. EIGRP Routing
+5. BGP Routing
+6. SITE TO SITE VPN
+
+Final Lab: Running Linux and Cisco at Home

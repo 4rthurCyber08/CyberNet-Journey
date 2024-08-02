@@ -1,0 +1,33 @@
+# CUCM
+---
+- name: CUCM
+  hosts: cucm
+  gather_facts: false
+  connection: local
+
+  tasks:
+    - name: Include tasks for iPhone configuration
+      include_tasks: iphone.yml
+    - name: Include tasks for call configuration
+      include_tasks: call.yml
+
+# EDGE
+- name: EDGE
+  hosts: edge
+  gather_facts: false
+  connection: local
+
+  tasks:
+    - name: Include tasks for routing configuration
+      include_tasks: routing.yml
+
+
+# ACCESS POINT
+- name: ACCESS POINT
+  hosts: ap
+  gather_facts: false
+  connection: local
+
+  tasks:
+    - name: Include tasks for routing configuration
+      include_tasks: ap.yml

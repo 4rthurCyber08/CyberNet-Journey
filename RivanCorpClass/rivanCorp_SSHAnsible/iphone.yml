@@ -1,0 +1,90 @@
+---
+#- name: Configure ANALOG, IP PHONES, VIDEO CALL
+#  hosts: cucm  # Replace with the appropriate host or group
+#  gather_facts: no  # Disable fact gathering for network devices
+#  become: yes  # Use privilege escalation to execute commands as a privileged user (if needed)
+
+#  tasks:
+    - name: ANALOG PHONES
+      ios_command:
+        commands:
+          - configure terminal
+          - dial-peer voice 1 pots
+          - destination-pattern _00
+          - port 0/0/0
+          - dial-peer voice 2 pots
+          - destination-pattern _01
+          - port 0/0/1
+          - dial-peer voice 3 pots
+          - destination-pattern _02
+          - port 0/0/2
+          - dial-peer voice 4 pots
+          - destination-pattern _03
+          - port 0/0/3
+          - end
+      vars:
+        ansible_network_os: ios  # Specify the network OS (Cisco IOS)
+      register: result_create_vlans
+
+    - name: IP PHONES
+      ios_command:
+        commands:
+          - configure terminal
+          - no telephony-service
+          - telephony-service
+          - no auto assign
+          - no auto-reg-ephone
+          - max-ephones 5
+          - max-dn 20
+          - ip source-address 10._.100.8 port 2000
+          - create cnf-files
+          - ephone-dn 1
+          - number _11
+          - ephone-dn 2
+          - number _22
+          - ephone-dn 3
+          - number _33
+          - ephone-dn 4
+          - number _44
+          - ephone-dn 5
+          - number _55
+          - ephone-dn 6
+          - number _66
+          - ephone-dn 7
+          - number _77
+          - ephone-dn 8
+          - number _88
+          - ephone 1
+          - Mac-address ___.____.___
+          - type 8945
+          - button 1:1 2:3 3:2 4:4
+          - restart
+          - ephone 2
+          - Mac-address ____.____.____
+          - type 8945
+          - button 1:5 2:6 3:7 4:8
+          - restart
+          - end
+      loop: "{{ [1, 2, 3] }}"	
+      vars:
+        ansible_network_os: ios
+      register: result_configure_dhcp_pools
+
+    - name: ENABLE VIDEO CALLS
+      ios_command:
+        commands:
+          - configure terminal
+          - ephone 1
+          - video
+          - voice service voip
+          - h323
+          - call start slow
+          - ephone 2
+          - video
+          - voice service voip
+          - h323
+          - call start slow
+          - end
+      vars:
+        ansible_network_os: ios
+      register: result_configure_ports
