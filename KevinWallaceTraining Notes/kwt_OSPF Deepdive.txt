@@ -1,5 +1,5 @@
 OSPF Deep Dive
-Link: https://youtu.be/b6RlqXo_qvA?si=U3s0pOOLOwZvAtuv
+Link: https://youtu.be/b6RIqXo_qvA?si=vWHLv3bzx3gmVWdJ
 
 commands
 1. sh ip protocols
