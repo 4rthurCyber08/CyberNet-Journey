@@ -1,4 +1,4 @@
-OSPF Deep Dive
+OSPF Deep Dive 
 Link: https://youtu.be/b6RIqXo_qvA?si=vWHLv3bzx3gmVWdJ
 
 commands
@@ -8,7 +8,7 @@ commands
 4. sh ip ospf rib //shows best route with ">"
 5. sh ip ospf interface
 **
-OSPF Cost
+OSPF Cost Calculation
 Cost = Reference (BW)BandWidth / Interface BW
 	Reference BW: Default 100mbps
 		RefBW / IntBW(100mbps) = 1  Cost
@@ -95,8 +95,8 @@ Type 7 LSA Given by R3 to Area 1(NSSA) Routers, all the while ABR (R2) Realizes 
 
 **
 conf t
- router ospf 1 							//-> (1) local process ID, NOT AS like EIGRP 
- network 10.1.1.0 0.0.0.255 area 0
+ router ospf 1 							//-> (1) local process ID, NOT AS like EIGRP, no need to match with neighbor
+ network 10.1.1.0 0.0.0.255 area 0		//conf connected network
  network 0.0.0.0 255.255.255.255 area 0 //Default
  passive-interface  gig 0/1			  	//Stub area. Advertise but no sending hello's for security. Prevent someone from attaching another AS and hack the network.
  auto-cost reference-bandwidth 100000 	//change the RefBW (Required to configure on all routers)
