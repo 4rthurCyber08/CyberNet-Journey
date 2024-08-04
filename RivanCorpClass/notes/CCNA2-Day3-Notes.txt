@@ -207,8 +207,9 @@ username: admin, privilege 15(access all. it's when you type 'enable'), secret p
 
 Remote access VPN //work from home
 Site to site VPN
-//Steps for Site to site VPN activity (VPNPH & VPNJP)	
+https://github.com/4rthurCyber08/LearnNetworking/blob/main/RivanCorpClass/notes/SITE-TO-SITE%20VPN.jpg
 
+//Steps for Site to site VPN activity (VPNPH & VPNJP)
 1. Open csr1000v16
 	FirstWindow: Name VPN-JP1
 	SecondWindow:
