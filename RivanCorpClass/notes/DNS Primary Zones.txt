@@ -1,0 +1,45 @@
+### <- comments. don't include.
+
+DNS ZONES
+
+1.	Download DNS and WEBSERVER in Powershell
+	### if using cmd, type powershell. 
+	### "PS" should appear on the leftside of the prompt 
+	### (ex. PS C:\Users\Admin\desktop)
+	
+	Install-WindowsFeature -name DNS -IncludeManagementTools
+	Install-WindowsFeature  -name Web-Server  -includeManagementTools
+	
+2.	Create Primary ZONES
+	Add-DnsServerPrimaryZone -Name "NGCP12.com" -ZoneFile "NGCP12.com.dns"
+	
+	### change "NGCP12" to your preferred domain name
+	
+3.	Create DNS Records
+	### change "ngcpM.ph" to your preferred domain name, including the TLD(Top Level Domain)
+	add-DnsServerResourceRecord -zonename ngcpM.ph -A -name ns  -ipv4address 10.m.1.10
+	add-DnsServerResourceRecord -zonename ngcpM.ph -Cname -name www -hostname ns.ngcpM.ph
+	add-DnsServerResourceRecord -zonename ngcpM.ph -Cname -name imap -hostname ns.ngcpM.ph
+	add-DnsServerResourceRecord -zonename ngcpM.ph -Cname -name pop -hostname ns.ngcpM.ph
+	add-DnsServerResourceRecord -zonename ngcpM.ph -Cname -name smtp -hostname ns.ngcpM.ph
+
+	### for Cisco devices DNS Records
+	add-DnsServerResourceRecord -zonename ngcpM.ph -A -name cb  -ipv4address 10.m.1.4
+	add-DnsServerResourceRecord -zonename ngcpM.ph -A -name ct  -ipv4address 10.m.1.2
+	add-DnsServerResourceRecord -zonename ngcpM.ph -A -name cm  -ipv4address 10.m.100.8
+	add-DnsServerResourceRecord -zonename ngcpM.ph -A -name ed  -ipv4address 10.m.m.1
+	add-DnsServerResourceRecord -zonename ngcpM.ph -A -name p1  -ipv4address 10.m.100.101
+	add-DnsServerResourceRecord -zonename ngcpM.ph -A -name p2  -ipv4address 10.m.100.102
+	add-DnsServerResourceRecord -zonename ngcpM.ph -A -name c1  -ipv4address 10.m.50.6
+	add-DnsServerResourceRecord -zonename ngcpM.ph -A -name c2  -ipv4address 10.m.50.8
+	add-DnsServerResourceRecord -zonename ngcpM.ph -A -name ap  -ipv4address 10.m.10.3
+
+4.	Create Website
+	### change "ngcpM.ph" to your preferred domain name, includeing the TLD
+
+	New-Website -name "ngcpM.ph" -hostheader "www.ngcpM.ph" -physicalpath "d:\webs\datingbiz"
+
+
+
+--
+ipconfig /flushdns
