@@ -1,0 +1,91 @@
+Link: https://youtu.be/ujEcPJrulTw?si=7_vgA-E-z3lxj5OX - Etherchannel
+Link: https://youtu.be/KnA_D_3twgA?si=tBvkXosXda8Pe2WR - VLAN Trunking
+
+
+commands
+1. sh int trunk
+2. sh etherchannel
+3. sh etherchannel load-balance
+4. sh etherchannel detail
+5. sh vtp status
+
+LACP (Link Aggregation Control Protocol)
+
+Etherchannel - simultaniously create traffic between two links. //max 8 links
+	- resulting in higher bandwidth
+	- provides load-balancing
+	- creates redundant links // backups
+	
+PAgP: Port Aggregation Protocol
+LACP: Link Aggregation Control Protocol //can have additional 8 links to existing max links
+
+PC1 - - - - SW A ==0== SW B - - - - Servers (ser:mac, A:1, B:5, C:D)
+
+PAgP/LACP Port Negotiation
+
+PAgP Channel Mode		On	Auto	Desirable
+On
+Auto
+Desirable
+
+PAgP Channel Mode		On	Passive	Active
+On
+Passive
+Active
+
+******
+int range fa 0/1-2 //type on both ports, that's all it does
+speed auto		//
+duplex auto		//best to have all links have similar settings
+mdix auto		//media dependent interface crossover
+channel-group 1 mode ?//LAG = on, PAgP = Auto or Desirable, LACP = Active or Passive
+channel-group 1 mode desirable
+
+switchport trunk encapsulation dot1q //Yung mga superhero -Qpid, Darna,Wonderwoman,Superman
+switchport mode trunk	//be a trunk
+
+conf t
+port-channel load-balance src-dst-ip
+end
+
+conf t
+int range fa 0/1-2
+ no switchport		//turn port to a routed port
+						//switchport(Virtual,VLANS, SVI, Virtually switch the port of a device through different vlans) vs routed port(physical port, if it's only going into one thing ex. the Port in CoreBaba that uses a FOC to connect to EDGE Router)
+int port-channel 1
+no switchport
+ ip add 10.1.1.1 255.255.255.252
+int lo0
+ ip add 1.1.1.1 255.255.255.255
+ exit
+ip routing
+router ospf 1
+ network 0.0.0.0 255.255.255.255 area 0
+ exit
+channel-group 1 mode on 
+
+****
+VLAN Trunking Protocol (VTP)
+	//tldr. configuring a vlan on one switch will affect others.
+
+VTP Modes
+ 1. Server - create/delete/modify VLANs
+		-configuration revision number //sets a priority on what it will listen to
+ 2. Client - cannot create/delete/modify VLANs
+ 3. Transparent - doesn't participate VTP but can still forward advert
+ 4. Primary Server - only available in VTP ver 3, the only switch that can create/delete/modify VLANs
+ 
+ //prevent problems from adding new switch
+	switch to transparent mode then change config rev #
+
+******
+conf t
+vtp mode server 	//set vtp mode to server
+vtp domain CCNA 	//change vtp domain name
+vtp password s3cret //vtp password
+vtp pruning			//switch on pruning - send broadcast only on members of that specific vlan
+vtp version 2		
+
+@for client mode
+vtp mode client
+
