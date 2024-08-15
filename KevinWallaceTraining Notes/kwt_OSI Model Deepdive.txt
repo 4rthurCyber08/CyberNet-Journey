@@ -1,0 +1,80 @@
+Link: https://youtu.be/oVVlMqsLdro?si=9YkWjHiGkpDttB7E
+
+Open Source Interconnection (OSI) 7 Layer Model
+
+	//How we refer to DATA
+		PDU (Protocol Data Unit)
+		 Layer 1 - Bits
+		 Layer 2 - Frames
+		 Layer 3 - Packets/Data Grams
+		 Layer 4 - Segments
+		 
+7. Application - NOT the program - it's the underlying service that supports the application
+	//POP3, IMAP, SMTP, SecureShell
+	Application Services
+	Service Advertisement
+	
+6. Presentation
+	//.exe .jpg .gif .mp4 .mp3
+	Data Formatting - ASCII
+	Encryption - md5, Scrypt
+	
+5. Session - Responsible for Establishing, Maintaining, Tearing down a session.
+	//Net use x: \\10.10.10.10 \IPC$
+	Data Streams
+		"Hack mo katabi mo" "Delete mo lahat ng files sa drive C niya."
+
+4. Transport
+	//TCP (Transmission Control Protocol), UDP(User Datagram Protocol)
+	TCP - Reliable, keeps an eye on each data to make sure it's safe.
+			//Three-way-handshake - Synchronization (SYN), SYN Acknowledgement (ACK), ACK
+	UDP - Unreliable, will process data fast without batting an eye. For voice and video. 
+			//Gamers Love UDP because they hate Latency
+	Windowing - how much data can I send at any one time before expecting an acknowledgement		
+					//recieve one segment - ACK - then sends 2 segment - ACK - send 4, 16, 32, etc,.
+	Buffering - Queue packets.
+			Tail Drop - packet dropped because Queue is full
+3. Network
+	//Router, IPv4, IPv6
+	Logical Addressing - Learn IP Addresses and Learn what Neworks live in different interface.
+	Switching(Not CiscoSwitch) - Packet Switching the act of routing is considered packet switching
+	Connection Services - Flow Control
+2. Data Link
+	//Ethernet Switches, specifically defined Layer 2 Switch.
+	Sub Layer: 	MAC (Media Access Control)
+					Physical Addressing of a Networking Device
+					Logical Topology
+					Method of Data Transmission - Carrier Sense(Listen to the wire before transmiting)
+				
+				LLC (Logical Link Control)
+					Connection Services - Flow control, Error Notification Services
+					Synchronization of transmission
+						ex. Isochronous(Look at a common external device for clocking)
+							Asynchronous(Use own internal clock) + Start&Stop bits
+							Synchronous(Clocking is shared between sender and reciever over a separate channel)
+1. Physical
+	//ethernet cable, Fiber Optic, Network Interface Card
+		Physical items that transmit Bits.
+	How bits are presented
+		//How we represent data on the wire. How data can be encoded.
+		AMI(Alternate Mark Inversion) 
+			//"it's best to have an average of 0 volts on the wire"
+			Presence Of Voltage (PoV)
+				when sending voltage to represent a binary 1, balance the voltage by alternating + and - volts.
+	Wiring Standards
+		RJ45 Jack - 8 position 8 conductor connector.
+		 Color Coded Wires - (T568B Standard)
+	
+	Physical Topology
+		Bus Topology // -p-d-p-d-p-  //Carrier Sense Multiple ACCESS with Collision Detection
+		Ring Topology (Logically ) // O	//Media Access Unit (MAU)
+			-Physically it's a star Topology
+	Synchronization
+	
+	Bandwidth - Broadband - different frequencies used to have multiple conversation at the same time
+				Baseband
+	Multiplexing Strategy
+	
+		
+		 
+		

@@ -1,0 +1,94 @@
+CCNA Mini Course
+
+Link: https://www.kwtrain.com/qostools?cid=1eb2f78f-704d-4f57-a544-5b24eb0154f0
+
+// - Annotations
+
+commands:
+1. sh spanning-tree
+
+
+Quality of Service
+	"Managed unfairness"
+
+3 Categories of Qos
+ -Best Eddort: Not Strict
+ -DeffServ: Less Strict
+ -IntServ: Strict
+ 
+Mechanism
+ Classification and Marketing
+ 
+---
+Spanning Tree Protocol
+
+Link: https://www.kwtrain.com/rootbridge?cid=1eb2f78f-704d-4f57-a544-5b24eb0154f0
+
+				/gi0/1-Sw1-gi0/2\
+
+/gi0/1-Sw2-gi0/2		-	 gi0/2-Sw3-gi0/1\
+
+	(Default) Priority: (Sw1,Sw2, & Sw3)32768
+	MAC Address: (Sw1)1111.1111.1111, (Sw2)2222.2222.2222, (Sw3)3333.3333.3333
+	
+	//Who is the Root Bridge?
+	//What are the Root Ports?
+	//What are the Designated Ports?
+	//What are the Blocking (Non-Designated) Ports?
+	
+	Root Bridge
+		//Bridge - very old ver of Switches
+		The switch with the lowest Bridge ID(BID)
+			//Bridge ID - Priority + MAC Address
+		Therefore Sw1 with MAC Add of 1111.1111.1111 is the Root Bridge
+	
+	Root Port - the one(and only one) port on a non-Root Bridge that's closest to the Root Bridge, in terms of cost.
+		//Cost - the cost of the route going to the root bridge. Calculation: depends. //Upon exiting or going to another switch 
+			//cost of travel
+			Short Path Cost Metthod
+				//No Formula. Just memorize
+				Port Speed	STP Port Cost
+				Mbps:  	10 - 100
+						100 - 19
+				Gbps:	1 - 4
+						10 - 2
+			
+			Long Path Cost Method
+				Formula = 20Tbps/Port Speed
+				Port Speed	STP Port Cost
+				Mbps:  	10 - 2,000,000
+						100 - 200,000
+				Gbps:	1 - 20,000
+						10 - 2,000
+		
+			//cost ex.	Sw2(gi0/1: 4cost) -> (gi0/1: only entering so no cost)Sw1[RootBridge] = 4 cost total
+						vs
+						Sw2(gi0/2: 4cost) -> (gi0/2: only entering so no cost)Sw3(gi0/1: 4cost) -> (gi0/2)Sw1[RootBridge] = 8 cost of travel
+		Therefore Sw2's Root Port is gi0/1 and Sw3's Root Port is gi0/1
+	
+	Designated Port - the one(and only one) port on each segment that is closest to the Root Bridge in terms of cost.
+		//Typically the ports on the Root Bridge
+		Sw2(gi0/1: Root Port) - (gi0/1: Designated Port)Sw1(gi0/2: DP) - (gi0/1: Root Port)Sw3
+		
+			//But what about the segment between Sw2 - Sw3?
+			the cost of both ports are the same because of gi0/1 -> Sw1.
+			which means we have to look at the BID (Bridge ID) - the one with the lowest becomes the Designated Port of that segment
+			Therefore Sw2(gi0/2: Designated Port)
+		
+	Blocking Port (Non-Designated Port) - everything that's left. (gi0/2: Non-Designated Port)Sw3
+	
+	**gi 1/0/1 = gigabit switch 1 / main unit 0 / port 1
+
+RootBridge: 		SwA
+Designated Port: 	
+Root Port: 
+Non: 
+
+Hex: Left to Right Comparison
+
+
+Gigabyte = 1 000 000 000
+Terabyte = 1 000 000 000 000
+
+te 1/0/1 = 2k
+gi 1/0/7 = 
