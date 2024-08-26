@@ -1,0 +1,249 @@
+Spanning Tree Protocol Deep Dive
+Link: https://youtu.be/XoLPGH4awKc?si=etm3fnMqYrpbJWH4
+
+// - annotations
+
+commands:
+1. show spanning-tree vlan 1
+2. sh spanning-tree summary
+3. show spanning-tree protocol rstp
+4. show spanning-tree inconsistentports
+
+SPAN - Switchport Analyzer
+Packet Sniffer
+
+Intro to Spanning Tree Protocol
+	
+	//Legacy
+	Bridge - A legacy networking device that made forwarding decisions in software, based on destination MAC Addresses.
+	Radia Perlman
+		-Working at DEC
+		-Developed Spanning Tree Protocol
+	Institute of Electrical and Electronics Engineers
+		-1990
+		-IEEE 802.1D
+	
+	Switching vs Routing
+	
+	Router |Layer 3| - The Time to Live Issue (TTL)
+	 _______
+	|		|
+	R1		R2  TTL = 2
+	|_______|
+	
+		//Each router hop reduces TTL field by 1 until it reaches 0.
+		Then, the packet is dropped.
+	
+	Switches |Layer 2| - Switches do not have a TTL field, and frames can circulate endlessly in a loop (i.e. a Broadcast Storm)
+
+Identifying Port States
+	1. Who is the Root Bridge?
+	2. What are the Root Ports?
+	3. What are the Designated Ports?
+	4. What are the Blocking (Non-Designated) Ports?
+	
+	1. Root Bridge is the switch with the lowest BridgeID
+		BridgeID (BID)
+		Priority[2 Bytes] MAC Address[6 Bytes]
+		
+			-Default Priority 32768
+			
+	2. Root Port the one AND ONLY ONE port that is on a non Root Bridge that is closest to the Root Bridge in terms of costs.
+		Cost Formula	
+			20TBps / Speed
+			
+			Port Speed		Cost
+			10Mbps			2 000 000
+			100Mbps 		200 000
+			1Gbps			20 000
+			10Gbps			2 000
+			--
+			Tbps = 1 000 000 000 000 bps
+			Gbps = 1 000 000 000 bps
+			Mbps = 1 000 000 bps
+			Kbps = 1 000 bps
+			
+	3. Designated Port the one AND ONLY ONE port on EACH SEGMENT that is closest to the Root Bridge in terms of costs.
+		If there is a tie in the election of a Designated Port, the tie breakers are:
+			-The Port that is attatched to a device with the lowest BID
+			-If both segments are on the same device, 
+			the one with the lowest port number, THE PORT THAT IS ON THE OTHER SIDE OF THE LINK. NOT THE LOCAL PORT OF THE DEVICE BEING ELECTED A ROOT PORT. 
+			
+	4. Whatever Ports that are left unidentified is considered a BLOCKING Port
+
+	Why manually choose a Root Bridge?
+		It's a High-end Switch
+		Traffic Flows
+
+STP Convergence
+	Bridge Protocol Data Unit (BPDU) Frame
+		-Hello every 2s
+		//to make sure Root Bridge is alive on that link
+	
+		What happens when a link is cut
+		-If the link is cut, the SW that lost connection to the Root Bridge is going to (keep sending hello whils) wait for 20s (Blocking) before acknowledging that the link is broken. As a result,
+		-After the 20s, the SW will enter a Listening state for 15s. 
+			//Listening for BPDU, nothing else.
+		-After the 15s, it will enter the Learning state for another 15s.
+			//Learning, Populating the MAC Address Table.
+		-Finally , Forwarding.
+		
+		Total Downtime: 50s
+		
+--
+[802.1D] Common Spanning Tree (CST)
+	Used by the IEEE *802.1D Standard
+	The same STP topology is used by all VLANs
+
+Per VLAN Spanning Tree (PVST) or PVST+ (+ means the link is running dot1q)
+	Different Switches can be the Root Bridge on different VLANs
+	
+	//Default Priority 32768 +1 = System Extended ID, based on VLAN #(Exclusive to PVST so that VLANs will have different Priority)
+	
+		SW1[Fa1/0/14]_____
+	[Fa1/0/13]		      \
+		|				  |
+	[Fa0/3]				[Fa0/3]
+		SW2[Fa0/1]-[Fa0/1]SW3
+		   [Fa0/2]-[Fa0/2]
+		
+	**
+	@SW3
+	conf t
+	spanning-tree vlan 1 root primary //Setting Root Priority: Primary-Who is the current Root Bridge? Whatever that Root Bridge's priority, it will be reduced by 25%.
+	spanning-tree vlan 1 root secondary //reduced priority by 1/8. !!!BASED ON THE DEFAULT!!! So if priorities are manually configured, this may not work.
+		//or
+		//spanning-tree vlan 1 priority ? //manually config priority in multiples of 4096
+	
+	
+	//How to influence port priority without physically swapping ports.
+	//Port Priority-128.3-Number(Cisco Switches calculate port number by port number + 2)
+	
+	int fa0/2
+	 spanning-tree vlan 1 port-priority 32 //Sets Port priority to 32.4 
+	**
+	
+[802.1S] Multiple Spanning Tree Protocol (MSTP or MST)
+	IEEE *802.1S Standard
+	Multiple Vlans running the same instance of STP
+	
+	**
+	@SW2
+	conf t
+	spanning-tree mode mst //set STP mode to MST because the default is PVST
+	spanning-tree mst configuration //enter config for mst
+	 instance 1 vlan 100,300 //for instance 1, use VLAN 100, and 300
+	 instance 2 vlan 200 //for instance 2, use VLAN 200
+	 
+		//all other unspecified VLAN will enter instance 0. A catch-all.
+	
+	spanning-tree mst 1 priority 8192 //set SW2 with a priority of 8192 for instance 1
+	spanning-tree mst 2 priority 16384 //set SW2 with a priority of 16384 for instance 2
+	
+	**
+
+[802.1W] Rapid Spanning Tree Protocol or Rapid PVST+
+	IEEE *802.1W Standard
+	-Rapid? Lowering the 50s downtime to miliseconds
+	
+	Difference in Roles
+		-Block Ports = Alternate Port, other cases Backup Port
+			//If you're going through a hub, the two segments are considered 1 segment. And the supposed Blocking port is considered Backup Port.
+		-Port State: Discarding(prev Blocking), Learning, Forwarding.
+			//If there's a changed in the network 
+			//Each Switch is capable of sending a topology change notification.
+	
+	Link Terms
+	-Point-to-Point ports between Switches
+	-Edge Port //New devices plugged into the topology. No BPDUs being sent
+	-Shared Link //Half Duplex
+	
+	Rapid STP Synchronization
+	//The process SW take when Root Bridge Changes
+	1. SW1 DP -> RP, 
+	2. SW1 Prev RP -> Blk
+	3. SW1 sends a 'Proposal' //sent to the next farther switches, Sends BPDU
+	4. Next, SW2 changes DP -> RP
+	5. SW2 Sends an Agreement to SW1
+	6. SW1 changes it's Blk -> DP
+	
+	**
+	@SW1
+	conf t
+	spanning-tree mode rapid-pvst
+	spanning-tree vlan 200 root primary
+	spanning-tree vlan 100,300 priority 24576
+	
+	int fa1/0/1
+	 spanning-tree link-type ? //setting the link to point-to-point or shared link
+	 
+	 spanning-tree portfast //WARNING: Portfast shoyld only be enabled on ports connected to a single host.
+	 
+	**
+	
+Performance Enhancement for STP
+	Portfast //use with RapidPVST
+		-Configured on ports connecting to network endpoints
+		-Can be enabled globally or on a port-by-port basis
+			**
+			spanning-tree portfast default //turn on portfast on every non trunking port that's up.
+			**
+		
+	UplinkFast //helps with direct link failure
+		-Typically configured on Access Layer switches.
+		-Globally enabled on a switch.
+		-Reacts to a directly attached link failure.
+			//Cisco Multicast MAC Address - 0100.0ccd.cdcd (For a direct link failure)
+			**
+			spanning-tree uplinkfast //enable uplinkfast
+			**
+	-BackboneFast
+		-Typically configured on all network switches.
+		-Globally enabled on a switch
+		-Reacts to an indirect link failure
+		
+		-SW sends Inferior BPDU because it thinks it's the Root after his link with the real Root was broken.
+		-Neighboring SW will question the inferior BPDU  and send a Root Link Query (RLQ) to the real Root Bridge.
+		-Root will reply with a Root Link Reply(RLR).
+		-Prev SW will send a Superior BPDU to the SW claiming to be the Root Bridge.
+			**
+			spanning-tree backbonefast
+			**
+
+Increase STP Stability
+	RootGuard
+		-Configured on ports off of which the Root Bridge is unexpected.
+		-Port enabled for RootGuard enter a Root Inconsistent state when recieving superior BPDUs
+		Interface by interface basis
+		**
+		show spanning-tree guard root
+		**
+
+	LoopGuard
+		-Causes a non-designated port to enter the Loop Inconsistent state if it stops recieving BPDUs
+		**
+		spanning-tree guard loop
+		
+		spanning-tree loopguard default
+		**
+	
+	BPDUGuard (Danger)
+		-Should be enabled on port with PortFast enabled.
+		-Can be enabled globally or port-by-port basis.
+		-Causes a port to go into an Error-Disabled state if a BPDU is recieved.
+		**
+		spanning-tree bpduguard enable
+		**
+		
+	BPDUFilter (Danger)
+		-Prevents a port from sending BPDUs
+		-Can be enabled on a port-by-port basis or globally(for ports with portfast enabled)
+		-Should only be used when necessary.
+		-Most dangerous when enabled at the port level.
+		**
+		spanning-tree bpdufilter enable
+		spanning-tree portfast bpdufilter default
+		**
+		
+	
+		

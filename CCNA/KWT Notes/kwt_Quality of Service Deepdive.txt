@@ -1,0 +1,129 @@
+Ref: https://youtu.be/AoOAb2RQVyM?si=MjyMtTP6UgjVKOkh
+
+Qualiy of Service Deepdive
+
+Why need QoS? Periodic Congestion
+
+Not Strict - Best Effort
+	FiFo - First in, First out. First come first serve traffic management.
+	
+Less Strict - DiffServ
+	Bandwidth Guarantee for each application and share bandwidth with other apps depending on when they need it.
+Strict - IntServ
+	Bandwidth Guarantee for each app but does not share with other apps even if a certain app is not using bandwidth.
+	
+
+A. QoS Mechanisms
+	1. Classification and Marking - categorize different kinds of traffic and then mark them with a tag that will help other devices make forwarding decisions based on their category.
+	2. Queuing - buffer incoming traffic if the device can't attend to it yet because it's currently in the process of managing another data.
+			Create Sub Queues for VoIP packets & Best Effort packet.
+				//Cisco Recommend make no more than 11 sub queues
+	
+	3. Congestion Avoidance - Have Congestion Avoidance prevent the queue form filling to capacity.
+		TCP window size grows - sliding windows
+			//TCP Synchronization - results in inefficient use of bandwidth
+	
+	4. Policing and Shaping - limit the bandwidth consumption. 
+		//Speed Limit on traffic.
+		Policing - more strict
+		Shaping - queue the extra traffic
+		
+	5. Link Efficiency - prevent big payload from delaying smaller packet.
+		//only if your link is less than 768k
+		
+B. Class of Service
+	IEEE 802.1q Frame
+		Tag Control Information Bytes
+		 -Priority Bits [3bits] - CoS Bits : 8 possible values - 6 or 7 are not allowed - *best to have a CoS value of 5
+		 -CFI
+		 -VLAN ID
+	//CoS Marking is Layer 2, which means it can be removed upon encountering a router. Therefore,
+		ToS Byte - A marking that will survive a router hop
+			IP Precedence - 3 leftmost bit of the byte
+			
+			DSCP - Differentiating Services Code Point - uses the 6 left most bits of the CoS byte
+				//Preferrably used - ITF chose 21 values out of 64 values
+					Per Hop Behaviors of the 21 values
+						Name PHB					Decimal		Binary
+					1	Default						0			000000
+					2	Expedited Forwarding (EF)	46			101110
+					3	Class Selector 1 (CS1)		8			001000
+					4	Class Selector 2 (CS2)		16			010000
+					5	Class Selector 3 (CS3)		24			011000
+					6	Class Selector 4 (CS4)		32			100000
+					7	Class Selector 5 (CS5)		40			101000
+					8	Class Selector 6 (CS6)		48			110000
+					9	Class Selector 7 (CS7)		56			111000
+					
+					DSCP Assured Forwarding (AF) Values
+					
+						Low Drop Probability	Medium Drop Probability		High Drop Probability
+			Class	1	AF11(10) 001 010		AF12(12) 001 100			AF13(14) 001 110
+					2	AF21(18) 010 010		AF22(20) 010 100			AF23(22) 010 110
+					3	AF31(26) 011 010		AF32(28) 011 100			AF33(30) 011 110
+					4	AF41(34) 100 010		AF42(36) 100 100			AF43(38) 100 110
+						
+						Low Drop	-threshold for dropping packets
+						Medium Drop
+						High Drop
+					
+						Default - give to default traffic
+						EF - for higher priority
+						
+				A device using IP Precedence interacting with data that uses DSCP will only look at the first 3 bits. 
+				Conveniently DSCP to IP is backwards compatible.
+	
+C. Weighted Random Early Detection	
+	Industry Protocol Random Early Detection (RED)
+		Output Queues - Min - Max Threshold
+		0% potential of discard
+			Increases
+			Once exceed maximum probability of discard, it becomes 100% probability of discard.
+	
+	Cisco Weighted Random Early Detection (WRED)
+		Sets different RED profiles for each category
+		Drop Profile for AF13,23,33,43 = min 25%
+		Drop Profile for AF12,22,32,42 = min 30%
+		Drop Profile for AF11,21,31,41 = min 35%
+		
+		ToS Byte
+			0000 00 0	0
+					ECT	CE
+					
+					ECT = ECN-Capable Transport
+					CE = Congestion Experience
+						//reduce the size of the packet being sent when it's too much
+				
+D. Queuing
+	Prioritizing Traffic Types
+		Class-Based Weighted Fair Queuing (CB-WFQ)
+			- Divide Queues to sub queues
+				Sub Q
+					-Call signaling	>= 1 Mbps *during times of congestion, this subq will have AT LEAST 1 Mbps bandwidth. You can have more if you need it and there's more is available.
+					-Network Control >= 1 Mbps //min Bandwwidth Guarantee
+					-Critical Data >= 3 Mbps
+					-Bulk Data >= 1 Mbps
+					-class-default *catch all class - default
+					
+					Cisco Limits 11 Classes of Traffic
+		Low Latency Queuing (LLQ) - adds a Priority Queue <= 3 Mbps *prioritized but can only have a max 3 Mbps
+			//preferably for voice
+
+E. Traffic Conditioners
+	Shaping 
+		-delays excess traffic rather than dropping it.
+		-Used on slower speed interfaces.
+		
+		ex.	CIR = Bc/Tc
+			CIR Commited Information Rate - Average speed over the period of a second
+			Bc = Committed Burst - Number of bits (for shaping) or bytes for (for policing) that are deposited in the bucket during a timing interval
+			Tc = Timing Interval - the interval at which tokens are deposited in the token bucket.
+			
+				Token Bucket - place where bits gets dumped.
+		
+	Policing 
+		-drops the traffic if the traffic exceeds the max value.
+		-used on higher speed interfaces.
+		
+		
+*1:07;39

@@ -1,0 +1,157 @@
+NAT, NTP, & DHCP
+Link: https://youtu.be/_MS2sG03Q-E?si=BOKaDd8v-4bqhquI
+
+// - annotations
+
+commands:
+1. sh ip nat translations
+2. sh ip nat statistics
+3. sh ntp status
+
+Network services are not limited to providing address and routing, it can also provide more services.
+	//We don't build a network for the sake of building a network, we build a network to provide services to the enterprise.
+
+	1. NTP (Network Time Protocol)
+		- Client mode: 'ntp server /ip of server/'	sets a source of time as basis for time on this router
+		- Server mode: 'ntp master /stratum value/'	sets the router as the main source of time for the network.
+	
+	2. DHCP (Dynamic Host Configuration Protocol) and DNS (Domain Name System) - Dynamically assign IP service
+		- Client
+		- Relay
+	3. SNMP (Simple Network Management Protocol)
+	4. Syslog Features
+		- facilities
+		- levels
+	5. Remote access using SSH (Secure Shell Protocol)
+	
+	
+NAT (Network Address Translation) //Translate private address(ex. 10.1.1.1) to a public routable address(ex. 192.0.2.100)
+ //device outside of the network
+ OUTSIDE Local	//outside the local address but is still limited localy
+ OUTSIDE Global	(203.0.113.100)	
+ 
+ //device inside of the network
+ INSIDE Local	(10.1.1.1 & 10.1.1.2)		//not globally routable
+ INSIDE Global	(192.0.2.101 & 192.0.2.102) //globally routable
+
+PAT (Port Address Translation)
+ //make a note of both IP address and (ephemeral) port number. Use port number to keep track of devices
+ INSIDE (Source IP: 10.1.1.1:41025) -> OUTSIDE (Source IP: 192.0.2.100:42025) //port number usually don't change. Only changes if the number is already used.
+ 
+ INSIDE Local	(10.1.1.1:41025 & 10.1.1.2:42050)	
+ INSIDE Global	(192.0.2.101:42025 & 192.0.2.102:42050)
+
+Port Mapping
+Use server as destination port
+
+$$$$
+PC (192.168.1.100/24) -- (192.168.1.1/24 Gig0/1)R1(172.16.1.1/24 Gig0/2) -- (172.16.1.2/24 Gig0/1)Internet
+@r1 //the NAT router
+conf t
+ int gi 0/1
+  ip nat inside //internet protocol NAT, You're inside!!
+ int gi 0/2
+  ip nat outside //you're outside
+  exit
+ 
+ ip nat inside source static 192.168.1.100//who is my inside local address// //what am I converting it into?//172.16.1.100
+ ip nat inside source static 192.168.1.100 172.16.1.100
+ 
+ sh ip nat translations
+ 
+ //remove
+ no ip nat inside source static 192.168.1.100 172.16.1.100
+ 
+ //using standard access-list to match traffic and create a pool of addresses to specify NAT on which addresses to use
+ //acl to identify inside local address. create a pool to identify inside global address
+ access-list 1 permit 192.168.1.0 0.0.0.255
+ ip nat pool NATPOOL 172.16.1.100 172.16.1.199 netmask 255.255.255.0
+ ip nat inside source list 1//which list// pool//translate to a member of the pool// POOL
+ ip nat inside source list 1 pool POOL
+ end
+
+ //PAT - also known as NAT OVERLOADING
+ conf t
+ access-list PAT permit 192.168.1.0 0.0.0.255
+ ip nat inside source list PAT //translate whatever's assigned in..// int gig 0/2 overload //to have mulptiple devices share 1 ip global address
+ ip nat inside source list PAT int gig 0/2 overload
+ //
+$$$$
+
+***
+NTP (Network Time Protocol) //"The reason time exist is so because everything doesn't happen at once" 
+
+//"A man with one watch always knows what time it is. A man with two watches isn't quite sure."
+//We want our network to have 1 watch
+Network devices need accurate time
+	- to help network admins correctly interpret logs
+	- to use digital certificates
+Uses UDP Port 123
+Uses a stratum number to measure believability of a time source
+Int(Stratum 1) -> R1(Stratum 2) -> SW1 //Stratum = hops, 16 stratum is considered unbelievable
+
+	//NTP = UDP Port 123
+
+$$$$
+PC (192.168.1.100/24) -- (192.168.1.1/24 Gig0/1)R1(172.16.1.1/24 Gig0/2) -- (172.16.1.2/24 Gig0/1)Internet
+@internet
+conf t
+ clock set 18:39:00 April 2 2020
+ clock timezone UTC 0
+ ntp master 3 //stratum value, don't do this in the real world. on lab only
+
+@R1
+conf t
+ntp server 1.1.1.1
+clock timezone EST -5
+clock summer-time EDT recurring //day-light-savings
+$$$$
+
+
+
+***
+DHCP (Dynamic Host Configuration Protocol)
+DHCP States
+D-O-R-A
+Discover 		//DISCOVER a DHCP Server by using broadcast "Are there any dhcp servers out there?"
+Offer			//"Yes, I'm a dhcp server. I would like to OFFER my services."
+Request			//"Ok, give me an IP Address." Make a REQUEST packet using 0.0.0.0 0.0.0.0 as a temporary source ip add.
+Acknowledgement	//"Ok, here's your IP Address"
+
+*Note Broadcast does not cross a router.
+
+What happens to an end device separated by a router and it's supposed dhcp server?
+The router can be turned into a DHCP Relay/IP Helper.
+
+DHCP Features
+ -MAC Reservations
+ -Pools 
+ -IP Exclusions
+ -Scope Options
+	-Default Gateway
+	-DNS Server
+	-Time-To-Live value
+	-Option 150 //address of a tftp server
+ -Lease Time
+	-T1=1/2 of the lease time
+	-T2=7/8 of the lease time
+ -DHCPv6
+
+$$$$
+PC - (192.168.1.0/24) - (.1 gi0/1)R1(.1) - (172.16.1.0/24) - (.2)DHCP
+
+@dhcp server
+conf t
+ip dhcp excluded-add 192.168.1.1 192.168.1.99
+ip dhcp excluded-add 192.168.1.200 192.168.1.254
+ip dhcp pool PC
+ network 192.168.1.0 255.255.255.0
+ default-router 192.168.1.1
+ dns-server 172.16.1.2
+ exit
+
+@r1	//turn r1 into a dhcp relay agent
+conf t
+int gig 0/1
+ip helper-address 172.16.1.2 //ip add of dhcp port
+

@@ -1,0 +1,81 @@
+Link: https://youtu.be/Wyd0HTfkmgo?si=mdiKL-5Z4vNtYC-0
+https://youtu.be/4yuT5KR7TRc?si=Ke4NmUlh4w-qO8VQ
+ARP Poisoning: https://youtu.be/93WDiQj0F4c?si=tKBOnmg4ciw3djY5
+// - Annotations
+
+commands
+1. sh errdisable recover
+2. sh port-security
+3. sh dhcp binding
+4. sh ip dhcp pool
+5. clear ip dhcp binding *			//take back all the ip given out
+6. clear mac address-table dynamic	//clear dynamic mac-address
+7. sh ip dhcp snooping bind
+8. sh ip arp
+9. sh ip arp inspecition
+
+
+program
+Kali Linux - yersinia
+
+A. Switch Port Security
+
+Avoid Mac Flooding Attack
+ Hacker Spams MacAddress to your Switch MacAddTable
+ 
+//Port Security wants the port to be an access port
+	conf t
+	 int fa 1/0/2
+	  switchport mode access
+	  switchport port-security //turn on port-security
+	  switchport port-security maximum 2 //specify the number of mac-address can be learned on this port
+	  switchport port-security mac-address sticky //dynamically learn the first 2(specified by the previous command) mac-address that was learned by this port
+	  
+	  		//copy running-conf start in order to save mac address sticky
+	  switchport port-security violation
+			//protect - allow permit mac-add while disallow non permitted mac-add
+			//restrict - similar to protect, extra increment security-violation counter. will document violation
+			//shutdown - port will shutdwon int
+						//to turn on after violation shutdown enter: 
+							//shutdown then no shutdown
+	  exit
+	 errdisable recover cause psecure-violation //specify what to do to come out of error disable state, shutdown from violation
+	 errdisable recover interval 30 //seconds will recover from a error disable state caused by violation shutdown
+	 sh errdisable recovery				
+	 sh port-security
+	 
+	  exit
+	 
+	//
+	
+
+B. DHCP Snooping
+	 
+ip dhcp relay information trust-all
+//
+@SW1
+conf t
+ int range gi0/1-10
+ switchport mode access
+ switchport port-security maximum 5
+ switchport port-security violation protect //what to do after going above the max mac-address
+ switchport port-security
+ 
+@SW1
+conf t
+ int gi 0/1
+  ip dhcp snooping trust //trust this port for dhcp offers
+  exit
+ ip dhcp snooping			//activate dhcp snooping
+ ip dhcp snooping vlan 1	//enabled dhcp snooping on vlan 1, trust offers
+ 
+ exit
+
+C. ARP (Address Resolution Protocol) Poisoning 
+
+conf t
+ int gi 0/1
+  ip arp inspection trust
+  exit
+ ip ar inspecition vlan 1
+ 
