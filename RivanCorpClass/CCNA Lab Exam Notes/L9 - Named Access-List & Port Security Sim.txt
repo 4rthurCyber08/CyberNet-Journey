@@ -1,0 +1,55 @@
+LAB 9 - Named Access-List & Port Security Sim
+
+// - annotations
+
+Tasks
+Refer to the topology. All physical cabling is in place. Configure a local user account, a Named ACL (NACL), and security.
+
+	Task 1. Configure a local account on Sw101 with telnet access only on virtual ports 0-4. 
+	Use the following information:
+
+		Username: support
+		Password: max2learn
+		Privilege level: Exec mode
+		
+		@Sw101
+		conf t
+		username support privilege 15 password max2learn
+		line vty 0 4
+		 transport input telnet
+		 login local
+		 exit
+		
+	Task 2. Configure and apply a single NACL on Sw101 using the following:
+		Name: ENT_ACL
+		 Restrict only PC2 on VLAN 200 from pinging PC1
+		 Allow only PC2 on VLAN 200 to telnet to Sw101
+		 Prevent all other devices from telnetting from VLAN 200
+		 Allow all other network traffic from VLAN 200
+		
+		@Sw101
+		conf t
+		ip access-list extended ENT_ACL
+		 deny icmp host 192.168.200.10 host 192.168.100.10
+		 permit tcp host 192.168.200.10 host 192.168.100.1 eq 23
+		 deny tco 192.168.200.0 0.0.0.255 any eq 23
+		 permit ip 192.168.200.0 0.0.0.255 any
+		 exit
+		int vlan 100
+		 ip access-group ENT_ACL out //ACL applied outbound on a VLAN will identify traffic going to devices from that vlan
+		 exit
+		
+	Task 3. Configure security on interface Ethernet 0/0 of Sw102:
+		Set the maximum number of secure MAC addresses to four.
+		Drop packets with unknown source addresses until the number of secure MAC addresses drops below the configured maximum value. No notification action is required.
+		Allow secure MAC addresses to be learned dynamically.
+		
+		@Sw102
+		conf t
+		 int e0/0
+		  switchport port-security maximum 4 //maximum number of learnable mac-address
+		  switchport port-security violation protect //when a new mac-address is recieved despite reaching the maximum number of mac-address the packet will be dropped but not logged
+		  switchport port-security mac-address sticky //remember assigned mac-addresses
+		  switchport port-security
+		  exit
+	

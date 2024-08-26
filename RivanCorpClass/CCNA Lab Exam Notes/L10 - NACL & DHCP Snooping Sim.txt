@@ -1,0 +1,68 @@
+LAB 10 - Named Access-List & DHCP Snooping Sim
+
+// - annotations
+
+Tasks
+
+Refer to the topology. All physical cabling is in place. Configure local users accounts, modify the
+Named ACL (NACL), and configure DHCP Snooping. The current contents of the NACL must
+remain intact.
+
+Task 1
+Configure a local account on Gw1 with telnet access only on virtual ports 0-4. Use the following
+information:
+	Username: wheel
+	Password: lock3path
+	Algorithm type: Scrypt
+	Privilege level: Exec mode
+	
+	@GW1
+	conf t
+	sh run
+	username wheel privilege 15 argorithm-type scrypt secret lock3path	//algorith-type scrypt - algorithm for password encryption. Password will not be available when scrypt is set, which means secret must and should be used instead.
+	:or:
+	username wheel privilege 15 secret 9 lock3path //secret 9 means use scrypt algrorithm while secret 5 uses md5 algorithm 
+	line vty 0 4
+	 transport input telnet	//only allow telnet on this device
+	 login local //will require a username and password upon accessing the device. if user and pass are not set you're locked out. While <login> will only require password, no username needed.
+	 exit
+	
+Task 2
+
+Configure and apply a NACL on Gw1 to control network traffic from VLAN 10:
+	Name: CORP_ACL
+	Allow BOOTP and HTTPS
+	Restrict all other traffic and log the ingress interface, source MAC address, the packet’s
+	source and destination IP addresses, and ports.
+	
+	@GW1
+	conf t
+	 ip access-list extended CORP_ACL
+	  permit udp any any eq 67
+	  permit udp any any eq 68
+	  permit tcp 10.10.10.0 0.0.0.255 any eq 443
+	  deny ip 10.10.10.0 0.0.0.255 any log-input
+	  exit
+	 int e0/0
+	  ip access-group CORP_ACL in
+
+Task 3
+
+Configure Sw1:
+	Enable DHCP Snooping for VLAN 10
+	Disable DHCP Option-82 data insertion
+	Enable DHCP Snooping MAC address verification
+	Enable trusted interfaces.
+	
+	@sw1
+	conf t
+	 ip dhcp snooping //enable snooping feature.
+	 ip dhcp snooping vlan 10 //dhcp snooping keep an eye on vlan 10. enable snooping for vlan 10 only
+	 no ip dhcp snooping information option //turn off option-82 data insertion
+	 ip dhcp snooping verify mac-address //verify mac-add
+	 int e0/1
+	  ip dhcp snooping trust //become trusted
+	  exit
+	 int e0/2
+	  ipd dhcp snooping trust //become trusted
+	  exit
