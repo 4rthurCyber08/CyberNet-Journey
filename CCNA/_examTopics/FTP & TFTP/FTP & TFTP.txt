@@ -1,0 +1,41 @@
+Ref: https://youtu.be/L9aZpg0ip70?si=iYGhjaVDo1r17Zyy
+
+File Transfer Protocol (FTP)
+Trivial File Transfer Protocol (TFTP)
+
+Industry standard protocol to transfer files over a network
+Both use a client-server model
+ -Clients can use FTP or TFTP to copy files from a server
+ -Clients can usr FTP or TFTP to copy files to a server
+
+	//Upgrading operating system
+
+
+FTP - send and recieve files. TCP port 21. Passes files in plain text.
+		//nmap -p [port] 21 [port 21]
+		//website - index of [index.html]
+		
+		control connection -handles all ftp commands //get input
+			port:source [21] port:destination
+		
+		data connection - upon starting transfering files	
+			ACTIVE - server initiating the session
+				port:source [20] port:destination
+				//can get blocked by firewall
+			PASSIVE - client initiating the session
+				port and destination is randomly generated
+				//because it is initiated by the client, the firewall will allow the traffic
+		
+		Disadvatages
+			-sent in clear text (login credentials, inportant info, etc,.) //good for hackers :3
+
+	FTPS - FTP Secure or FTP Secure Sockets Layer(SSL) is an extension of FTP that supports the use of Transport Layer Security(TLS) and SSL encryption. //better security
+	*Transport Layer Security  is a cryptographic protocol that replaces SSL, Secure Sockets Layer Protocol.
+	-Tunneled
+	
+		
+
+TFTP - stripped back version of FTP. Very simple way to transfer files quickly and efficiently.
+		//why use tftp? - not on the internet. Use it locally such as producing backup of files.
+			//ex. 	copy running-config tftp //save switch, router, cucm config to your drive c
+					host ip

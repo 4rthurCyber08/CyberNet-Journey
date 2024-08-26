@@ -1,0 +1,119 @@
+Ref: https://youtu.be/gOqypN9lTW4?si=5ZDrYEfO5wM7YQMZ
+Add Ref for Twisted-Pair Cable: https://www.youtube.com/watch?v=_NX99ad2FUA
+Add Ref for Fiber Optic Cable: https://youtu.be/-VYhfR8Fv2I?si=wAPtfo8IZ2xDI1bY
+POTS (Plain Old Telephone Service)
+
+Copper Cables
+	Electromagnetic Interference (EMI or Crosstalk) - when radio waves are picked up by or radiated by a cable carrying another signal resulting in signal degradation.
+		//happens when one transmission gets carried over to another transmission because the Electromagnetic field of both cables were induced on each other.
+	
+		Coaxial Cables - the inner wire is surrounded by insulation(copper mesh) to prevent EMI.		
+			Measured by Impedance - a circuit's opposition to traffic flow (measured in Ohms[Ω]).
+			75Ω
+				RG-59
+				RG-6 - less loss with longer distance compared to RG-59
+			50Ω
+				RG-58 - thin Ethernet(thinNet) networks: 10BASE2. 10mbps
+				RG-8/U - thickNet networks: 10BASE5.
+	
+			*Twinaxial 
+				-has 2 inner conductors
+				-commonly used in data centers
+				-40Gbps or 100Gbps
+				-7 meters
+			
+		Twisted Pair
+			Wiring order of wires
+			568A-Standard
+				White-Green //stripe of white and green
+				Green
+				White-Orange
+				Blue
+				White-Blue
+				Orange
+				White-Brown
+				Brown
+			568B-Standard
+				White-Orange
+				Orange
+				White-Green
+				Blue
+				White-Blue
+				Green
+				White-Brown
+				Brown
+	
+				Using both standards on both ends of a twisted pair will achieve the same result, and is considered to ba a Straight (patch) cable.
+					Straight (Patch) Cable - allows signal to pass through from end to end.
+						-used to connect disimilar devices together.
+				
+				Using two different standards on both ends of a twisted pair is considered to be a crossover cable.
+					Crossover Cable - are used to connect 2 similar devices together. //ex two computers, two switches, etc,.
+					
+					//Both Straight and Crossover are both the most common types of twisted pair cables that are used in a LAN.
+			
+			***
+			Category of Twisted Pair Cables
+	
+			Category	Common Use									Distance Limitations
+			3			10BASE-T & 100BASE-T4						100m
+			5			100BASE-TX & 1000BASE-T						100m
+			5e			100BASE-TX & 1000BASE-T						100m
+			6			1000BASE-T, 5GBASE-T, & 10GBASE-T			100m (55m for 10GBASE-T)
+			6a			1000BASE-T, 5GBASE-T, & 10GBASE-T			100m
+			7			5GBASE-T, 10GBASE-T, & POTS/CATV/1000BASE-T	100m
+			8			25GBASE-T & 40GBASE-T1L						30-36m (intended for data centers)
+	
+	
+			10BASE - T
+			10[mbps] BASE[Baseband - it can only carry ethernet signals] - T[Twisted-Pair wires]
+	
+			10BASE - T4
+			10BASE - T4[Use 4 Pair of Twisted-Pair wires]
+	
+			10BASE-T1L
+			10BASE-T2L[Long Distance of up to 1km]
+	
+			10BASE-T1S[Short reach]
+			***
+	
+		Unshielded Twisted Pair (UTP) - twisting pairs of wires provide EMI protection.
+		
+			//In environments with a lot of interference or a need for higher speed, a Shielded Twisted Pair (STP) is preffered.
+		Shielded Twisted Pair - used for industrial purposes
+			-some use foil.
+			-others use braiding like coaxial cables.
+				
+		Plenum-Rated Twisted Cabling - cables that will not excude toxic fumes in extreme heat.
+			//when regular insulation is exposed to extreme heat, it can start to release toxic fumes.
+			Thus the need for Plenum-Rated cables.
+
+Fiber Optic Cable
+	Modes of Propagation - light bouncing through the Fiber Optic Cable at different angles resulting in different speeds.
+		Multimode Delay Distortion - when there's multiple modes of propagation and causes data to arrive in the wrong order.
+			Multimode Fiber - Fiber optic with a wider core.
+	
+		//one of the solutions for Multimode delay distortion is having a narrower core, which will only allow a single mode of propagationg.
+			Single Mode Fiber - Fiber Optic cable that has a narrow core.
+	
+	Fiber Connecters
+		Straight Tip (ST)
+		Lucent, Local, Little(Name may vary) Connector(LC)
+		Subscriber, Standard, Square(Name may vary) Connector(SC)
+		Media Ternmination Recommended Jack or Mechanical Transfer Registered Jack(MTRJ) - contains both Fiber Optic Strands
+		
+			Attatching Connectors together
+			Ultra Physical Contact (UPC) - May cause damage because of reflection
+			Angled Physical Contact (APC) - One end of the connector is cut at an 8 degree angle causing the reflection to be dissipated in the cladding of the fiber.
+	
+	***
+	Distance Limitations of Ethernet cables
+	
+	Ethernet Standard	Media Type		Bandwidth Capacity	Distance Limitation
+	100BASE-TX			Cat5 or ^ UTP	100Mbps				100m
+	1000BASE-T			Cat5 or ^ UTP	1Gbps				100m
+	1000BASE-LX			MMF/SMF			1Gbps/1Gbps			550m/5km
+	1000BASE-SX			MMF				1Gbps				220m(62.5µm)/550m(50µm)
+	
+
+1000BASE-LX/LH & 1000BASE-ZX interface

@@ -1,0 +1,21 @@
+Ref: https://youtu.be/qml8J5K8nxI?si=Ep_c6bZ2Sl1gFG80
+
+DNS Record Types
+ A or Address Record IPv4
+  match a domain name with an ipv4 address
+ AAAA
+  match a domain name with IPv6
+ CNAME Canonical Name Record
+  domain to another domain 
+  //mail.yourdomain.com
+ 
+ NS Record Nameservers :21600
+  servers are where all dns records are stored
+   aerinjames.com
+ MX Records - Mail Changer 
+  for mails (SMTP)
+ TXT Record : 32600 TTL
+  text record
+ PTR Record (Pointer to a canonical Name)
+  for security
+ SRV Record Generalized Service Location

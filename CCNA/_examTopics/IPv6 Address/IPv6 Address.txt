@@ -1,0 +1,103 @@
+Ref: https://youtu.be/HCTl3UJ9FlE?si=fQCDBdwejv8a3I7e
+
+IPv6 address
+
+Network Interface(64bits)	|	Interface ID(64bits)
+	2400 : 5400 : 0A20 : 0800 	: 	0000 : 0000 : 0000 : 200e
+		//unlike IPv4 there's no subnet mask in IPv6
+
+	the first 3 bits is the ADDRESS PROFILE.
+		2 400 : 5400 : 0A20 : 0800 : 0000 : 0000 : 0000 : 200e
+	[#001# 0] 400 : 5400 : 0A20 : 0800 : 0000 : 0000 : 0000 : 200e
+	
+	//when the ADDRESS PROFILE starts with a 2 or a 3, it is a sign that it's a global unicast address.
+
+	the next 45 bits is the GLOBAL ROUTING PREFIX. This is assigned by the Internet Assigned Numbers Authority (IANA)
+	[001 #0] 400 : 5400 : 0A20# : 0800 : 0000 : 0000 : 0000 : 200e
+	//also referred to as SITE PREFIX
+	
+	the next 16 bits is the #SUBNET ID#. This is for subnetting.
+	2400 : 5400 : 0A20 : #0800# : 0000 : 0000 : 0000 : 200e
+	
+	the next 64 bits is the #INTERFACE ID#
+	2400 : 5400 : 0A20 : 0800 : #0000 : 0000 : 0000 : 200e#
+	//Can be manually assigned, randomly generated (autoconfig), or generated using the MAC Address (EUI-64).
+
+Unicast - destined to a single device : one to one
+	Global Unicast (2000::/3 - 3fff::/3) - is the range of public IP addresses of IPv6. It is globally routable 
+
+	Link-Local (FE80::/10) : is automatically assigned to all interface. Every node in the network is assigned one regardless if it has IPv6 address.
+	Not globally routable. (Local Network only)
+		//used for services such as neighbor discovery.
+		
+	Unique Local (FC00::/7 & FD00::/8) - is the range of private IP addresses of IPv6. Not globally routable.
+		//FC00::7 is a local address but IANA (Internet Assigned Number Authority) has reserved this IPv6 address. 
+		As a result, all unique local address use FD00::/8.
+		Not globally routable.
+
+		Special Address
+		Unspecified address (::) - it's the default route of IPv6
+		Loopback (::1/128) - it's the loopback of IPv4
+		
+		Compatibility Address - used to migrate IPv4 address to IPv6
+		The process done simply by mapping the values and converting to hexadecimals. 
+			ex. 192.128.20.142 to IPv6
+				//Let w.x.y.z be the IPv4 address
+			
+				0 : 0 : 0 : 0 : 0 : 0 : w.x : y.z
+				0 : 0 : 0 : 0 : 0 : 0 : 192.128 : 20.142
+				0 : 0 : 0 : 0 : 0 : 0 : [1100 0000] . [1000 0000] : [0001 0100] . [1000 1110]
+				0 : 0 : 0 : 0 : 0 : 0 : [C0] . [80] : [14] . [8E]
+				
+				0 : 0 : 0 : 0 : 0 : 0 : C080 : 148E
+				
+				*Subtopic: Transition technology for embedding IPv4 to IPv6
+				IPv6 Addressing
+				Stateful
+				 -configured using DHCP
+				 -manually configured
+				Stateless Address Autoconfiguration (SLAAC)
+				 -configured using neighbor discovery
+				 -no DHCP server required
+				 -provides only basic configuration
+				 -DHCP can provide additional configuration
+		 
+					6to4
+						Required: Interface must have IPv6 and IPv4 address
+						IPv4 address is encapsulated in IPv6 address
+						//allowing IPv6 packets to be routed over IPv4 networks
+						
+						All address that use 6to4 starts with 2002.
+							ex. 2002:w.x.y.z:Subnet ID:Interface ID:
+					
+					ISATAP (Intra Site Automatic Tunnel Addressing Protocol)
+						Required: Interface must have IPv6 and IPv4 address
+						IPv4 address is encapsulated in IPv6 address
+						
+						All address that use ISATAP starts with an INTERFACE ID of 0:5efe
+							ex. 2001 : 04fe : 248a : 15c5 : 0 : 5efe : w.x.y.z :
+				
+					TEREDO
+						Allows IPv6 clients to work with IPv4 NAT
+						
+						Address starts with 2001:0000
+							IP address contains:
+							
+							Prefix, Teredo IPv4 server, Flags, UDP Port, and Client Public IPv4 
+							2001 : 0000 : w.x.y.z : ???? : ???? : w.x.y.z
+				
+Multicast - Sends data to multiple nodes
+	Multicast address - for all nodes (FF02::1) //well-known
+		Predefined Multicast group - all routers (ff02::2)
+		Always starts with :FF??:
+	Transient
+		ff10::/12
+	Solicited-Node
+		ff02:0:0:0:0:1:ff00::/104
+
+Anycast - unicast address that has been made into anycast.
+	Indistinguishable from other Unicast addresses.
+	Data will go to the closest node
+		//Reduce Dynamic Denial of Service (DDOS)
+	
+	Nodes advertised through routing protocols.

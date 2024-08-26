@@ -1,0 +1,14 @@
+SNMP - Simple Network Management Protocol
+
+SNMP Enabled device - Agent
+	Object: Name, Uptime, Interface, Routing Table
+		Management Information Base (MIB)
+		
+		Network Management System - Get Requests, Set Request
+		
+		
+			Trap/Information Messages
+				Inform - Reliable
+				Trap - Send and Forgotten
+				
+Syslog

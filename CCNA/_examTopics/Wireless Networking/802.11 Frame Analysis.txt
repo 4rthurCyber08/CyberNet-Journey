@@ -1,0 +1,77 @@
+Ref: - https://youtu.be/ITAJb3v5VKQ?si=hro7a4H5oyUrgVxd
+Add Ref:https://youtu.be/uX1h0F6wpBY?si=-hO9bez9ju_MBUEu
+
+802.11 Frame Analysis
+
+// - annotations
+
+Bit
+Byte/Octet
+	Octet: 8bit Byte
+	
+802.11 Frame takes place in the Sub Layer of Layer 2(Data-Link), the MAC Sub Layer.
+
+	LAYER 2
+	-Header- HTCtrl_|_framebody_ -Payload- -FCS-
+	Frame Control(2:Octet) Duration/ID(2) Address 1(6) Address 2(0or6) Address 3(0or6) SeqControl(0or2) Address 4(0or6) QoSCtrl(0or2) HTCtrl(0or2) FrameBody(Var) FCS(4)
+	
+Association Process
+Probe - Request, Response
+Authentication - Request, Response
+Association - Request, Response
+
+ Management Frames
+	Beacon
+	Probe Request - Probe Response
+	Authentication
+	Association Request
+
+ Control Frames
+	Request to send
+	Clear to Send
+	Acknowledgement
+
+ Data
+	Send data packets
+
+
+--
+management:
+	Association Req/response
+	Reassociation
+	Probe Req/response
+	Timing Advert
+	Reserved 0111 - 1111
+	Beacon
+	ATIM
+	Disassociation
+	Authen/Deauthen
+	Action
+	Action No Ack
+	
+Control:
+	Trigger
+	Reserved 0000-00001
+	TACK
+	Beamforming Report Poll
+	VHT/HE NDP Announcement
+	Control Frame Extension
+	Control Wrapper
+	Block Ack Req
+	Block ACK
+	PS-Poll
+	RTS
+	CTS
+	Ack
+	CF-End
+	CF-End + CF-ACK
+Data
+	Data
+	Reserved 0001-0011
+	Null
+	Reserved 0101-0111
+	QoS Data
+Extension
+	DMG Beacon
+	S1G Beacon
+	Reserved 0010-1111

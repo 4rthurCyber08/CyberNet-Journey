@@ -1,0 +1,79 @@
+Ref: https://youtu.be/Uz-RTurph3c?si=tCAHWUeLyq_w78mm
+Add Ref: https://youtu.be/s_-OJebBiBc?si=izyZX_dH2GRXjlbO
+
+Wireless Networking
+
+Wireless Access Point (WAP) - center of the wireless network
+
+Basic Service Set (BSS) - Basic wireless network that uses one access point
+	Basic Service Area (BSA) - limited to the area within the range of the access point
+	[Laptop]	
+	[Phone]		(((WAP)))	
+	[Tablet]
+
+	//Beacon Frames - allows Access Point to continously make their presence known to every device within it's range.
+		//Basic Service Set Identifier(BSSID) - the MAC Address of the Access Point
+		//Service Set Identifier (SSID) - The name of the wireless network (ex. PLDTHOMEFIBR5.05G, SM_Wifi, hanapKaSarilimo_Wifi)
+
+Distribution System - the cabled connection where access points can connect back to the wired network.
+	//Ex. Switches with diff configured VLANs
+	
+	(((WAP)))---[fa0/1]Sw1[fa0/2]---|
+
+Extended Service Set (ESS) - uses more than one access point.
+	//In ESS, each access point can have the same SSID allowing users to roam between different access point without the need to reconnect.
+	[Laptop]	
+	[Phone]		(((WAP)))---[fa0/1]Sw1[fa0/2]---|	
+	[Tablet]						|
+									|
+	[Phone]				[Tablet]	|
+				(((WAP)))___________/
+	[Tablet]				[Laptop]
+
+
+How devices connect to each other without cables? 
+	Electromagnetic Waves
+	
+	Wireless uses 2 main frequency bands
+		2.4 GHz - longer reach, slower speed. Typically congested by most devices.
+		5 Ghz	- shorter reach but faster speed.
+		
+		These bands are then split into multiple channels to improve control and manage congestion.
+	
+		2.400GHz-1*-2-3-4-5-6*-7-8-9-10-11*-12-13-14-2.4835 GHz
+		//Upon splitting the bands into multiple channels we find out that channels 1,6, and 11 are the only ones that do not overlap, making them highly recommended as they minimize interference.
+		
+		
+		5.150GHz-36-40-44-48-52-56-60-64--100-104-108-112-116-120-124-128-132-136-140-144--149-153-157-161-165-5.825 GHz
+	
+	*Do refer to the file ;2-4GHz and 5GHz.jpg' for a better visual.
+	
+	Other Wireless Networks
+		Wireless Repeaters - repeats the signal of an access point for more distance coverage.
+		Workgroup Bridge - act as a wireless client to a wireless access point to connect wired devices to the wireless network.
+			//only if the device does not have wireless technology
+			
+			Universal workgroup bridges (uWGB) - 802.11 standard. Only allows one device to be bridged to a wireless network.
+			Workgroup Bridge (WGB) - Cisco's own version allowing multiple devices to be bridged.
+
+802.11 Frame Types (Wifi Frames)
+		Management - frames 'Manage' stations joining and leaving wireless networks.
+			-Beacons - continious announcement of an access point's existant. //Check wifi menu. All the reachable wifi in the area will continously announce their presence.
+			-Probes - probe familiar networks in hopes of getting a response. //the reciever of beacons. Phones that was previously connected to a wifi but is no longer within it's range will repeatedly probe for that wifi. 
+			-Authentication - identification process through password. //providing password to the wifi 
+			-Association - full connection. //fully connected to wifi
+		
+		Control - control the radio frequency medium and aid in delivery of other frames.
+			-Acknowledgement Frames (ACK) - simply a reply. //'I recieve a frame' says the device
+			-Block-ACK - a block of ACK. //there are timnes when there's too much ACK being sent, which is why BLOCK-ACK was created.
+			
+			-Request to Send (RTS) -  devices asking access points if they can send frames.
+			-Clear to Send (CTS) - access points responding to devices that, yes, you can send frames.
+			
+		Data - Carry higher-level protocol data. //Data frames from both Management and Control frames stop at the access point. 
+			Data frames are the ones that make it to the ethernet side of the network and out to the internet.
+			-Data - the higher-level data. packets being delivered and sent out to the internet.
+			-Quality of Services(QoS Data) - puts a priority tag on frames.
+			-Null Data - Not a data. Null //there was nowhere else to put it so they just consider it a data frame.
+		
+		//Management frames are used to mange the BSS, control frames control access to the medium, and data frames contain payloads that are the layer 3-7 information.

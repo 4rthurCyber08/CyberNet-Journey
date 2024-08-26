@@ -1,0 +1,21 @@
+First Hop Redundancy Protocol
+HSRP - Cisco Proprietary
+	Active & Standby
+	Version 1 & Version 2
+	
+	Multicast IPv4 Add 224.0.0.2
+	224.0.0.102
+	
+	Virtual MAC Add 0000.0c07.acXX
+	0000.0c9f.fXXX
+
+VRRP - Vendor
+	Master & Backup
+	
+	Multicast IPv4 Add 224.0.0.18
+	Virtual MAC Add 0000.5e00.01XX
+
+GLBP - Cisco Proprietary
+ 	AVG - Active Virtual Gateway
+	
+	
