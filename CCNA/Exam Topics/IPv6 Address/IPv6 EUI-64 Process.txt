@@ -1,0 +1,31 @@
+Ref: https://youtu.be/Wt6h1bbn6BI?si=Ra0XpTB2B0ybO2XH
+
+IPv6 EUI-64 Process
+
+	MAC Add: C601.420F.0007
+
+	Step 1: Split down the middle
+		=C601 42 | 0F 0007
+
+	Step 2: Insert FFFE in the middle
+		=C601 42| FFFE |0F 0007
+		=C601 : 42FF : FE0F : 0007
+
+	Step 3: Convert the first 8 bits to binary
+		=	C	6	| 01 : 42FF : FE0F : 0007
+		= 1100 0110 | 01 : 42FF : FE0F : 0007
+
+	Step 4: Flip the 7th bit (Turn on/off)
+		= 1100 0110 | 01 : 42FF : FE0F : 0007
+		= 1100 0100 | 01 : 42FF : FE0F : 0007
+
+	Step 5: Convert bits back to Hex
+		= 1100 0100 | 01 : 42FF : FE0F : 0007
+		= 	C	4	| 01 : 42FF : FE0F : 0007
+		= C401 : 42FF : FE0F : 0007
+		= C401 : 42FF : FE0F : 7 : /64
+
+	Step 6: Now attatch it to the /32 specified address
+		2001:DB8:0:1:C401:42FF:FE0F:7:/64
+
+	

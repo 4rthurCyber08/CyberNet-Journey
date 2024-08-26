@@ -1,0 +1,90 @@
+Ref: https://youtu.be/_3Kr3tm8c0U?si=HyL90ldO3INWNcxi
+AddRef for Terms: https://networklessons.com/cisco/ccnp-tshoot/cisco-ios-show-interface-explained
+
+Identify interface and cable issues.
+
+Collisions occurs when two devices sends packets at the same time and on she shared network segment.
+The packets collide and both devices must send packets again, which reduces network efficiency.
+	//Packets collide because two hosts sends it out at the same time.
+	//resulting in hosts needing to resend the packets reducing network efficiency.
+
+	Troubleshoot using the 'show interface' command //another command is 'show interface status'
+		##
+		Router1# show interface fa0/0
+		FastEthernet0/0 is up, line protocol is up (connected)	//Cable status
+			Hardware is Lance, address is 0002.16c4.5301 (bia 0002.16c4.5301) //MAC Address
+			
+			//Cable Satus
+			Line status				Protocol Status		Interface Status	Typical Root Cause
+			Administratively Down	Down				Disabled			The shutdown command is configured on the interface
+				-
+			Down					Down				NotConnect			No Cable; bad cable; wrong cable pinouts; speed mismatch; neighboring device is powered off, shutdown, or error disabled.
+				-
+			Up						Down				NotConnect			Not expected on LAN switch physical interfaces
+				-
+			Down					Down (err-disabled)	err-disabled		Port security has disabled the interface.
+				-
+			Up						Up					Connected			Interface is working.
+			//
+		
+			Internet address is 10.0.0.5/8
+			MTU 1500 bytes, BW 100000 Kbit, DLY 100 usec,
+				reliability 255/255, txload 1/255, rxload 1/255
+			Encapsulation ARPA, loopback not set
+			ARP type: ARPA, ARP Timeout 04:00:00,
+			Last input 00:00:08, output 00:00:05, output hang never
+			Last clearing of "show interface" counters never
+			Input queue: 0/75/0 (size/max/drops); Total output drops: 0
+			Queueing strategy: fifo
+			Output queue :0/40 (size/max)
+			5 minute input rate 0 bits/sec, 0 packets/sec
+				0 packets input, 0 bytes, 0 no buffer
+				Received 0 broadcasts, 0 runts, 0 giants, 0 throttles
+				0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored, 0 abort	//*I*
+				0 input packets with dribble condition detected
+				0 packets output, 0 bytes, 0 underruns
+				0 output errors, 0 collisions, 1 interface resets	//*O*
+				0 babbles, 0 late collision, 0 deferred
+				0 lost carrier, no carrier
+				0 output buffer failure, 0 output buffers swapped out
+				
+		##
+			
+	Errors	
+		*I* Input errors - this counter will increase when the interface recieves a frame with any kind of error.
+			//counts all errors based on incoming frames.
+		
+		*O* Output errors - similar to input error, but instead of recieving frames, it counts errors from sent packets.
+			//counts all errors based on packets sent.
+			
+			Runts - are ethernet frames that are less than 64 bytes.
+			//receiving frames that is smaller than expected
+			
+			Giants - frames that exceed the IEEE 802.3 frame size and have an incorrect FCS
+			//receiving frames that is bigger than expected
+			
+			Throttles - when the interface fails to buffer the incoming packet.
+		
+			CRC - recieved packet does not match with the expected checksum. Probably issue caused in transit.
+			
+Mismatch Duplex
+	Duplex -  can recieve and transmit data at the same time.
+	Half-Duplex - can only recieve OR transmit data.
+	
+	Duplex mismatch error
+	##
+		03:17:25: %CDP-4-DUPLEX_MISMATCH: duplex mismatch
+		discovered on FastEthernet0/23 (not half duplex). with R1
+	##
+	//configure duplex using the 'duplex {auto | half | full}' command
+	
+		mismatch on Full duplex side: High FCS Errors
+	
+		mismatch on half duplex side: High collisions, specifically late collisions
+		
+		//the result of mismatch duplex are network slowdowns.
+
+Mismatch Speed
+	If you've got a speed mismatch, it will typically bring the interface down.
+		//results 'sh int status' Down-Down-NotConnect
+		

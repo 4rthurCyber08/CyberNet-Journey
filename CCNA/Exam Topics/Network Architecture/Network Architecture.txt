@@ -1,0 +1,3 @@
+Ref for LAN Architecture: https://youtu.be/PvyEcLhmNBk?si=H5audOKM6dzge90L
+Ref 2-3 Tier Network Architecture: https://www.youtube.com/watch?v=ZmLxb8HzQX4
+More Ref for Spin-Leaf Architecture: https://youtu.be/xjc7WLBb-nI?si=YvLj82sORE9fKxAc

@@ -1,0 +1,50 @@
+Ref: https://youtu.be/D-GUXaBdl-A?si=lAjgVgZPmdjxdA4d
+Add Ref: https://youtu.be/HLziLmaYsO0?si=axd9Rc20ulLpR0I6
+
+command
+1. sh power inline
+
+
+Data Link Layer:
+	Logical Link Control (LLC) establishes paths for data on the ethernet to transmit between devices.
+	Media Access Control (MAC) uses the hardware address of a device Network Interface Card (NIC) to identify devices to show the source and data transmissions.
+
+Ethernet transmits data packets using an algorithm called Carrier Sense Multiple Access with Collision Detection (CSMA/CD)
+
+PoE Terms
+-Power Source Equipment - Devices that provide PoE
+-Powered Device - Internet of Things
+-Ethernet Cable
+
+PoE Standards
+-Cisco Inline Power: 7.7 Watts
+-IEEE 802.3af 15.4 Watts
+-IEEE 802.3at 30 Watts PoE+
+-IEEE 802.3bt 100 Watts PoE++
+
+	**
+	conf t
+	 int fa 0/4
+	  power inline ?
+		auto : automatically detect and power inline devices
+		consumption : configure the inline device consumption
+		never : never apply power inline
+		static : high priority inline power interface
+	  power inline auto max 6400
+	**
+
+Ports
+	Uplink ports
+	RJ45 copper uplink port
+
+Power Management Modes
+ - Auto: The switch automatically detects if the connected device requires power.
+  If granting power would exceed the system power budget, the switch denies power, ensures that power to the port is turned off, generates a syslog message, and updates the LEDs. 
+  
+ - Static: The switch pre-allocates power to the port (even when no powered device is connected) and guarantees that power will be available for the port. 
+   
+ - Never: The switch disables powered-device detection and never powers the PoE port even if an unpowered device is connected.
+
+
+
+

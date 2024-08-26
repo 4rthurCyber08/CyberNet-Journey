@@ -1,0 +1,60 @@
+Ref: https://youtu.be/NXCn2G7wL0s?si=imwjtd65Ndec7o_N
+Add Ref: https://youtu.be/feHpDc1cLXM?si=JYquOxJjkWLHe5pp
+Add Ref: https://youtu.be/OmhrvD5_hFQ?si=widl2-v4MTSgSOFJ
+
+Triple A Security Framework
+
+1. Authentication - to verify the user trying to access the network. //Multifactor Auth, Biometric Auth
+	//Who are you?
+	
+2. Authorization - ensures authenticated users are given the appropriate privileges and access to resources. //Network Policies, Access control policies, permissions
+	//What can you do?
+	
+3. Accounting - documenting what an authenticated user does in a network.  Resource used. //Resource used, login and logout time, data sent and recieved, etc,.
+	//What did you do?
+
+Uses a Client-Server Model
+
+AAA Security Framework:
+
+RADIUS - Remote Authentication Dial-In User Service
+	Network Access Server (NAS) - to communicate with acentral server to authenticate dial-in users.
+		-The connecting point of the user and AAA servers.
+		-Can be a remote access server for remote users.
+		-Uses a client server model
+		-Industry standard
+		-uses UDP port (1812 and 1813)
+		
+	Comprised of:
+		A protocol with a frame format that utilizes User Datagram Protocol
+		A server
+		A client
+	
+			PC A - (Internet) - [NAS] - [Radius Server: User Database & Accounting Database]
+		
+			Supplicant : a user accessing a RADIUS server
+			WAP : Radius client
+		
+		User & Pass -> Authentication Request -> Compares with user database -> authentication acknowledgement -> records is accounting database -> approval to user
+
+	RADIUS encrypts only the password in the access-request packet, from the client to the server. The remainder of the packet is unencrypted. 
+	Other information, such as username, authorized services, and accounting, can be captured by a third party.
+
+	RADIUS combines authentication and authorization. The access-accept packets sent by the RADIUS server to the client contain authorization information. 
+	This makes it difficult to decouple authentication and authorization.
+	
+	Industry standard.
+	
+TACACS+ - Terminal Access Controller Access-Control System
+	-Uses TCP port 49
+	-Cisco Proprietary
+	
+	TACACS+ uses the AAA architecture, which separates AAA. This allows separate authentication solutions that can still use TACACS+ for authorization and accounting. 
+
+	TACACS+ encrypts the entire body of the packet but leaves a standard TACACS+ header. 
+	Within the header is a field that indicates whether the body is encrypted or not.
+		//However, during normal operation, the body of the packet is fully encrypted for more secure communications.
+	
+	
+	
+DIAMATER - for Mobile

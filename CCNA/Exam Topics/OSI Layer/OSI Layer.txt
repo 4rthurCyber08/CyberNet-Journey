@@ -1,0 +1,53 @@
+https://youtu.be/eMamgWllRFY?si=csoCYTYCcfLA_nSM
+
+Network Devices
+Switch
+	-Mac-Address Table //Mac-Address Learning
+	-Layer 2 Device
+	-Full Duplex //Send and Recieve data at the same time
+	-Multiple Collision Domain
+
+Router
+//Doorway out of internal network
+	-Routes Traffic
+	-Layer 3 Device
+
+OSI (Open Source Interconnection) Model
+	//Adding and Processing Data on each layer - ENCAPSULATION
+1. Physical Layer
+	//
+		Cables (Fiber Optic, HDMI, Fast Ethernet, etc.,)
+		
+2. Data Link Layer
+	//
+		MAC Address, Switches
+		
+3. Network Layer
+	//
+		IP Address, Routers
+4. Transport Layer
+	//TCP
+		SEGMENTS, TCP, UDP, Source & Destination Port Numbers
+5. Session Layer
+	//Data becomes small to enter ports
+		DATA STREAMS 10.10.10.10 LOGICAL PORTS, TCP, NET STAT [Start and Stop Sessions]
+		
+6. Presentation
+	//Syntax Layer
+		.EXE .BAT .PS .PY JPEG GIF, Format Data, Encryption
+		
+	
+	After opening the .exe, .ps, jpeg, gif, etc.
+	|
+	v
+7. Application Layer
+	//End User Layer
+		PROGRAMS - that opens what was sent or creates what is to be sent
+		 //Messenger, VLC
+		 //SMTP (Simple Mail Transfer Protocol)
+		 -Resource Sharing,
+		 -Remote File Access, 
+		 -Remote Printer Access, 
+		 -Network Management,
+		 -Directory Services, etc,.
+
