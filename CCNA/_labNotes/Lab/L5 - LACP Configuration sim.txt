@@ -1,0 +1,37 @@
+LAB 5 - LACP Config Sim
+
+// - annotations
+
+Tasks
+Physical connectivity is implemented between the two Layer 2 switches, 
+and the network connectivity between them must be configured.
+
+1. Configure an LACP EtherChannel and number it as 44; configure it between switches SW1
+and SW2 using interfaces Ethernet0/0 and Ethernet0/1 on both sides. 
+The LACP mode must match on both ends.
+2. Configure the EtherChannel as a trunk link.
+3. Configure the trunk link with 802.1q tags.
+
+@SW1,SW2
+conf t
+int range e0/0-1				//use 'range' to configure the interface of both e0/0 and e0/1
+ channel-group 44 mode active	//channel-group 44(//assign #) mode(choose LACP modes: on, passive, or active)
+ no shut
+ exit
+
+int Port-channel 44				//interface of the created channel group 44. Use Port-channel for accessing the interface
+ switchport trunk encapsulation dot1q	//change to Qpid -(isa sa mga apat na superhero)- 802.1q
+ switchport mode trunk
+ exit
+
+
+4. Configure VLAN ‘MONITORING’ as the untagged VLAN of the EtherChannel.
+
+@SW1, SW2
+conf t
+do sh vlan
+ int Port-channel 44
+ switchport trunk native vlan 746	//change the native vlan to vlan 746 for etherchannel 44
+ //verify
+ sh int trunk
+ sh vtp status

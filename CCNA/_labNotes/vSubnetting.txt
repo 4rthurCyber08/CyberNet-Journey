@@ -1,0 +1,7 @@
+
+											\\	256 128 64 32 16 8 4 2
+128 64 32 16 8 4 2 1 //Increment Value	//Count for Host - Right to left
+
+ 0 0 0 0 0 0 0 0 . 0 0 0 0 0 0 0 0 . 0 0 0 0 0 0 0 0 . 0 0 0 0 0 0 0 0
+ 
+ 1 2 3 4 5 6 7 8		//Bits //left to right subnet				
