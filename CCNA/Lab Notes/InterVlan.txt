@@ -1,0 +1,32 @@
+Router on a Stick
+
+conf t
+int gi0/0
+no shut
+
+int gi0/0.13 //Sub int config mode
+encaps dot1q [13] //need to config sub int to a vlan
+
+int gi0/0.24
+encaps dot1q 24
+ip add  10.0.0.129 255.255.255.128
+
+switch router trunk
+
+@r1
+conf t
+int gig 0/1
+ no shut
+int gig 0/1.10
+ encaps dot1q 10 //10 as in the vlan
+ ip address //default gateway for the vlan
+int gig 0/1.20
+ encaps dot1q 20
+
+@sw1
+conf t
+int gig 0/0
+ switchport trunk encaps dot1q
+ switchport mode trunk
+
+ 

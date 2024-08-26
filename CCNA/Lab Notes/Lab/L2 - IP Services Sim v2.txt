@@ -1,0 +1,94 @@
+LAB 2 - IP Services Simulation ver 2
+
+// - annotations
+
+Tasks
+
+1. Configure dynamic one-to-one address mapping on R2 using a standard list named XLATE, which allows all traffic to translate the source address of R3 to a pool named test_pool using the 10.10.10.0/24 network for traffic sent from R3 to R1. Avoid using an NVI configuration. 
+		//turn R2 to an access-point for the traffic sent by all of R3's ports/loopback to R1
+		
+		@R2
+		conf t
+		 ip access-list standard XLATE //create access-list named, XLATE, to identify traffic from R3
+		  permit 10.2.3.3
+		  permit 192.168.3.1
+		  permit 10.1.3.11
+		  exit
+		  
+		//Since it's stated 'from R3 to R1', the port on R2 that connects to R3 is considered INSIDE, while the other port on R2 that is connected to R1 is considered OUTSIDE. 
+		//We want to Identify traffic from INSIDE, then have NAT translate it to OUTSIDE
+		 int e0/1
+		  ip nat inside
+		  exit
+		 int e0/0
+		  ip nat outside
+		  exit
+		  
+		 ip nat pool test_pool 10.10.10.1 10.10.10.254 netmask 255.255.255.0 //when NAT translates addresses from INSIDE to OUTSIDE, it uses the specified addresses in the pool for translation
+		//create a NAT pool with addresses ranging from 10.10.10.1 to 10.10.10.254
+		
+		 ip nat inside source list XLATE pool test_pool //access-list, XLATE used to identify data from inside, then translate those address using the address in the pool of test_pool
+		//identify the ip address that passess through INSIDE based on the list provided by the access-list, XLATE, then translate those addresses OUTSIDE using the given addresses from the pool, test_pool
+
+		//verify
+		@R3
+		ping 192.168.100.1
+		@R2
+		sh ip nat translations
+
+
+2. Configure R3 to dynamically receive an IP address on Ethernet0/2 from the DHCP server.
+		//R1 is already configured to be a DHCP server. Just ip add dhcp to R3's specified interface.
+		@R1
+		sh run //just to check if R1 already is a DHCP server
+		
+		@R3
+		conf t
+		 int e0/2
+		  ip add dhcp
+		  
+		//verify
+		@R3
+		sh ip int br
+
+3. Configure R1 as an NTP server and R2 as a client, not as a peer, using the IP address 10.1.2.1.
+
+		Configure R1 as NTP Server:
+		@R1
+		conf t
+		 ntp master 1 //sets R1 as the NTP Server
+		exit
+		
+		@R2
+		conf t
+		 ntp server 10.1.2.1 //Sets R2 as the NTP Client of R1
+
+		//verify
+		//Make sure to wait since it takes a while for NTP to take effect
+		@R1 & R2
+		sh ntp status
+		
+4. Configure SSH access from R1 to R3, while excluding access via other remote connection protocols using the user root and password s3cret on router R3 using RSA. 
+Verify connectivity from router R1 to R3 using a destination address assigned to interface E0/2 on R3.
+
+		@R3
+		conf t
+		 line vty 0 4
+		  transport input ssh //tell vty line to use ssh instead of telnet
+		  login local
+		  exit
+		username root password s3cret
+		//if crypto key... does not work, it means there is no domain-name
+			//just add 'ip domain-name abc.com' //choose whatever name unless specified	
+		crypto key generate rsa
+			--> 1024
+ 
+		//verify
+		@R1
+		conf t
+		 ssh -1 root 10.1.3.11 //login to 10.1.3.11 using ssh with the username netadmin
+			- Password: s3cret
+
+		//save config
+		@R1, R2, & R3
+		copy running-config startup-config

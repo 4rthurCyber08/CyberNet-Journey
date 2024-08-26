@@ -1,0 +1,55 @@
+LAB 8 - IPv4 & IPv6 Connectivity Simulation
+
+// - annotations
+
+Tasks
+Configure IPv4 and IPv6 connectivity between two routers. For IPv4, use a /28 network from the
+192.168.180.0/24 private range. For IPv6, use the first /64 subnet from the 2001:0db8:acca::/48
+subnet.
+1. Using Ethernet0/1 on routers R1 and R2, configure the next usable /28 from the
+192.168.180.0/24 range. The network 192.168.180.0/28 is unavailable.
+		From 192.168.180.0/24 - /28 is (4th, 16i)
+			 
+			Net: 				192.168.180.16 255.255.255.240 //put 16 in the 4th octet
+			First-Last Usable:  .17 - .30
+			Broadcast:			192.168.180.31
+			Next Net:			192.168.180.32 /28
+			 
+2. For the IPv4 /28 subnet, router R1 must be configured with the first usable host address.
+3. For the IPv4 /28 subnet, router R2 must be configured with the last usable host address.
+		@R1
+		conf t
+		int e0/1
+		 no shut
+		 ip add 192.168.180.17 255.255.255.240
+		 exit
+		
+		@R2
+		conf t
+		int e0/1
+		 no shut
+		 ip add 192.168.180.30 255.255.255.240
+		 exit
+		 
+4. For the IPv6 /64 subnet, configure the routers with the IP addressing provided from the
+topology.
+		@R1
+		conf t
+		int e0/1
+		 ipv6 add 2001:db8:acca::1/64
+		 exit
+		
+		@R2
+		conf t
+		int e0/1
+		 ipv6 add 2001:db8:acca::2/64
+		 exit
+		 
+5. A ping must work between the routers on the IPv4 and IPv6 address ranges.
+		//verify
+		@R1
+		ping 192.168.180.30
+		
+		@R1
+		ping ipv6 2001:db8:acca::2
+		

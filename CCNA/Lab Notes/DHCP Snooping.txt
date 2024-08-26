@@ -1,0 +1,17 @@
+Link: 	https://youtu.be/2eNsoS9Ri6w?si=ZxWswWFlGSRL80_j  
+		https://youtu.be/4yuT5KR7TRc?si=DWwF8BU7tidUjhD-
+Rogue DHCP Server (Man-in-the-middle): https://youtu.be/eWVzteyRFYo?si=YZMouAhCy3Hpo6v6
+
+// - Annotations
+
+Mitigate a problem caused by multiple DHCP server
+DHCP Snooping
+
+conf t
+ ip dhcp snooping 				//global
+ int gi 5/12
+  ip dhcp snooping trust 		//trust dhcp offers only the vlans it was config to
+  ip dhcp snooping vlan 5-8,15 	//sets the vlans it should trust for dhcp offers
+ 
+
+***

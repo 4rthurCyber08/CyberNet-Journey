@@ -1,0 +1,75 @@
+LAB 4 - OSPF Config Simulation
+
+// - annotations
+
+Tasks
+IP connectivity between the three routers is configured. OSPF adjacencies must be established.
+
+1. Configure R1 and R2 Router IDs using the interface IP addresses from the link that is shared between them.
+		
+		//use 'sh ip ospf' to obtain info such as router-id and process-id. Might be different in actual exam.
+		
+		@R1
+		conf t
+		 router ospf 1 //configure ospf 1 on this router
+		 router-id 10.10.12.1 //change router id
+
+		@R2
+		conf t
+		 router ospf 1
+		 router-id 10.10.12.2
+
+		@R1 & R2
+		clear ip ospf process
+			-Yes
+
+		//verify
+		@R1 & R2
+		sh ip ospf database
+
+2. Configure the R2 links with a max value facing R1 and R3. 
+R2 must become the DR. R1 and R3 links facing R2 must remain with the default OSPF configuration for DR election. 
+Verify the configuration after clearing the OSPF process.
+
+		@R2
+		conf t
+		 int e0/0
+		  ip ospf priority 255 //set router priority to the highest in order for R2 to become the DR
+		  exit
+		 int e0/2
+		  ip ospf priority 255
+		  exit
+		 exit
+
+		@R1, R2, & R3
+		clear ip ospf process
+			-Yes
+		
+		//verify
+		@R1, R2, & R3
+		sh ip ospf neighbor
+		//note R3 might still be a DR but can be ignored because of the next tasks
+
+
+3. Using a host wildcard mask, configure all three routers to advertise their respective Loopback1 networks.
+		@R1
+		conf t
+		 router ospf 1
+		  network 192.168.1.1 0.0.0.0 area 0 //R1 will advertise the network among ospf routers in the same area unless a Area Boundary Router is configured.
+
+		@R2
+		conf t
+		 router ospf 1
+		  network 192.168.2.2 0.0.0.0 area 0
+
+		@R3
+		conf t
+		 router ospf 1
+		  network 192.168.3.3 0.0.0.0 area 0
+
+4. Configure the link between R1 and R3 to disable their ability to add other OSPF routers.
+		@R1 & R3
+		conf t
+		 int e0/1
+		  ip ospf network point-to-point
+

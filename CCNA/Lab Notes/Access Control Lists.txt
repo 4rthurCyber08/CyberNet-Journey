@@ -1,0 +1,55 @@
+Access Control List (ACL)
+https://youtu.be/0gGhuYOh-54?si=uSlxPYWwVmNzrhWq
+
+ACL - identify traffic
+
+ACL Applied through Interface (Permit or Deny) - Packet Filter
+	Standard 	- match on Source IP (can either only permit or only deny what's in the list)
+	Extend		- match on Src IP, Dest IP, Src Port, Dest Port, Protocol
+	
+		applied per
+		 - interface: fa0/2,gi0/1, etc
+		 - direction: in or out
+		 - ip protocol: IPv4 or IPv6
+		 
+--
+
+Syntax for ACL
+	Numbered - access-list
+		Standard
+			access-list <ID#> <Action> <Source> 
+			//ID# 1-99 or 1300-1999; Action: Permit, Deny, or Remark; 
+			//Source: Ip addresses
+				//to match a subnet: <NetID> <Wildcard Mask>
+				//to match a single IP add: host <#.#.#.#>
+				//to match all IP: any
+		Extended
+			access-list <ID#> <Action> <Protocol> <Source> <Destination> 
+			//ID# 100-199 or 2000-2699; Action Permit, Deny, or Remark; 
+			//Protocol: ip, tcp, icmp, gre, esp, ahp, etc; 
+			//Source: Ip addresses, may specify [Port]
+				//to match a subnet: <NetID> <Wildcard Mask>
+				//to match a single IP add: host <#.#.#.#>
+				//to match all IP: any
+					[Port] : eq <#> //as in equals that port
+							 range <#start> <#end> //inclusive range
+							 Others: gt<#>port must be greater than the specified | 
+									 lt<#>port must be less than the specified | 
+									 neq<#>port must be not equal to the specified
+		 
+	implicit deny //anything isn't explicit is denied
+	first match //order matters
+	no access-list 101 permit ip 10.0.0.0 0.0.0.255 host 45.5.5.8 //deleting the access-list will delete the entire 101 entry, not just the line
+
+	Named - ip access-list
+		Standard
+			ip access-list standard <ID# or Name>
+			 [sequence#] <action> <source>
+		Extended
+			ip access-list extended <ID# or Name>
+			 [sequence#] <action> <protocol> <source> <destination>
+			
+			ip access-list resequence <#orName of list> <starting seq#> <increments> 
+			
+			An ACL applied outbound to a VLAN int filters traffic going to devices on that VLAN
+			An ACL applied inbound to a VLAN int filters traffic going From devices on that VLAN
