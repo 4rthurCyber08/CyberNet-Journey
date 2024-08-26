@@ -1,0 +1,204 @@
+Ref: https://youtu.be/s_-OJebBiBc?si=izyZX_dH2GRXjlbO
+
+Wireless Neworking Deepdive
+
+Access Point - a device that will allow a wireless device to connect to a wired network.
+
+Wireless LAN Design Considerations
+	Wireless Deployment Options
+		Autonomous Access Point: configured one-by-one
+			-Standalone, independent device
+			-Home or small office environments
+			-Controller-less deployment model
+			-Not commonly used in large enterprise networks
+	
+		Lightweight Access Points: Lightweight as in you don't have to do a lot of configurations because multiple of Lightweight AP can be configured simultaniously via Wireless LAN Controller
+			-Requires central wireless LAN controller
+			-Controller-based deployment model
+			-WLCs can be physical or virtual
+			-Controller communicates changes to the APs
+			-Control and provisioning of Wireless Access Points (CAPWAP) //an old ver Lightwight Access Point Protocol (LWAPP)
+	
+			[WLC]
+			/ | \ :CAPWAP Tunnels
+		 AP1 AP2 AP3
+		
+		Deployment
+			Cisco FlexConnect 
+				-Configure and control remote wireless network
+				-Similar to Layer 3 roaming with CAPWAP
+				
+				Central Switched //have both data and traffic be sent through CAPWAP tunnels all the way back to WLC
+				-Normal CAPWAP mode of operation
+				-Typically not recommended
+				
+				Local Switch //keep local data, local. Config for only control traffic.
+				-Map user traffic to VLAN on adjacent switch
+				-Control and management traffic still sent over CAPWAP to WLC
+
+Location Services
+	Use cases for location services:
+		-Enterprise asset tracking //make inventory jobs easier and more
+		-Location-Based advertising //send advertisement because of location detected
+			
+			Recieved Signal Strength (RSS) //Access points can locate a device regardless of association.
+			
+	Cisco Solutions:
+		-Real-time location services (RTLS)
+		-Cisco DNA Spaces //see devices superimposed on a floor plan on a building
+		-Cisco Meraki
+
+Wireless Topology
+	Ad Hoc Wireless LAN - have one wireless device talk directly to another wireless device without infratstructure.
+		[Device A] ))))) [Device B]
+
+	Infrastructure Wireless LAN - wireless device connected to an access point, an access point connected to an ethernet switch, and so on.
+		[Device A] ))))) AP -----WLC-----SW1------R1
+					
+	Mesh Wireless LAN
+		[Device A] ))))) AP ))))) AP ))))) AP ))))) [Device B]
+
+***
+Wireless Communication Theory
+	Electromagnetic - electricity and magnetism
+	Orthogenal - 90 degree relationship
+	
+	How a Dipole Antenna Radiates EM Waves |
+	
+		1/2 of the wavelength
+	+____ _____-
+		| |
+		| |
+		| |
+		| |
+		
+		*Maxwell's Light Equations
+		-Frequency
+		-Cycle
+		-Hertz - measure cycles 
+			2cycle/per second
+***
+
+Radio Frequency Range:
+	-Between 3kHz and 300GHz
+	-Wireless communication found with this range
+	-2.4GHz band = 2.4 - 2.4835 GHz
+	-5 GHz band = 5.15 - 5.85 GHz
+	-Wireless bands subdivided into channels
+	
+	Non-Overlapping 2.4GHz Channels
+		-Center Frequency //just because you chose the next channel doesn't mean you don't recieve frequency from the prev or the next.
+			5MHz Between Channels
+			Exception: 12 MHz between channel 13&14
+			Channel 14 only allowed in Japan for 802.11b
+		
+		How to get non-overlapping channels in 2.4GHz range? 
+		*Have 5 channels of Separation
+		
+	2.4GHz Channels - NON-OVERLAPPING
+	
+	|-----22MHz-----|	|-----22MHz-----|	|-----22MHz-----|-----22MHz-----|
+	|				|	|				|	|				|				|
+			1	2	3	4	5	6	7	8	9	10	11	12	13				14
+			
+	What channels to use if you have to use more than three APs?
+	-Space Out Channels
+	-Honeycomb Design
+		[6]	
+	[11]	[11]
+		[1]
+	[6]		[6]
+		[11]
+		 
+***
+
+	RF Signal Strength:
+		-measured in decibel milliwatts (dBm)
+		-transmitters range between 1 and 100 milliwatts (mW)
+		-milliwatt (mW) = 1/1000 of a watt
+	
+	mW to dBm Relationship
+		1mW = 0dBm
+		10mW = 10dBm
+		100mW = 20dBm
+		1W = 1000mW = 30dBm
+		
+		Rule of 10s and 3s:
+		*Gain of 10dBM = mW power is multiplied by 10
+		*Loss of 10dBM = mW power is divided by 10
+		*Gain of 3dBM = mW power is doubled
+		*Loss of 3dBM = mW power is halved
+		
+		Recieved Signal Strength Indicator (RSSI)
+
+	Signal to Noise Ration (SNR)
+		Difference in decibels between signal and background noise
+	
+		Signal to Noise Ratio = 25dBm = (Signal-NoiseFloor)
+		Signal = -65
+		Noise Floor = -90
+	
+Access Point Modes
+	-Autonomous Access Point
+	//if set up identically. Doesn't scale well
+	-Lightweight Accesspoint
+
+LAP Special Purpose Modes
+	Local Mode
+		-Default operating mode of LAPs
+		-Provides SSID and wireless network access
+		-When not actively in use, LAP will preform background operations //ex. search for rogue APs
+	
+	Monitor Mode
+		-LAP only performs background operations //prevent rogue APs, scan location services, etc,.
+		-no network access provided to users
+		-monitoring of IDS events, rogue APs, location-based services, etc.
+
+	FlexConnect Mode
+		-allows for management of LAPs at a remote location
+		-Controlled over a WAN location
+	
+	Sniffer Mode
+		-LAP acts as a packet capture device
+		-Dedicated to receiving wireless traffic
+		-traffic forwarded to a traffic analyzer system for analysis
+	
+	Rogue Detector Mode:
+		-LAP is dedicated to discover rogue access point
+	
+	Bridge Mode
+		-LAP  is used to bridge together separate sites as a mesh network
+		-point-to-point
+		-point-to-multipoint
+	
+	Flex+Bridge Mode
+		-Flex + Bridge
+	
+	SE-Connect Mode
+		-LAP operates as a spectrum analyzer device
+		-Gathers information about all channels
+		-Forwards information to a spectrum analysis tool
+		-Cisco Spectrum Expert
+
+Antenna types
+	Raiation Pattern
+		X.Y.Z Axis
+	
+	1. Omnidirectional Antenna
+		-Coverage area in all directions
+		-ex dipole, APs
+	
+	2. Directional Antenna
+		-Designed to propagate in a specific direction
+		-ex Patch antenna, Yagi Antenna, Dish Antenna
+
+Access Point Operation
+Boot State - 
+WLC Discovery State - 
+CAPWAP Tunnel State - 
+WLC Join State - 
+Image download State - 
+Config Download State - 
+Run state
+
+1:11:11

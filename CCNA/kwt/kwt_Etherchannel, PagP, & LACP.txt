@@ -1,0 +1,145 @@
+Ref: https://youtu.be/ujEcPJrulTw?si=7_vgA-E-z3lxj5OX - Etherchannel
+Ref: https://youtu.be/KnA_D_3twgA?si=tBvkXosXda8Pe2WR - VLAN Trunking
+Ref: https://youtu.be/JMm9_jL0s9k?si=0GyL0lZk24nvMwOC - Brief Port Negotiations Review
+
+commands
+1. sh int trunk
+2. sh etherchannel
+3. sh etherchannel load-balance
+4. sh etherchannel detail
+5. sh vtp status
+
+LACP (Link Aggregation Control Protocol)
+
+Etherchannel - simultaniously create traffic between two links. //max 8 links
+	- resulting in higher bandwidth
+	- provides load-balancing
+	- creates redundant links // backups
+	
+PAgP: Port Aggregation Protocol
+	Modes:
+		On - no negotiation or any protocol. Will simply turn on etherchannel
+		
+			On + On = enabled
+			
+		Desirable - will send PagP packets to its peer and expects to recieve PagP packets back.
+		Auto - will wait for its peer to send PagP packets, and PagP packets ONLY.
+		
+			Desirable + Desirable = enabled
+			Desirable + Auto = enabled
+			Auto + Auto = disabled
+	
+LACP: Link Aggregation Control Protocol //can have additional 8 links to existing max links
+	Modes:
+		On - no negotiation or any protocol. Will simply turn on etherchannel
+		
+			On + On = enabled
+			
+		Active - will send LACP packets to its peer and expects to recieve LACP packets back.
+		Passive - will wait for its peer to send LACP packets, and LACP packets ONLY.
+		
+			Active + Active = enabled
+			Active + Passive = enabled
+			Passive + Passive = disabled
+			
+		PC1 - - - - SW A ==0== SW B - - - - Servers (ser:mac, A:1, B:5, C:D)
+
+******
+int range fa 0/1-2 //type on both ports, that's all it does
+speed auto		//
+duplex auto		//best to have all links have similar settings
+mdix auto		//media dependent interface crossover
+channel-group 1 mode ?//LAG = on, PAgP = Auto or Desirable, LACP = Active or Passive
+channel-group 1 mode desirable
+
+switchport trunk encapsulation dot1q //Yung mga superhero -Qpid, Darna,Wonderwoman,Superman
+switchport mode trunk	//be a trunk
+
+conf t
+port-channel load-balance src-dst-ip
+end
+
+conf t
+int range fa 0/1-2
+ no switchport		//turn port to a routed port
+						//switchport(Virtual,VLANS, SVI, Virtually switch the port of a device through different vlans) vs routed port(physical port, if it's only going into one thing ex. the Port in CoreBaba that uses a FOC to connect to EDGE Router)
+int port-channel 1
+no switchport
+ ip add 10.1.1.1 255.255.255.252
+int lo0
+ ip add 1.1.1.1 255.255.255.255
+ exit
+ip routing
+router ospf 1
+ network 0.0.0.0 255.255.255.255 area 0
+ exit
+channel-group 1 mode on 
+
+****
+
+Trunk - send traffic for multiple VLANS for a single connection.
+	-Add four tag Bytes to each frame except the Native VLAN.
+	-Native VLAN, the one VLAN on a Dot1q trunk that is untagged.
+	
+	Ethernet Frame
+	
+	[Preamble 7 bytes][Start-of-frame Delimiter 1 byte] [Destination Address 6 bytes][Source Address 6 bytes][Type 2 byte] [Data 46-1500 bytes] [FCS 4 bytes]
+	
+		Preamble & SoF Delimiter - announces the arrival of a Ethernet Frame
+		Type - IPv4 or IPv6
+		
+		IEEE802.1q Frame
+		
+		[Source Add][Tag type 2 bytes] [Tag control Identifier 2 bytes][Type]
+	
+	Dynamic Trunking Protocol (DTP)
+		Mode: Access, Trunk, Dynamic desirable & Dynamic auto
+			Access - only an access port
+			Trunk - only a trunk port
+			dynamic desirable - Negotiations: sends DTP frames
+			dynamic auto - Passively waits for the remote switch to initiate trunk negotiations.
+***
+	@Sw1
+	conf t
+	 sh int fa 1/0/13 switchport
+	 sh int trunk
+	 
+	 vlan 100
+	  name NATIVE
+	  exit
+	 
+	 int fa 1/0/13
+	  switchport trunk encaps dot1q
+	  switchport trunk native vlan 100
+	  switchport mode dynamic desirable
+	  exit
+	 int fa 1/0/13
+	  switchport trunk allowed vlan 1,100
+	  no switchport trunk allowed vlan 1,100
+	  switchport trunk allowed vlan except 200
+***
+
+VTP - VLAN Trunking Protocol - a protocol that will send VTP advertisement accross multiple VTP configured switches.
+		//tldr. configuring a vlan on one switch will affect others.
+
+VTP Modes
+ 1. Server - create/delete/modify VLANs
+		-configuration revision number //sets a priority on what it will listen to
+ 2. Client - cannot create/delete/modify VLANs
+ 3. Transparent - doesn't participate VTP but can still forward advert
+ 4. Primary Server - only available in VTP ver 3, the only switch that can create/delete/modify VLANs
+ 
+ //prevent problems from adding new switch
+	switch to transparent mode then change config rev #
+
+******
+conf t
+vtp mode server 	//set vtp mode to server
+vtp domain CCNA 	//change vtp domain name - needs to match with other wanted switches ine the network
+vtp password s3cret //vtp password - needs to match
+vtp pruning			//switch on pruning - send broadcast only on members of that specific vlan
+vtp version 2		
+
+@for client mode
+vtp mode client
+
