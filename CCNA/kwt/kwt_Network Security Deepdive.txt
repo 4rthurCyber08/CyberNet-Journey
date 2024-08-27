@@ -1,0 +1,404 @@
+Ref: https://youtu.be/tNWj5uGIqok?si=JaI6Z9FoAYRYDkTl
+Network Security
+	"War starts with cyber before it moves to air or land" -Jeetu Patel
+
+A. Security Goals
+	-Confidentiality
+	-Integrity
+	-Availability
+
+	Confidentiality
+		-Security Appliances
+			Firewall
+				Software/Host-Based Firewall
+				Packet Filtering Firewall 
+				Stateful Firewall
+				Next Generation Firewall
+				
+				Demilitarized Zone (DMZ) - an area that is separated by a firewall in order to prevent more than one device from being compromised in an event of being attacked.
+				
+				Intrusion Detection System (IDS) Sensor - monitors traffic that flows through the network to alert against malicious traffic.
+					//monitors traffic and REACT to potential malicious traffic.
+					
+					[Host] - [SW1] - [SW2] - [R1] - [Firewall] - (INTERNET)
+								|
+							 [IDS]
+					
+				Intrusion Prevention System (IPS) Sensor - Similar to IDS but instead of allowing and merely copying an instance of the traffic that comes through the network, it instead monitors the traffic first before it can go through the network in order to PREVENT malicious attacks.
+					//monitors traffic and PREVENTS potential malicious traffic.
+					[Host] - [SW1] - [SW2] - [R1] - [IPS] - [Firewall] - (INTERNET)
+					
+					-Compares traffic to a signature database
+					-Can be an appliance or host-based
+				
+		-Access Control Lists (ACLs)
+			Can permit and deny traffic
+			Can be applied inbound or outbound
+			Can be used to match traffic
+			Processed top-down
+			Implicit deny any statement at the bottom
+			Numbered or Named
+			Standard or Extended
+			
+		-Encryption
+			Symmetric - a shared key between devices
+				Data Encryption Standard (DES) - 56bit key length
+				3DES
+				Advanced Encryption Standard(AES)
+				
+				Issues - doesn't scale very well
+			
+			Asymmetric - different key, a public key pair
+				RSA (Rivest-Shamir-Adleman)
+				
+				//Uses a Public and Private Key
+				//Anything encrypted with the public key can only be dcrypted by the private key
+				
+		
+			Encryption Interaction Process
+				1. Client wants a secure connection
+				2. Server sends digital certificate
+				3. Client authenticates the certificate with the CA's public key
+				4. Client generates a string and encrypts it with amazon.com's public key
+				5. Client sends encrypted string to amazon.com
+				6. Amazon.com decrypts the string with its private key.
+		
+	Integrity
+		Hashing Algorithms	//fingerprint
+			Message-Digest Algorithm(MD5) -128bit hash digest
+			Secure Hash Algorithm(SHA-1) -
+						
+			Hash Based Message Authentication Code(HMAC) //prevent malicious interception and rehashing of file exchange.
+				
+	Availability
+		The five nines
+		99.999 Percent Uptime
+		5 minutes of downtime per year.
+
+B. Common Network Attacks and Defenses
+	Denial of Service(DoS) and Distributed Denial of Service(DDoS)
+		DoS - an attack where a targeted system is overwhelmed with a large volume of requests, causing it to consume its resources to the point where it can't perform its intended function.
+		DDoS
+			Command and Control Server - Botnet of infected devices 
+		
+		DoS & DDoS defenses
+			-Cisco Router's TCP intercept feature
+				Cisco Router Intercept Mode: Router responds to SYN messages on behalf of the internal server
+				Cisco Router Watch Mode: Router monitors SYN messages sent to an interval server and resets the TCP connection if it takes too long to establish.
+				
+			-IPS Sensor 
+			-Detection Algorithms
+				Cisco Talos
+				
+				*Zero-Day Attack Detection
+					New DoS and DDoS attacks might be harder to detect
+					Zero-day threats can be detected through behavioral-based and machine learning algorithms
+				
+			-Overprovision Bandwidth
+			-Have an Incident Response(IR) Plan
+				Defines what constitute an 'incident', and prescribes a detailed list of steps to be taken.
+			
+			-Proactively Perform Penetration Tests
+					An authorized attack on a system
+		
+		On-Path (a.k.a. Man-in-the-Middle) Attack
+			An attack where a malicious user somehow injects themselves inside a communication flow between two systems, enabling them to intercept or manipulate that flow's traffic.
+		
+			MAC-Flooding - Attacker floods switch with so many fake MAC addresses.
+				**
+				SW1
+				config t
+				 int gi 0/1
+				  switchport mode access
+				  switchport port-security
+				  switchport port-security maximum 4
+				  switchport port-security mac-address xxxx.xxxx.xxxx
+				  switchport port-security sticky
+				  switchport port-security violation restrict
+				  sh port-security
+				  exit
+				 
+				 ip dhcp snooping
+				 ip dhcp snooping vlan 1
+				 int gi 0/1
+				  ip dhcp snooping trust
+				  exit
+				 sh ip dhcp snooping
+				 
+				 ip arp inspection vlan 1
+				 int gi 0/1
+				  ip arp inspection trust
+				  end
+				 **
+	  
+			ARP Poisoning - Unsolicited ARP replies are sent to the victim, claiming the attacker's MAC address is the MAC address of the victim's default gateway
+			Rogue DHCP - the attacker's DHCP server tells the victim that the IP address of the default gateway is the attacker's IP address.
+			 
+			Other attacks
+				VLAN Hopping Attack
+					Switch Spoofing - attacker pretends to be an ethernet switch and sets up a trunk carrying traffic for all VLANs
+			
+				Social Engineering Attacks
+					Phishing - When an attacker leverages e-mail, webpages, etc, that appear legitimate in an attempt to obtain confidential information.
+					Tailgating 
+					Shoulder Surfing
+				Common Network Attacks
+					Malware
+					DNS Poisoning
+					Ransomware - Malware that prevents users from accessing their data unless they pay a ransom
+					Spoofing
+					Deauthentication
+					Brute Force
+			
+	Mitigating Network Threats
+		Signature Management - Keep attack signatures current on devices, such as IDS and IPS sensor
+		Device Hardening - Apply a collection of best practice procedures to secure network devices.
+		Change the Native VLAN
+		Define Privileged User accounts
+		
+		File integrity monitoring - Use a service that can detect any change made to define files.
+		Role Separation - Assign different sets of permissions to different categories of users, in an attempt to prevent conflict of interest.
+		Honeypot Deployment - Configure a host that does not contain sensitive information and don't properly secure it.
+		Penetration Testing
+		Network Segmentation - Logically subdivide a network into different segments using VLANs and DMZs 
+		
+		Defense in Depth - the use of multiple layers of security
+		Zero Trust - New user will be given 0 permissions
+		Least Privilege - Users are given minimum set of privileges that still allows them to perform their work.
+
+AAA security Framework
+	Authentication - Who are you?
+		Multifactor Authentication
+			What a user KNOWS
+			What a user HAS
+			What a user IS
+			where a user is
+			What a user DOES
+		IEEE 802.X
+		Network Access Control
+			Posture Validatnion - Operating Sys, Anti-virus version, etc,.
+		MAC Filtering
+		Captive Portal
+		
+	Authorization - What are you allowed to do?
+	Accounting - What did you do?
+	
+		TACACS+						RADIUS
+		TCP							UDP
+		Separates AAA Functions		Combines AAA Functions
+		Two-Way Challenge Response	One-Way Challenge Response
+		Encrypts Entire Packet		Only Encrypts Password
+
+	Kerberos
+		1. Authenticate
+			Key Distribution Center(KDC)
+				Contains the authentication server and ticket granting server
+		2. Granted ticket
+		3. File server
+
+	Single Sign-On
+		LDAP Server - IP Phones
+		e-Mail Server
+		File Server
+
+C. Wireless Security
+	Wireless Threats
+		Discovery
+			Passive Footprinting - Listening to and analyzing existing wireless traffic.
+			Active Footprinting - Sending probes to APs and recieving replies
+		
+		MAC Address Spoofing - 'Spoof' - fake
+		Rogue Access Point
+		Evil Twin - have a rogue AP with an identical SSID with the victim's AP
+		Deauthentication
+		Session Hijacking
+		Misconfigured or Weakly Configured AP
+		
+	Bluetooth Hacking
+		2.4 GHz band
+		Creates a Personal Area Network (PAN)
+		Examples of Devices:
+			-Mobile Phones
+			-Earbuds
+			-Gaming Consoles
+			-Speakers
+		
+		Bluejacking - adding onto the victims device
+		
+		Bluesnarfing - gathering information
+		
+		BlueSmacking - DDoS
+		
+		BlueBugging - eavesdrop
+		
+		BluePrinting - scanning
+
+	Wireless Security Goals
+		Authentication
+		Encryption
+		
+		Wired Equivalent Privacy (WEP)
+			IEEE 802.11
+			Uses the RC4 encryption algorithm - 24bit
+			Became trivial to crack
+		
+		Primary Modes of Key Distribution
+			Pre-Shared Key (PSK) Personal Mode: Matching Keys are preconfigured on wireless clients and access points
+			Enterprise Mode: Clients provide authentication credentials to an authentication server (ex. RADIUS server) which permits or denies network access and provides a session key to use during a permitted session.
+				//802.1x - supplicant : authenticator relay - auth server
+		
+		Enhanced Encryption Protocols
+			Temporal Key Integrity Protocol (TKIP) - 48bits
+				Improved encryption compared to WEP
+			
+			Advanced Encryption Standard (AES)
+				Significantly stronger than TKIP but requires more resources.
+		
+		Enhanced Security Protocol
+		
+			Wi-Fi Protected Access (WPA)
+				Used TKIP for enhanced protection
+				Upgraded security in software without requiring new hardware
+				Uses a longer initialization vector (IV) 48 bits, up from 24 bits
+			
+			Wi-Fi Protected Access II (WPA2)
+				Became a requirement for WiFi cert in 2006
+				Required support for AES //doesn't mean the client has to use it.
+				Required more processing power
+				Susceptible to the KRACK vulnerability
+			
+			Wi-Fi Protected Access III (WPA3)
+				Uses 192-bit AES encryption for (Enterprise Mode) - 192bit key //Only AES no TKIP
+				Uses Protected Management Frames (PMFs) to prevent other devices from spoofing management frames.
+				Prevents eavesdropping on public networks.
+				Replaces WiFi Protected Setup (WPS) with Device Provisioning Protocol (DPP) - assisted setup
+		
+		Isolating Wireless Access
+			Guest Network Isolation - Isolate guest network from the rest of the network
+			Wireless Client Isolation - provide security and privacy to guest clients among each other
+		
+		MAC Filtering - only allows a device on a network with a predefined MAC Address
+		
+		Geofencing - Can use a mobile device's GPS location to permit or deny network access, or to grant or revoke specific network permissions
+		Captive Portal - redirects uses to a network page to provide information for authentication.
+	
+	Wireless Hacking Countermeasures
+		Don't use default SSIDs, username, or passwords
+		Consider disabling SSID broadcasts
+		Scan wireless network for rogue access points
+		Look for the vendor codes of access point manufacturers in the MAC address table
+		
+		Wireless IPS
+			Aruba's RFProtect Wireless IPS
+			Cisco Adaptive Wireless IPS
+		
+D. Session Hijacking
+	Active: Actively takes over a session.
+	Passive: Monitor the session.
+		Established Session
+		
+	Application Level Hijacking
+		Hijack an application protocol HTTPS
+		
+	Network Layer Hijacking
+		Intercepting packets
+	
+	Session Predicting
+	Session Replay
+	Session Fixation
+	
+E. Physical Security
+	Physical Security: Detection
+		Motion detection
+		Video Surveillance
+		Tamper detection
+		Asset Tracking Tags
+	
+	Physical Security: Prevention
+		Badges
+		Biometrics
+		Training
+		Access Control Vestibule (Mantrap)
+		Locks
+	
+	Equipment Disposal
+		Erase Configuration/Factory Reset
+		Sanitize Device //Break it. or DBN
+
+F. IoT Cloud Security
+	Many IoT devices were not designed with security in mind
+	IoT devices might use weak encryption to preserve processing power
+	Software updates might no be automatically deployed.
+
+	ex. IoT hack
+		'Mirai Malware Example' October 2016
+		Botnet of infected IoT devices
+		
+			*Don't leave things with default password
+	
+	Cloud Security
+		Transport Layer Security (TLS)
+		VPN
+		Private WAN Cloud
+		
+		Cloud Access Security Broker (CASB)
+			Software that sits between users and cloud resources
+			Monitors traffic to enforce security policies
+			Generate alerts if any malicious activity is detected.
+	
+E. Virtual Private Networks (VPNs)
+	Remote Access
+		Allows client to connect to any internet connection
+		Securely use a web browser (Clientless Cisco SSL VPN)
+		Install a software client (Cisco AnyConnect SSL VPN)
+		
+		SSL - Secure Sockets Layer - an encryption based internet security protocol. 
+	
+	Site-to-Site VPNs 
+		Can use common broadband technologies.
+		Transparent to the client devices
+			can use routers or dedicated VPN concentrators
+			
+		VPN Protocols
+			Generic Routing Encapsulation (Generic Routing Encapsulation)
+				GRE Tunnel
+					Can Encapsulate nearly any data type //unicast, multicast, broadcase
+					Does not provide security //no security
+					
+				IP Security (IPsec)
+					Provides
+						Confidentiality: Encryption
+						Integrity: Hashing
+						Authentication: PSKs or Digital Signatures
+						Anti-replay: Applies Serial Numbers to Packets
+						
+						Can encapsulate unicast IP packets //Not Flexible
+					
+					Two modes: 
+						Transport Mode: Uses Packet's original header //less overhead, less security
+						Tunnel Mode: Encapsulate entire packet //secure but more overhead
+						
+					Authentication and Encryption
+						Authentication Header (AH) - Authentticates and entire IP packet, including the outer IP header, but does not do encryption
+						Encapsulating Security Payload (ESP) - Can authenticate an IP packet (not including the IP header) and can perform encryption.
+					
+					Setup Steps
+						Step #1: Establish an Internet Key Exchange (IKE) Phase 1 tunnel (Internet Security Associaition and Key Management Protocol ISAKMP tunnel) //setup a tunnel just to negotiate parameters for IKE Phase 2 tunnel
+						Step #2: Establish IKE Phase 2 tunnel //actual IPsec tunnel
+						
+				GRE + IPsec Tunnel
+					Encapsulate data (multicast, unicast, etc) on a GRE Packet (Unicast)
+					Then, protect the GRE packet through IPSec tunnel.
+				
+	
+				https://kwtrain.com/vpn-demos - GRE over IPSec demos
+	
+		Dynamic Multipoint Virtual Private Network (DMVPN)
+			//'Dynamically Bring it up when needed then take it down when we don't need it'
+		
+			Multipoint GRE (mGRE): Allows a single interface to support multiple GRE tunnels
+			Next Hop Resolution Protocol (NHRP)
+				help private IPs from different branch connect to another branch
+				
+					NHRP Query
+					
