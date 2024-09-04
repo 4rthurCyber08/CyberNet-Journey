@@ -1,0 +1,81 @@
+APIs
+Application Programming Interface - a software interface that allows two apps to communicate with each other.
+NBI Typically uses REST APIs
+NETCONF and RESTCONF are popular SBI APIs
+
+CRUD - Create Read Update Delete
+
+-Create : new variables and set their values
+-Read : are used to retrieve the value of a variable
+-Update : used to change the value of a variable
+-Delete : used to delete variables
+
+HTTP uses verbs that map to these CRUD operations.
+REST APIs 
+
+Create 	=	POST
+Read 	= 	GET
+Update 	=	PUT,PATCH
+Delete 	=	DELETE
+
+https:	//sandboxdnac.cisco.com 	/dna/intent/api
+scheme	authority					path
+
+Http Request
+IP Header	TCP Header	Verb	URI		Add Header		Data
+
+Response
+1xx Request - request was recieved, continuing process
+	informational
+	102 processing
+	
+2xx Successful - request was successfully recieved, understood, and accepted
+	200 ok request succeded
+	201 created succeded and a new resource was created
+	
+3xx redirection - further action is needed
+	301 moved permanently, the requested resource has been moved and the server indicates its new location
+
+4xx client error
+	403 unauthorized, means the client must authenticate to get a response
+	404 no found
+	
+5xx server error
+	500 internal server error
+	
+
+REST - Representational State Transfer.
+-Uniform Interface
+	All resources should be accessible through a common approach such as HTTP GET and similarly modified using a consistent approach.
+	
+-Client-Server
+	client and server are independent of one another
+	when the client and server application changes, the interface between them must not break.
+	
+-Stateless
+	Each API exchange is a separate event, independent of all past exchanges between server and client
+-Cacheable or non
+	must support caching of data.
+	
+-Layered System
+	REST allows you to use a layered system architecture where you deploy the APIs on server A, and store data on server B and authenticate requests in Server C, for example. A client cannot ordinarily tell whether it is connected directly to the end server or an intermediary along the way.
+	
+-Code-on -Demand
+	you and many others can access codes on demand
+	Most of the time, you will be sending the static representations of resources in the form of XML or JSON. But when you need to, you are free to return executable code to support a part of your application, e.g., clients may call your API to get a UI widget rendering code. It is permitted
+	
+
+https://restfulapi.net/rest-architectural-constraints/
+
+--
+	SDN Architecture
+		Application Layer - contains scripts/applications that tell the SDN controller what network behaviors are desired
+		Control Layer - contains the SDN controller that receives and process instructions from application
+		Infrastructure Layer - contains the network devices that are responsible for forwarding messages across the network.
+	
+	SD Access - solution for automating campus LANs
+	Underlay - underlying physical network of devices and connections which provide IP connectivity
+		//Running Dynamic Protocols IS IS
+	Overlay - is the virtual network built on top of the physical underlay of the network
+		//VXLan Tunnel
+	fabric is the combination of the overlay and underlay

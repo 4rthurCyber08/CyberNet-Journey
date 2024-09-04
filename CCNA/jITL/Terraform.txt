@@ -1,0 +1,100 @@
+Ref: https://youtu.be/l5k1ai_GBDE?si=6AbvlKe13Uh_8J36
+Ref2: https://www.youtube.com/watch?v=HmxkYNv1ksg
+Ref3: https://spacelift.io/blog/what-are-terraform-modules-and-how-do-they-work
+Ref4: https://developer.hashicorp.com/terraform/intro
+Ref5: https://www.youtube.com/watch?v=h970ZBgKINg
+
+Terraform - Tool for infrastructure provisioning
+-Open Source
+-Declarative - define what end result you want
+	not imperative
+
+
+Provisioning Infrastructure - devOPS	//TERRAFORM
+	Prepare infrastructure:
+	1. Private Network space
+	2. ec2 server instances - employee server instances
+	3. install docker and other tools
+
+Deploy Applications - software engineer
+
+
+Ansible vs Terraform
+	-Both Infrastructure as a Code
+	-Both automate: provisioning, configuring, and managing the infrastructure
+
+	Terraform - Mainly infrastructure provisioning tool
+		-relatively new
+		-more advanced in orchestration
+		-creating, changing, replicate infrastructure
+	
+	Ansible - Mainly a configuration tool
+		-configure that infrastructure
+		-deploy apps
+		-install/update software
+		-more mature
+	
+How does Terraform Work?
+Terraform Architecture
+
+	[User]
+	*TF-Config - what to create?
+	
+	*State - current state
+	|
+	v
+	*Core ||what needs to be done? created/update/destroyed
+		Terraform connects to providers: AZURE Iaas, Kubernetes PaaS, Fastly SaaS
+	
+		Terraform Module - a collection of standard configuration files in a dedicated directory.
+			//A set of input variables : published to a central registry
+			root module the base of your operation
+				consists pf all the resources defined in the .tf files in a Terraform configuration, meaning all Terraform config have their own root module.
+				
+			child module - resources inside the root module
+			Local Module - is a module that wasn't published in any registry and when it is sourced, it is using the path to that particular module.
+			
+		Resource - describes a piece of infrastructure that is going to be created, whereas a module is a collection of resources that are used together to achieve areusable use case.
+			
+	A Code | Plan | Apply B
+	
+	Declarative*
+		Define the end state.
+		
+		Refresh - query the infrastructure provider
+		plan - create an execution plan
+		apply - execute the plan
+		destroy - destroy the resources/infrastructure
+		
+		
+		Plan - Version Control System (Github) - Terraform Enterprise Application,
+	manage State file center 
+	
+		-State
+		-Sequential
+		-Variables (Encrypted)
+	
+	HashiCorp Configuration Language (HCL) .hcl .tf
+		cariable "image_id" {
+			type = string
+		}
+	-open source tool kit
+	Default - a default value which then makes the variable optional
+		
+	Type - this argument specifies what value types are accepted for the variable
+	Description - This specifies the input variable's documentation
+	Validation - a block to define validation rules, usually in addition to type constraints
+	Sensitive - limits terraform UI output when the variable is used in configuration.
+	
+***
+Adopt
+Compose infrastructure as code in a Terraform file using HCL to provision resources from any infrastructure provider
+
+Build
+Infrastructure automation workflows to compose, collaborate, reuse, and provision infrastructure as code across IT operations and teams of developers.
+
+Standardize
+Establish guardrails for security, compliance, and cost management through role-based access controls, policy enforcement, and audit.
+
+Scale
+Extend workflow automation to all teams in the organization with self-service infrastructure as code and integrate with VCS, ITSM, and CI/CD.

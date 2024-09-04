@@ -1,0 +1,35 @@
+Dynamic Routing Protocols
+Ref: https://youtu.be/xSTgb8JLkvs?si=HwIan97Gca7F1YFJ
+
+IGP - Interior Gateway Protocol
+	Algorithm Type
+		-Distance Vector
+			-RIP
+			-EIGRP
+
+	Link State	
+			-OSPF
+			-IS-IS
+EGP - Exterior Gateway Protocol
+	Algorithm Type
+		-EGP - share routes between AS
+			-Path Vector 
+		-BGP 
+		
+Metric Calc
+	RIP : Hop Count
+	EIGRP : Bandwidth, Delay, Reliability, Load, MTU 
+	OSPF : Cost
+	IS-IS : Cost
+	
+-uses multicast packets
+
+***
+Open Shortest Path First
+-Uses the shortest path first algorithm
+
+OSPFv1 - old
+OSPFv2 - used for IPv4
+OSPFv3 - used for IPv6/IPv4 but v2 is pref for ipv4
+
+HSRPv1 - 0c07. HSRPv2 - 0c9f. VRRP - 5e00. GLBP - 7.b400

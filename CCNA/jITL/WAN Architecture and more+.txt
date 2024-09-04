@@ -1,0 +1,260 @@
+Ref: https://youtu.be/BW3fQgdf4-w?si=jOmQd5tcX4LTqS6f
+WAN Archietcture
+
+WAN over dedicated connection (Leased Line)
+Hub and Spoke Topology
+
+				Data Center
+					|
+	OfficeA		ServiceProvider		OfficeC
+					|
+				OfficeB		
+
+Leased Lines uses Serial Connections encaps PPP or HDLC
+	Standards
+	NA				EU
+	T1 - 1544	E1 - 2048
+	T2 - 6312	E2 - 8448
+	T3 - 44736	E3 - 34368
+
+Multi Protocol Label Switching
+	Label - VPNs
+	CE Router = Customer Edge Router
+	PE Router = Provider Edge Router	//label on L2 header
+	P Router = P Router
+	
+	Layer 3 MPLS VPN - CE & PE Routers peer using OSPF
+	Layer 2 MPLS VPN - No Peering look like it's directy connected
+	
+	Fiber, wIRELESS 4G/5g, Serial, CATV (Cable TV)
+
+Digital Subscriber Line - Provides internet connectivity via Phone Lines
+	Modem
+	
+CableTV - Provides internet connectivity via Cable Lines
+	Modem 
+
+Redundant Internet Connections
+	Single Homed = 1 Service Provider 1 connection
+	Dual Homed = 1 service provider 2 connections
+	Multihomed = 2 service provider 1 connection
+	Dual Multihomed = 2 serviced Provider 2 connections
+
+Internet VPNs
+	Site-to-Site VPNs using IPsec
+	Remote-access VPNs using TLS
+	
+	CDMVPN - Cisco Dynamic Multipoint VPN - auto config Mesh for IPsec
+--
+Virtualization
+	Server
+		Apps
+		OS
+		Hardware Components
+		
+	Type 1 Hypervisor (VMware ESXi) - VMM(Virtual Machine Monitor) - metal
+	Type 2 Hypervisor (VMware Workstation) Hosted Hypervisor -- runs as a program
+		//Personal use
+	
+	VMWare - 
+	partitioning - divide system resources
+	Isolation - isolate through diff VM
+	Encapsulation - save the entire state of a virtual machine to files. move and copy
+	 Hardware Independence - migrate vitrual machine to any physical server
+		
+		Reduce Cost
+		Less work to set up
+		Downtime Reduced
+
+---
+Cloud
+Traditional Data Center
+	On-premises
+	Colocation - Rent a space for your infrastructure
+
+http://csrc.nist.gov/publications/detail/sp/800-145/final
+	Cloud Computing
+		Five essential Characteristics
+			On-Demand	self service - able to use the service freely
+			Bread Network Access - can be accessed through diff mediums - responsive
+			Resource Pooling - request are made through allocation from a shared pool of resources.
+			Rapid Elasticity - expansion of necessary resources.
+			Measured Service - metered use.
+			
+		Three Service Models
+			SaaS - user uses application (Microsoft Office 365)
+			PaaS - a platform to create apps - that still uses the cloud infrastructure of the provider (Google App Engine)
+			IaaS - provision processing, storage, networks, and othe fundamental computing resources. Google Compute Engine 
+			
+			
+		Four Deployment Models
+			Private - exclusive use (business, large enterprises)
+			Community - provisioned exclusive use by a community of consumers / organizations
+			Public - 
+			Hybrid - combination of other cloud models
+		
+---
+Containers
+
+Hypervisor type 1: native/Bare-metal on top of the hardware | type 2 : hosted - run on top of os an applications
+
+Containers : container Engine
+	Contianer Orchestrator - software to automate the deployment, management, scaling etc,. of container.
+		//ex. Kubernetes, Docker Swarm
+
+---
+Wireless
+Wireless Networks
+CSMA/CA - Carrier Sense Multiple Access with Collision Avoidance
+Wireless Signal Coverage
+	-Signal Absorption, wireless signal passes through a material turning to heat, weakening the original signal
+			Reflection, when a signal bouncess off of a metal resulting in a weak signal.
+			Refraction, when a wave is bent when entering a medium where the signal travels at a different speed.
+			Diffraction, happens when a wave encounters an obstacle and travels around it.
+			Scattering, happens when a material causes a signal to scatter in all directions
+			
+	2.4 GHz
+	5 GHz
+	
+	802.11	2.4GHz	2Mbps
+	802.11b	2.4		11
+	.11a	5		54
+	.11g	2.4		54
+	.11n	2.4/5	600		Wi-Fi 4
+	.11ac	5		6.93	Wi-Fi 5
+	.11ax	2.4/5/6	4*802.11ac	Wi-Fi 6
+	
+	.11b, .11g, .11n, .11ax  = 2.4
+	.11a, .11n, .11ac, .11ax	= 5
+	
+	
+	Independent Service Set
+		//connects client directly no ap needed
+	Basic Service Set - is a kind of infrastructure Service Set
+		//clients connect via AP
+	Extended Service Set - a group of BSS
+	Mesh Basic Service Set - used when it's difficult to run an ethernet connection to every AP
+		Root access point- AP connected to the wired network
+		Mesh AP
+
+	AP Modes
+		-Repeater Mode - repeates the signal - for extending the signal range
+		-WorkGroup Bridge -  for clients tha do not support wireless
+		-Outdoor Bridge - connect networks over long distances 
+
+802.11 Frame
+Frame Control - Duration - Add1 Add2 Add3 Sc Add4 Qosc HTc FB FCS
+
+Autonomous AP
+	-self contained that don't rely on a WLC
+	-Can be configured via CLI, telnet/SSH, or HTTP/HTTPS web gui
+
+Lightweight AP
+	-functions can be split with a WLC
+	-centralize management using a WLC
+	-authorization through digital certificate between AP & WLC
+	
+CAPWAP
+
+
+Lightwieght AP Modes
+(Default) Local - AP offers a BSS for clients to associate with.
+FlexConnect - Local + allows the AP to locally switch traffic between the wired and wireless networks if the tunnels to the WLC go down.
+Sniffer - does not offer BSS/ not gonna wifi. Dedicated to CAPTURE 802.11 frames and send them to a device running
+Monitor - dedicated to receive 802.11 frames to detect rogue devices. Can send de-auth messages to disassociate the rogue device
+Rogue Detector - correlates info from WLC to listen to ARP messages to identify messages from rogue APs
+SE-Connect (Spectrum Expert Connect) -  RF spectrum analysis on all channels
+Bridge/Mesh Mode - like outdoor bridge mode of AP
+Flex + Bridge - allows AP forward traffic with bridge
+
+***
+Cloud-Based APs
+	-Cisco Meraki
+		//regular traffic is not sent to the cloud
+		only management traffic is sent to the cloud
+
+Deployment of WLC
+	Unified - a hardware appliance in a central location of the network. - 6kAP support
+	Cloud-Based - The WLC is a VM running on a server, usually in a private cloud in a data center. - 3k AP support
+	Embedded - WLC integrated within a switch - 200AP
+	Mobility express - WLC is integrated within an AP  - 100AP
+
+
+***
+Wireless Security
+Authentication - verify identity of a user or devices
+	Methods
+		Open Auth - clients sends an auth request and the AP accepts it.
+		Wired Equivalent Privacy - RC4 algo
+		
+		EAP Extensible Auth Protocol
+			LEAP, EAP-FAST, PEAP, EAP-TLS
+			
+			802.1x limit access until they authenticate
+				Supplicant - device
+				Authenticator - device that provides access to the network
+				Authentication Server - the device that receives client credentials and permits/denies access.
+					RADIUS Server/ TACACS+
+			
+			Lightweight EAP
+				-req username and password
+				-mutual authentication
+				<-> challenge phrase
+			
+			EAP-Fast
+				PAC - Protected Access Credential
+				TLS Tunnel
+				Auth
+			
+			Protected EAP
+				Uses Digital Cert
+				
+			EAP TLS
+				Req a cert on the AS and on every single client
+			
+Encryption
+	WEP 24bits
+	TKIP 48bis
+		WPA
+	CCMP
+		AES Advanced Encryption Standard
+		CBC-MAC - MIC
+		WPA2
+	GCMP - WPA3
+		AES
+		GMAC - MIC to ensure integrity
+		WPA3
+		
+Wifi Protected Access
+	WPA
+		TKIP
+		802.1x auth Enterprise mode or PSK Personal mode
+		
+	WPA2
+		CCMP provides encryption / MIC
+		802.1x
+		
+	WPA3
+		GCMP provides encryption/MIC
+		802.1x
+		WPA3
+			PMF (Protec 802.11)
+			SAE (Simult Auth of Equals)
+			Forward Secrecy - prevents data from being decrypted after it has been transmitted.
+	
+	auth modes
+		personal mode : A preshared Key
+		Enterprised Mode : uses 802.1x
+		
+	--
+	CCNA PSK 
+		Internal
+		ACII - 8to63 char length
+		HEX 64 characters
+*** --
+JSON
+
+{} object
+[] array
+key:value
+

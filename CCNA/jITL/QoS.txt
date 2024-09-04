@@ -1,0 +1,69 @@
+Ref: https://youtu.be/H6FKJMiiL6E?si=UNY3Jy99KlWSlr3D
+
+QoS
+
+Bandwidth - capacity of the link
+Delay - how long it takes to go from host to destination or back. //one-way/two-way delay
+Jitter - each packets arrive at diff times
+Loss - loss of packets
+
+Standards
+Delay 150ms
+Jitter 30ms
+Loss 1%
+
+Queuing
+First in First Out - Best Effort
+	-packets gets drop when the queue is full
+		//termed tail drop - 
+		TCP Global syncronization
+		 -sliding window - rate in which traffic is sent
+
+	*To prevent TCP Global Synch
+		Random Early Detection (RED)
+			Keep the rate of traffic even.
+	
+		Weighted Random Early Detection (WRED)
+			
+QoS
+Classification
+	Classify which traffic recieves priority
+	 -ACL
+	 -NBAR (Network Based Application Recognition) //Deep Packet Inspection
+	 -Layer 2 & 3 Headers
+	 
+	 -PCP Priority Code Point - 802.1q
+		IEEE 802.1p
+			3 bits = 8 possible values
+				0 best effort - regular traffic - no priority
+				3 Critical App //IP Phone initial - but uses 5
+				4 video 
+				5 voice
+	 -DSCP 
+		Default Forwarding - best effort
+		Expedited Forwarding - for voice - low loss, latency/jitter
+		Class Forwarding
+		Assure Forwarding - drop precedence
+			000 00 0
+			001 01 0 
+			AF11
+			
+			=dscp 10
+		
+		Voice - EF
+		Interac Vid - AF4X
+		Stream - AF3X
+		High Prior - AF2X
+		Best Eff - DF
+		
+	Weighted Round-Robin
+	Cyclically output data from each queue
+	
+	Class Based Weighted Fair Queueing  - well known scheduler
+		LLQ (Low Latency Queing) - designates one or more queues as strict priority - the scheduler will always take the next packet from that queue until its empty.
+			-best for voice/video to reduce delay/jitter
+		
+	Traffic Shaping and Policing
+		Shaping buffers traffic in a queue
+		Policing drops traffic if traffic rate goes over the configured rate
+		

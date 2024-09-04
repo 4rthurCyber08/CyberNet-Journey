@@ -1,0 +1,331 @@
+Day_1: https://youtu.be/H8W9oMNSuwo?si=Ngz0mQe5WRWKb9PE
+
+Nodes - devices that forms a network network (router, switches, firewall, server, client, etc,.)
+	Clients - a device that accesses a service made available by a server.
+	Server - a device that provides functions and services for clients.
+
+	Switches
+	-have many network interfaces/ports for end hosts to connect to.
+	-provide connectivity to hosts within the same LAN.
+	-do not provide connectivity between LANs/over ther internet.
+		//ex. Catalyst 9200 & Catalyst 3650 - Cisco's enterprise grade switches
+	
+	Routers
+	-have fewer network interfaces than switches.
+	-used to provide connectivity between LANS
+	-user to send data over the internet
+		//ex. ISR 1000, ISR 900, & ISR 4000
+	
+	Firewalls (Network)
+	-monitor and control network traffic based on configured rules.
+	-can be placed inside the network, or outside the network.
+	-next-gen firewalls when they include modern and advanced capabilities.
+	
+	//ex. ASA(Adaptive Security Applicance) 5500-X & Firepower 2100
+	
+		Host-based firewalls
+		-software applications that filter traffic entering and exiting a host machine, like a PC.
+
+--
+Day_2: https://youtu.be/ieTH5lVhNaY?si=kcD2zJLJGzb6SyHU
+
+RJ-45 (Registered Jack)
+
+Ethernet - is a collection of network protocol/standards.
+	Speed is measured in bits per second(Kbps,Mbps, etc)
+		1 Kb = 1 000 bits
+		1 Mb = 1 000 000 bits
+		1 Gb = 1 000 000 000 bits
+		1 Tb = 1 000 000 000 000 bits
+		
+	Ethernet Standards (Cabling)
+		Defined in the IEEE 802.3 standard in 1983
+			IEEE(Institute of Electrical and Electronics Engineers)
+		
+			Copper
+			
+			Speed	Name			IEEE Standard	Informal Name	Maximum Length
+			10Mbps	Ethernet		802.3i			10BASE-T		100m
+			100Mbps	Fast Ethernet	802.3u			100BASE-T		100m
+			1Gbps	Gig Ethernet	802.3ab			1000BASE-T		100m
+			10Gbps	10 Gig Ethernet	802.3an			10GBASE-T		100m
+	
+		UTP (Unshielded Twisted Pair) Cables	//Electrical signal over copperwire
+			Protects against EMI(Electromagnetic Interference)
+			
+				10BASE-T & 100BASE-T = 2 pairs(4 wires)
+					For PC/Routers	PINS
+					Transmit (Tx)	1- - -1 (Rx) Recieve	For Switch
+									2- - -2
+					Recieve	 (Rx)	3- = -3 (Tx) Transmit	For Full Duplex
+									4-
+									5-
+									6- = -6
+									7-
+									8-
+					
+					Straight-Through Cable - used to connect different device
+					
+					Crossover Cable - used to connect same device so that the pins on the cable will be able to transmit and recieve data properly.
+					Recieve (Rx)	1-\	 /-1
+									2-\	 /-2
+									3-/  \-3
+									4-
+									5-
+									6-/  \-6
+									7-
+									8-
+					Device		Tx	Rx
+					Router		1&2	3&6
+					Firewall	1&2	3&6
+					PC			1&2	3&6
+					Switch		3&6	1&2
+							
+					*Auto MDI-X - ports will switch the transmit pins and recieve pins based on the cable used to make cabling easier.
+				
+				1000BASE-T & 10GBASE-T = 4 pairs(8 wires)
+					1&2
+					3&6
+					4&5
+					7&8
+					
+					Each pair is bidirectional //they're not limited to transmitting only or recieving only.
+		
+		Fiber-Optic
+			SFP(Small Form-Factor Pluggable) Transceiver
+				Parts of a FOC
+				-fiberglass core
+				2-cladding that reflects lights
+				3-a protective buffer
+				4-outer jacket of the cable
+				
+			Single-Mode
+			Multimode
+				Core diameter is wider than single-mode.
+				allows longer cables than UTP but shorter cables than single-mode.
+				Cheaper than single-mode because of LED based transmitter
+			
+				Informal Name	IEEE Standard	Speed	Cable-type		MaxLength
+				1000BASE-LX		802.3z			1Gbps	Multi/Single	550m MM, 5km SM
+				10GBASE-SR		802.3ae			10Gbps	Multi			400m
+				10GBASE-LR		802.3ae			10Gbps	Single			10km
+				10GBASE-ER		802.3ae			10Gbps	Single			30km 
+		
+				LX - Long Wavelength
+				SR - Short Range
+				LR - Long Range
+				ER - extra long reach
+				
+--
+Day_3: https://youtu.be/t-ai8JzhHuY?si=_YdhqOIIG8RRusFf
+Networking Protocol
+	Protocol - a set of logical rules defining how network devices and software should work
+		Open System Interconnection Model
+		
+		7. Application Layer - interacts with software applications. NOT Applications
+			ex. HTTP & HTTPS are Layer 7 protocols (https://www.cisco.com)
+		
+			-Identifying communication partners
+			-Synchronizing Communication
+				*Encapsulation - *DeEncapsulation
+		
+		6. Presentation Layer - Data in the application layer is in application format
+			-needs to be translated to a different format to be sent over the network
+			-encryption of data as it is sent and decryption of data as it is recieved.
+			ex. .exe .jpg .yml .xml
+		
+		5. Session Layer - Controls dialogues (sessions) between communication hosts.
+			
+		4. Transport Layer - segments and reassembles data for communication between end hosts.
+			Breaks large pieces of data into smaller segments which can be more easily sent over the network and are less likely to cause transmission problems if errors occur.
+			Provide host-to-host communication.
+		
+			|
+			v
+			Data + L4 Header : called a segment //a segment of the data with a L4 header each.
+		
+		3. Network Layer - provides connectivity between end hosts on different networks.
+			 Provides logical addressing IP addresses.
+			 Provides path selection between source and destination.
+			 
+			 Routers operate at Layer 3
+		
+			|
+			v
+			Data + L4 Header + L3 Header : packet //adds source and destination IP address
+		
+		2. Data Link Layer - Provides note-to-node connectivity and data transfer. ex PC to switch to router etc,.
+			Defines how data is formatted for transmission over a physical medium. ex. copper UTP cables.
+			Uses layer 2 addressing (MAC Address)
+		
+			|
+			v
+			L2 Trailer + Data + L4 Header + L3 Header + L2 Header : Frame //
+		
+		1. Physical Layer - physical characteristics of the medium used to transfer data between devices.
+			Voltage, maximum transmission distances, etc,.
+			
+			
+			//Data, Segment, Packet, Frame, Bit - Protocol Data Units.
+		
+		
+	TCP/IP Suite
+		Conceptual model and set of communications protocols used in the internet and other networks.
+		Known as TCP/IP
+		
+		4. Application [L7,L6,L5]
+		
+		3. Transport [L4]
+		
+		2. Internet [L3]
+		
+		1. Link [L2,L1]
+		
+--
+Day_6: https://youtu.be/5q1pqdmdPjo?si=MFRYlLeNL4jWc5-x
+Ethernet Frame
+	Eth Header	|	Packet	| Eth Trailer(FCS)
+		|
+		v
+	Preamble | SFD | Destination | Source | Type | --Data|L4Header|L3header-- | FCS
+	
+	7 bytes		1		6			6		2		4	
+
+	MAC Address on the MAC Table are only present for 5 mins
+	
+	ARP Request - Broadcast
+	ARP Reply - Unicast
+	
+	Ping
+		-ICMP Echo Request
+		-ICMP Echo Reply
+	
+--
+Day_9: https://youtu.be/cCqluocfQe0?si=6BA1MCVqBZ_M8gOw
+Interface speed and duplex
+Router interfaces are in the admin shut down state by default
+While Switches will be up by default when connected.
+
+CSMA/CD - Carrier Sense Multiple Access with Collision Detection
+	
+	Giant Error larger than the maximum frame size (1518 bytes)
+	
+	64 minimum - 1518 max
+	
+--
+Day_10: https://youtu.be/aQB22y4liXA?si=bTONP8HFhwkrrYi-
+IPv4 Header
+	4 4 6 2 16 16 3 13 8 8   32
+	Version : 4 bits
+		Identifies the version of IP used
+		IPv4 = 4 (0100)
+		IPv6 = 6 (0110)
+	
+	Internet Header Length (IHL) Length : 4 bits
+		Final field of the IPv4 header.
+		specifies the length of the header in 4-byte increment.
+			Min Value 5 = 5x4 20bytes
+			Max value 15 = 15x4 60bytes
+	
+	Differentiated Services Code Point (DSCP) : 6 bits
+		Used for QoS
+		Used to prioritize delay-sensitive data (streaming voice, video, etc,.)
+	
+	Excplicit Congestion Notification : 2 bits
+		Provides end-to-end notif for network congestion without dropping packets.
+		Optional
+		
+	Total Length Field : 16 bits
+		Indicates the total length of the packet 
+		Measured in bytes
+		Min value 20 bytes
+		Max Value 65 535
+	
+	Identification field : 16 bits
+		If a packet is fragmented due to being too large, this field is used to identify which packet the fragment belongs to.
+		Packets are fragmented if larger than the MTU
+		MTU is usually 15000 bytes
+		Fragments are reassebled by the recieving host.
+	
+	Flags Field : 3 bits
+	Used to control/identify fragments
+		Bit 0: is reserved always set to 0
+		Bit 1: don't fragment, used to indicate a packet that should  not be fragmented.
+		Bit 2: More fragments, set to 1 if there are more fragments in the packet, set to 0 for the last fragment.
+	
+	Fragment offset field : 13 bits
+		used to indicate the position of the fragment within the original, unfragmented IP packet.
+		Allows fragmented packets to be reassemled even if the fragments arrive out of order.
+	
+	Time to live field : 8 bits
+		used to prevent infinite loops.
+		recommended value = 64
+	
+	Protocol Field : 8 bits
+	
+	Header Checksum
+	
+	Source & Destination : 32 bits each
+		the IPv4 source and destination of the packet
+
+--
+Day 17: https://youtu.be/Jl9OOzNaBDU?si=hXbMOrObeyPiW4Qk
+VLANs
+
+Access Ports - manage traffic for one VLAN
+Trunk Ports - manage traffic to for one or more VLAN
+
+	VLAN Tagging - switches will tag frames that they send over a trunk link, allowing the recieving switch to know which VLAN the frame belongs to.
+		//Untagged Port = Access Port
+		//Tagged Port = trunk port
+		
+			VLAN Tags
+				ISL (Inter-Switch Link) and IEEE 802.1q/dot1q
+				-ISL is an oldd Cisco Proprietary protocol created before IEEE 802.1Q
+				-802.1Q industry standard.
+				
+				Eth Header | Packet | Eth Trailer
+				
+				Preamble|SFD|Destination|Source|	802.1Q	|Type
+				
+				802.1Q - 4 bytes
+					Tag Protocol Identifier (TPID)
+					Tag Control Information (TCI)
+					
+					TPID (16bits) | TCI / PCP|DEI | VID
+					
+					TPID - 16 bits, 0x8100, indicates the frame is tagged with 802.1Q
+					
+					PCP (Priority Code-Point) - 3 bits, for class of Service
+					
+					DEI (Drop Eligible Indicator) - 1 bit length, indicate frames that can be dropped if network is congested.
+					
+					VID (VLAN ID) - 12 bits - Identifies the VLAN it belongs to.
+						//2^12 = 4096 total VLANs range of 0-4095, 0 & 4095 are reserved.
+						
+					
+					VLAN Ranges (1-4094) is divided into two sections
+						Normal VLANs: 1-1005
+						Extended VLANs: 1006-4094
+				
+				Native VLAN
+					-ISL does not have this feature
+					-Switches does not add an 802.1q tag to frames in the native VLAN
+					-when a switch recieves an untagged frame on a trunk port, it assumes the frame belongs to the native VLAN
+					*Preferrably Match native VLANs
+			
+			int g0/0.20
+				encaps dot1q 10
+				ip add
+					
+Day 18: https://youtu.be/OkPB028l2eE?si=CaseWDMI0ErMGW_M
+Native VLAN on a Router
+	option
+		int g0/0.10
+			encaps dot1q 10 native
+	 
+Multilayer Switch
+	no switchport - turn a layer 2 switchport to a layer 3 routerport
+	
+	SVI Switch Virtual Interface
+	 

@@ -1,0 +1,70 @@
+Well-Known 0 - 1023
+Registered 1024 - 49151
+Ephemeral/dynamic/private - 49152 - 65535
+
+[50000 : TCP(20)] <=> [TCP(20) : 50000]
+
+TCP
+	-Connection Oriented :connection establishment //three-way handshake
+	-reliable communication : data acknowledgement
+	-sequencing : data arangement //sequence order of data
+	-flow control : increase/decrease data being sent
+	
+	TCP Header
+	
+	Source Port | Destination Port Field
+	
+	Sequence No. | Acknowledgement No. 
+	
+	Flag Bits : ACK | SYN | FIN
+		-establish and terminate connections
+		
+		Establish Connection
+			SYN CHRONIZATION
+			SYN - ACK NOWLEDGEMENT
+			ACK -
+			
+		Connection Termination
+			FIN 
+			ACK
+			FIN
+			ACK
+	Window Size
+		-flow control // adjust the rate data is sent
+		
+
+	FTP 20
+	FTP 21
+	SSH 22
+	TELNET 23
+	SMTP 25
+	HTTP 80
+	POP3 110
+	HTTPS 443
+	
+	UDP
+	DHCP SERVER 67
+	DHCP CLIENT 68
+	TFTP 69
+	SNMP AGENT 161
+	SNMO MANAGER 162
+	SYSLOG 514
+	
+	TCP&UDP
+	DNS 53
+	
+
+--Multicast Address
+All nodes/hosts		1
+All routers			2
+All OSPF Routers	5
+All OSPF DRs/BDRs	6
+All RIP Routers		9
+All EIGRP Routers	10
+
+Interface Locall FF01// node local - Won't leave the inter face
+Link Local FF02 - remains in the local subnet
+Site Local FF05 - can be forwarded by routers - 
+Organization-local FF08 - wider scope, an entire company/org
+Global FF0E - no boundaries. possible to route over the internet
+

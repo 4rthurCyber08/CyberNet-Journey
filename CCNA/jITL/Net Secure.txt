@@ -1,0 +1,80 @@
+Ref: https://youtu.be/VvFuieyTTSw?si=oFWJOWAewYeylccc
+
+Security Fundamentals
+
+CIA Triad
+Confidentiality
+Integrity - data should be correct and authentic. data should not be tampered with
+Availability - systems should be operational and accessible to authorized users.
+
+Vulnerability - potential weakness can compromise CIA system
+Exploit - something that can potentially be used to exploit the vulnerability.
+Threat - the potential of a vulnerability to be exploited.
+Mitigation - protect against threats.
+
+No system is perfectly secure
+
+Common Attacks
+	Denial-of-Service attacks - threatens the availability of a system.
+		-TCP SYN Flood
+			the attacker sends countless TCP SYN message to the target
+			attacker never replies with the final ACK
+			Attacker continues sending SYN Messages
+			Target is no longer able to make legitimate TCP connections
+		
+		Distributed Denial-of-Service Attack
+			infect PCs with Malware - infected computers is called a botnet.
+
+	Spoofing Attacks
+		-DHCP Exhaution
+			-spoof MAC address sent to FLOOD dhcp Discover Messages.
+			-DHCP Pool then gets full and no more IP can be distributed.
+	
+	Reflection/Amplification attacks
+		Attcker sends traffic to a reflector // Src xxxx Des 69 | Src 69 Des xxxx //Just like how servers reply to clients
+			Reflector ex. DNS Server, NTP Server
+			
+			Causes A denial of Service
+	
+	Man in the Middle
+		Attacker eavesdrop on a connection
+		
+		ARP Spoofing/ARP Poisoning
+		
+		Compromises the Confidentiality and Integrity
+	
+	Reconnaissance attacks
+		nslookup
+	
+	Malware
+		Virus affectting software. Corrupting/modifying
+		Worms standalone malware tha is able to spead on thier own without user interaction. Can congest networks or cause harm to devices.
+	
+	Trojan Horses
+		Harmful software disguised as legit software.
+	
+Social Engineering Attacks
+	Phishing - fraud emails
+	Vishing - Voice Phishing
+	Smishing - SMS Phishing
+	
+	Watering Hole - attackers compromises sites that the target victim freqently visits.
+	
+	Tailgating
+	
+
+Multifactor Auth
+	Somthing you know - PIN
+	Something you have - press a notif on your Phone
+	Something you are - face scan, biometrics
+	
+	Digital Certificates
+
+Security Program Elements
+	User Awareness
+	User Training - training session
+	Physical Access Control - limit access 
+	
+
+Port Security---
+
