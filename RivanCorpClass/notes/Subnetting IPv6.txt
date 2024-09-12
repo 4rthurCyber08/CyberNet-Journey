@@ -1,0 +1,81 @@
+IPv6 Subnetting
+
+
+2001:db8:ac10:face::/64 and 400 users
+
+Convert: 
+	Convert 400 users to bits
+	
+	1024	512		256		128		64		32		16		8		4		2		1	=exponent
+	0		0		0		0		0		0		0		0		0		0		0	
+	11		10		9		8		7		6		5		4		3		2		1	= number of bit/s
+	
+	400 is between the value of 256 and 512 therefore it is 9 bits
+	400 = 9 bits
+	
+Add:
+	/64 + 9 bits = /73 the new slash
+	
+Ichamba:
+	
+	2001 : 0db8 : ac10 : face : 0000 : 0000 : 0000 : 0000
+	
+	Every single digit in IPv6 are hexadecimals, which means a single digit contains four bits.
+	For example, the hexadecimal 2 from 2001:0db8:
+		if we were to breakdown hexadecimal 2 it will look like this:
+			
+			2		=hexadecimal
+			0 0 0 0	=bits
+			8 4 2 1	=bit exponent
+	
+	Locate /73 within the IPv6 address
+	
+	0000 : 0000 : 0000 : 0000 : 0000 :
+	/16	   /32    /48    /64    /80
+	
+	/73 is inside the 5th hextet
+	
+	2001 : 0db8 : ac10 : face : 0000 0000 0 | 000 0000 :
+	
+	After locating /73, count in binary from the left of the line
+	
+	We'll be zooming in only on the 5th hextet
+	
+	: 0000 0000 0 | 000 0000 :	= :0000:
+	: 0000 0000 1 | 000 0000 :	= :0080:
+	: 0000 0001 0 | 000 0000 :	= :0100:
+	: 0000 0001 1 | 000 0000 :	= :0180:
+	: 0000 0010 0 | 000 0000 :	= :0200:
+	: 0000 0010 1 | 000 0000 :	= :0280:
+	: 0000 0011 0 | 000 0000 :	= :0300:
+	: 0000 0011 1 | 000 0000 :	= :0380:
+	
+	now that we got our subnets let's zoom out of the 5th hextet and see how it looks in full ipv6
+	
+	2001 : 0db8 : ac10 : face : 0080 : 0000 : 0000 : 0000
+	2001 : 0db8 : ac10 : face : 0100 : 0000 : 0000 : 0000 
+	2001 : 0db8 : ac10 : face : 0180 : 0000 : 0000 : 0000
+	2001 : 0db8 : ac10 : face : 0200 : 0000 : 0000 : 0000
+	2001 : 0db8 : ac10 : face : 0280 : 0000 : 0000 : 0000
+	2001 : 0db8 : ac10 : face : 0300 : 0000 : 0000 : 0000
+	2001 : 0db8 : ac10 : face : 0380 : 0000 : 0000 : 0000
+	
+	Compressed version
+	IPv6 Networks
+	2001:db8:ac10:face:80::/73
+	2001:db8:ac10:face:100::/73
+	2001:db8:ac10:face:180::/73
+	2001:db8:ac10:face:200::/73
+	2001:db8:ac10:face:280::/73
+	2001:db8:ac10:face:300::/73
+	2001:db8:ac10:face:380::/73
+	
+	Possible address
+	2001:db8:ac10:face:80::1/73
+	2001:db8:ac10:face:80::2/73
+	2001:db8:ac10:face:80::3/73
+	2001:db8:ac10:face:80::4/73
+	 
+	
+	
+	
