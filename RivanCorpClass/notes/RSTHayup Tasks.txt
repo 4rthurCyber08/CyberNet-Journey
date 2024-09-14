@@ -1,0 +1,152 @@
+rsthayuplab
+
+!remove ospf config
+@r1-r4
+conf t
+no router ospf 1
+do sh ip prot
+
+Tasks
+1. Configure A1 and A2 so that P1 and P2 belong to Vlan 10
+2. Configure 2 Default Routes for A1 and A2 to D1 and D2. *Tip: SVI
+3. Add Ip addresses to P1 and P2
+	P1: 10.2.1.101 /24
+	P2: 10.2.1.102 /24
+4. Configure redundant routes for vlan 200 and vlan 20 on p1 & p2 using d1 and d2 as their next hop
+5. Configure default routes for P1 and P2
+6. Configure EIGRP for Cisco devices d1, d2, and r4
+
+Task 1
+
+	!pcs go to vlan 10
+	!switchport access switch interfaces connected to pcs to vlan 10
+	@a1
+	conf t
+	 do sh cdp neigh
+	 int e0/0
+	  sw mo acc
+	  sw ac vlan 10
+	  exit
+
+	@a2
+	conf t
+	 do sh cdp neigh
+	 int e1/0
+	  sw mo acc
+	  sw ac vlan 10
+	 exit
+
+Task 2
+	
+	!2 default routes for A1 & A2 to D1 & D2 via Vlan 200 SVI
+	!if either a1 or a2 does not know where to go, they will default to d1 or d2's vlan 200 SVI
+	@a1
+	sh ip route
+	conf t
+	 ip route 0.0.0.0 0.0.0.0 192.168.1.129 1
+	 ip route 0.0.0.0 0.0.0.0 192.168.1.130 2
+	 exit
+	
+	@a2
+	sh ip route
+	conf t
+	 ip route 0.0.0.0 0.0.0.0 192.168.1.130 1
+	 ip route 0.0.0.0 0.0.0.0 192.168.1.129 2
+	 exit
+	
+Task 3
+
+	!Add IP addresses to pc1 and pc2
+	@p1
+	sh cdp neigh
+	conf t
+	 int e0/0
+	  no shut
+	  ip add 10.2.1.101 255.255.255.0
+	  do sh ip int br | ex una
+	  exit
+
+	@p2
+	sh cdp neigh
+	conf t
+	 int e1/0
+	  no shut
+	  ip add 10.2.1.102 255.255.255.0
+	  do sh ip int br | ex una
+	  exit
+ 
+Task 4
+	
+	!p1 and p2 belongs to vlan 10, which means they'll need routes to vlan 20, and vlan 200
+	
+		!!check the routes of d1 and d2 for the network address of vlan 20 and vlan 200
+		@d1 & d2
+		sh ip route
+	
+	@p1
+	conf t
+	 !route for vlan 20 network
+	 ip route 10.2.2.0 255.255.255.0 10.2.1.1 1
+	 ip route 10.2.2.2 255.255.255.255 10.2.1.2 2
+	 do sh ip route
+	 
+	 !route for vlan 200 network
+	 ip route 192.168.1.128 255.255.255.224 10.2.1.1 1	!!set vlan 10 of d1 as primary route for vlan 200
+	 ip route 192.168.1.130 255.255.255.255 10.2.1.2 2	!!set vlan 10 of d2 as secondary route for vlan 200
+	 do sh ip route
+	 
+	@p2
+	conf t
+	 !route for vlan 20 network
+	 ip route 10.2.2.0 255.255.255.0 10.2.1.2 1
+	 ip route 10.2.2.1 255.255.255.255 10.2.1.1 2
+	 do sh ip route
+	 
+	 !route for vlan 200 network
+	 ip route 192.168.1.128 255.255.255.224 10.2.1.2 1	!!set vlan 10 of d2 as primary route for vlan 200
+	 ip route 192.168.1.129 255.255.255.255 10.2.1.1 2	!!set vlan 10 of d1 as secondary route for vlan 200
+	 do sh ip route
+	 
+Task 5
+	@p1
+	conf t
+	 ip route 0.0.0.0 0.0.0.0 10.2.1.1
+	 exit
+	 
+	@p2
+	 ip route 0.0.0.0 0.0.0.0 10.2.1.2
+
+Task 6
+	@d1
+	sh ip route | inc C
+	conf t
+	 router eigrp 100
+	 no auto-summary
+	 network 10.1.4.4 0.0.0.3
+	 network 10.2.1.0 0.0.0.255
+	 network 10.2.2.0 0.0.0.255
+	 network 192.168.1.128 0.0.0.31
+	 exit
+	do sh ip route eigrp
+	
+	@d2
+	sh ip route | inc C
+	conf t
+	 router eigrp 100
+	 no auto-summary
+	 network 10.1.4.8 0.0.0.3
+	 network 10.2.1.0 0.0.0.255
+	 network 10.2.2.0 0.0.0.255
+	 network 192.168.1.128 0.0.0.31
+	 exit
+	do sh ip route eigrp
+	
+	@r4
+	sh ip route | inc C
+	conf t
+	 router eigrp 100
+	 no auto-summary
+	 network 10.1.4.4 0.0.0.3
+	 network 10.1.4.8 0.0.0.3
+	 exit
+
