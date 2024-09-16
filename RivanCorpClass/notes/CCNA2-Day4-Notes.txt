@@ -1,0 +1,455 @@
+Fundamentals of CyberSec
+RECON: Info Gathering
+1st
+nmap -sP 	//scan IPs of your victim
+
+***
+ex. nmap -sP 10.32.1.0 /24
+Starting Nmap 7.92 ( https://nmap.org ) at 2024-08-11 10:03 Malay Peninsula Standard Time
+Nmap scan report for 10.3.3.1
+Host is up (0.0080s latency).
+MAC Address: 04:D5:90:35:CC:E0 (Fortinet)
+Nmap scan report for 10.3.3.2
+Host is up (0.0073s latency).
+MAC Address: 9C:A2:F4:33:07:C7 (Unknown)
+Nmap scan report for 10.3.3.105
+Host is up (0.069s latency).
+MAC Address: 80:32:53:F2:9C:D9 (Intel Corporate)
+Nmap scan report for 10.3.3.107
+Host is up (0.13s latency).
+MAC Address: 26:99:C8:A5:94:0E (Unknown)
+Nmap scan report for 10.3.3.108
+Host is up (0.10s latency).
+MAC Address: 56:EC:87:D4:59:38 (Unknown)
+Nmap scan report for 10.3.3.112
+Host is up (0.054s latency).
+MAC Address: E0:D0:45:BB:9C:F7 (Unknown)
+Nmap scan report for 10.3.3.123
+Host is up (0.046s latency).
+MAC Address: E0:D0:45:BA:C8:7C (Unknown)
+Nmap scan report for 10.3.3.124
+Host is up (0.11s latency).
+MAC Address: BA:80:E5:C8:1D:38 (Unknown)
+Nmap scan report for 10.3.3.134
+Host is up (0.040s latency).
+MAC Address: 64:49:7D:E7:A8:B0 (Unknown)
+Nmap scan report for 10.3.3.138
+Host is up (0.036s latency).
+MAC Address: 3C:E9:F7:BE:5D:75 (Unknown)
+Nmap scan report for 10.3.3.140
+Host is up (0.030s latency).
+MAC Address: 3C:E9:F7:BE:6C:48 (Unknown)
+Nmap scan report for 10.3.3.141
+Host is up (0.034s latency).
+MAC Address: 3C:E9:F7:BF:B4:6D (Unknown)
+Nmap scan report for 10.3.3.145
+Host is up (0.031s latency).
+MAC Address: E0:D0:45:BA:CA:48 (Unknown)
+Nmap scan report for 10.3.3.200
+Host is up (0.013s latency).
+MAC Address: F8:0B:CB:AD:1D:4C (Cisco Systems)
+Nmap scan report for 10.3.3.146
+Host is up.
+Nmap done: 257 IP addresses (15 hosts up) scanned in 6.32 seconds
+***
+
+2nd
+nmap -v		//scan open ports
+
+***
+ex. nmap -v 10.32.1.0 /24
+Starting Nmap 7.92 ( https://nmap.org ) at 2024-08-11 10:04 Malay Peninsula Standard Time
+Initiating Ping Scan at 10:04
+Scanning 10.32.1.0 [4 ports]
+Completed Ping Scan at 10:04, 3.08s elapsed (1 total hosts)
+Nmap scan report for 10.32.1.0 [host down]
+Initiating ARP Ping Scan at 10:04
+Scanning 255 hosts [1 port/host]
+Completed ARP Ping Scan at 10:04, 3.54s elapsed (255 total hosts)
+Initiating Parallel DNS resolution of 16 hosts. at 10:04
+Completed Parallel DNS resolution of 16 hosts. at 10:04, 3.38s elapsed
+Nmap scan report for 10.3.3.0 [host down]
+Nmap scan report for 10.3.3.3 [host down]
+Nmap scan report for 10.3.3.4 [host down]
+Nmap scan report for 10.3.3.5 [host down]
+Nmap scan report for 10.3.3.6 [host down]
+...
+Initiating Parallel DNS resolution of 1 host. at 10:04
+Completed Parallel DNS resolution of 1 host. at 10:04, 0.04s elapsed
+Initiating SYN Stealth Scan at 10:04
+Scanning 16 hosts [1000 ports/host]
+Discovered open port 22/tcp on 10.3.3.1
+Discovered open port 53/tcp on 10.3.3.112
+Discovered open port 53/tcp on 10.3.3.124
+...
+Discovered open port 912/tcp on 10.3.3.141
+Discovered open port 912/tcp on 10.3.3.138
+Completed SYN Stealth Scan against 10.3.3.112 in 22.78s (15 hosts left)
+Discovered open port 912/tcp on 10.3.3.145
+Completed SYN Stealth Scan against 10.3.3.105 in 23.09s (14 hosts left)
+Completed SYN Stealth Scan against 10.3.3.123 in 23.09s (13 hosts left)
+Completed SYN Stealth Scan against 10.3.3.140 in 23.15s (12 hosts left)
+Completed SYN Stealth Scan against 10.3.3.141 in 23.15s (11 hosts left)
+Completed SYN Stealth Scan against 10.3.3.134 in 23.22s (10 hosts left)
+Completed SYN Stealth Scan against 10.3.3.138 in 23.22s (9 hosts left)
+Completed SYN Stealth Scan against 10.3.3.200 in 23.22s (8 hosts left)
+Completed SYN Stealth Scan against 10.3.3.106 in 23.59s (7 hosts left)
+Completed SYN Stealth Scan against 10.3.3.145 in 23.77s (6 hosts left)
+Completed SYN Stealth Scan against 10.3.3.2 in 23.86s (5 hosts left)
+Completed SYN Stealth Scan against 10.3.3.116 in 23.92s (4 hosts left)
+Completed SYN Stealth Scan against 10.3.3.1 in 24.13s (3 hosts left)
+Completed SYN Stealth Scan against 10.3.3.124 in 24.16s (2 hosts left)
+Completed SYN Stealth Scan against 10.3.3.108 in 24.51s (1 host left)
+Completed SYN Stealth Scan at 10:05, 25.37s elapsed (16000 total ports)
+Nmap scan report for 10.3.3.1
+Host is up (0.043s latency).
+Not shown: 996 filtered tcp ports (no-response)
+PORT    STATE  SERVICE
+22/tcp  open   ssh
+80/tcp  open   http
+113/tcp closed ident
+443/tcp open   https
+MAC Address: 04:D5:90:35:CC:E0 (Fortinet)
+
+***
+
+
+HOW TO KNOW IF YOU'RE HACKED
+
+netstat -s -p tcp
+ex. netstat -s -p tcp
+TCP Statistics for IPv4
+
+  Active Opens                        = 3157
+  Passive Opens                       = 508
+  Failed Connection Attempts          = 2383
+  Reset Connections                   = 8
+  Current Connections                 = 20
+  Segments Received                   = 117271
+  Segments Sent                       = 42317
+  Segments Retransmitted              = 0
+
+Active Connections
+
+  Proto  Local Address          Foreign Address        State
+  TCP    10.3.3.146:10737       lb-140-82-113-25-iad:https  ESTABLISHED
+  TCP    10.3.3.146:10759       82:http                ESTABLISHED
+  TCP    10.3.3.146:10816       93:https               ESTABLISHED
+  TCP    10.3.3.146:10835       82:http                ESTABLISHED
+  TCP    10.31.1.10:9954        sw:telnet              ESTABLISHED
+  TCP    10.31.1.10:9977        sw:telnet              ESTABLISHED
+  TCP    10.31.1.10:9999        ed:telnet              ESTABLISHED
+  TCP    10.31.1.10:10000       10.31.1.2:telnet       ESTABLISHED
+  TCP    100.0.0.1:17675        WIN-D8RG0PS2LM8:17778  ESTABLISHED
+  TCP    100.0.0.1:17676        WIN-D8RG0PS2LM8:17778  ESTABLISHED
+  TCP    100.0.0.1:17778        WIN-D8RG0PS2LM8:17675  ESTABLISHED
+  TCP    100.0.0.1:17778        WIN-D8RG0PS2LM8:17676  ESTABLISHED
+  TCP    127.0.0.1:4369         WIN-D8RG0PS2LM8:49705  ESTABLISHED
+  TCP    127.0.0.1:10032        WIN-D8RG0PS2LM8:10033  ESTABLISHED
+  TCP    127.0.0.1:10033        WIN-D8RG0PS2LM8:10032  ESTABLISHED
+  TCP    127.0.0.1:10034        WIN-D8RG0PS2LM8:10035  ESTABLISHED
+  TCP    127.0.0.1:10035        WIN-D8RG0PS2LM8:10034  ESTABLISHED
+  TCP    127.0.0.1:49705        WIN-D8RG0PS2LM8:4369   ESTABLISHED
+  TCP    127.0.0.1:50174        WIN-D8RG0PS2LM8:50175  ESTABLISHED
+  TCP    127.0.0.1:50175        WIN-D8RG0PS2LM8:50174  ESTABLISHED
+ ***
+ 
+STEP 2: is port 445 open? (microsoft-ds)	//enter victim's d: drive CONNECT
+net use z: \\10.k1.1.10\d$
+net use y: \\10.k1.1.10\d$
+net use x: \\10.k1.1.10\d$
+	
+	check who entered you
+		netstat -s -p tcp
+
+//DISCONNECT FROM THEIR D: DRIVE
+net use z: /delete
+net use y: /delete
+net use x: /delete
+net use t: /delete
+net use u: /delete
+***
+TIME TO PROTECT YOUR SELF //gi 3 vmnet 2
+
+//vmware vpnph
+conf t
+int gi 3
+no ip add
+ip add 192.168.102.8 255.255.255.0
+
+
+***
+ACCESSLIST
+
+LAB1 - BAWALSILA2
+conf t //old ver
+no access-list 1
+access-list 1 deny 10.12.0.0 0.0.255.255 log
+access-list 1 deny 10.22.0.0 0.0.255.255 log
+access-list 1 deny 10.32.0.0 0.0.255.255 log
+access-list 1 permit any
+int gi 0/0/1
+ip access-group 1 in
+end
+
+conf t //new ver
+no ip access-list standard BAWALSILA2
+ip access-list standard BAWALSILA2
+deny 10.12.0.0 0.0.255.255 log
+deny 10.22.0.0 0.0.255.255 log
+deny 10.32.0.0 0.0.255.255 log
+permit any
+int gi 0/0/1
+ip access-group BAWALSILA2 in
+end
+
+//log -sumbong kay splunk
+
+LAB2 - BAWALSILA22
+conf t
+no ip access-list standard BAWALSILA22
+ip access-list standard BAWALSILA22
+deny 10.12.0.0 0.0.255.255 log
+deny 10.22.0.0 0.0.255.255 log
+deny 10.32.0.0 0.0.255.255 log
+permit any
+int gi 0/0/1
+ip access-group BAWALSILA22 in
+no ip access-group BAWALSILA2 in
+end
+
+
+conf t
+no access
+
+***
+conf t
+no ip access-list STANDARD KAMILANG3
+ip access-list STANDARD KAMILANG3
+ Permit 10.12.0.0 0.0.255.255
+ deny any
+ interface gi 0/0/1
+ ip access-group KAMILANG3 in
+ end
+ 
+ 
+///CYBERSECURITY
+standard open ports //NIST
+Nmap scan report for www.dlsu.edu.ph (104.22.37.142)
+Host is up (0.0039s latency).
+Other addresses for www.dlsu.edu.ph (not scanned): 172.67.14.223 104.22.36.142 2606:4700:10::ac43:edf 2606:4700:10::6816:258e 2606:4700:10::6816:248e
+Not shown: 995 filtered tcp ports (no-response)
+PORT     STATE  SERVICE
+80/tcp   open   http
+113/tcp  closed ident
+443/tcp  open   https
+8080/tcp open   http-proxy
+8443/tcp open   https-alt
+
+
+*** NMAPING PORTS
+
+
+conf t
+dot11 ssid ccna-wifi-31
+authentication open
+authentication key-management wpa
+wpa-psk ascii C1sc0123
+guest-mode
+int dot11Radio 0
+no shut
+encryption mode ciphers tkip
+ssid ccna-wifi-31
+
+
+***give internet
+@vpnPH:
+config t
+int gi 1
+ip nat OUTSIDE
+int gi 2
+ip nat INSIDE
+int gi 3
+ip nat INSIDE
+no access-list 7
+access-list 7 permit 192.168.102.0 0.0.0.255
+access-list 7 permit 192.168.103.0 0.0.0.255
+ip nat inside source list 7 interface Gi 1 overload
+ip nat inside source static 192.168.102.69 192.168.108.69
+ip nat inside source static 192.168.103.88 192.168.108.88
+end
+
+****
+
+//give cucm cm, cm2, p1, MAKE PING EASY!!!!
+task6: How to Make CUCM intentionally hackable to Learn
+the Basics for Firewalls.
+before: nmap -v 10.m.100.8
+@Cucm:
+config t
+int fa 0/0
+ ip add 10.41.100.9 255.255.255.0 Secondary
+service finger
+service tcp-small-servers
+service udp-small-servers
+ip dns server
+ip http server
+ip http secure-server
+!Make Ping EASY
+ip host pc 10.41.1.10
+ip host cm 10.41.100.8
+ip host cm2 10.41.100.9
+ip host p1 10.41.100.103
+ip host p2 10.41.100.102
+ip host sw 10.41.1.4
+ip host ed 10.41.41.1
+ip host c6 10.41.50.6
+ip host c8 10.41.50.8
+
+//WORKING
+conf t
+no ip access-list extended POLICY5
+ip access-list extended POLICY5
+	permit icmp host pc host cm
+	permit tcp host pc host cm eq 23
+	permit tcp host pc host cm eq 22
+	permit tcp host pc host cm2 eq 80
+	permit tcp host pc host cm2 eq 53
+	permit tcp host p1 host cm eq 2000
+	permit icmp host p2 host cm
+	permit tcp host c6 host cm eq 80
+	permit icmp host c8 host cm
+int fa 0/0
+ ip access-group POLICY5 in
+ do sh ip access-list POLICY5
+end
+
+PROTOCOL HACKER VICTIM PORT
+
+//
+conf t
+no ip access-list extended POLICY6 		//remove list for safety
+ip access-list extended POLICY6			//add access list. Preferred Extended for readability
+	permit tcp host pc host cm eq 53	//'permit': permit or deny, 'tcp':data, 'pc host': hacker, 'cm':victim, 'eq 53': port, 53(dns) 
+	permit tcp host pc host cm eq 22
+	permit tcp host pc host cm2 eq 443
+	permit icmp host p1 host cm			//icmp for ping
+	permit tcp host p2 host cm eq 2000
+	permit icmp host c6 host cm 
+	permit tcp host c8 host cm eq 80
+int fa 0/0
+ no ip access-group POLICY5 in
+ no ip access-group POLICY6 in
+ do sh ip access-list POLICY6
+end
+
+//
+create file in drive (c: or d:, whichever...)
+open server manager
+	- tools
+		- internet information service
+			- WIN-ATQ...
+				- sites, create FTP Site
+
+Server manager
+Internet information service
+WIN-ATQ
+ Sites
+  -Right click, create FTP
+	-FTP site name //whichever
+	-Physical Path: Location of created file in drive //It's just the destination, Source File in drive TAMBAK DITO
+		-IP Address: 10.m.1.10
+		-NO SSL
+  
+ Use 'copy run ftp:' on desired switch/router
+	- 10.41.1.10 - address
+		- filename.txt
+ 
+
+//Secure Shell Protocol
+1. SSH
+@coreBaba
+conf t
+username admin privilege 15 secret pass
+username arthur privilege 15 secret pass
+username sakto privilege 7 secret pass
+username ojt privilege 0 secret pass
+line vty 0 14
+ login local   //to execute ssh
+ end
+
+@cmd
+telnet 10.41.1.4 through diff users
+
+//outcome - privilege 15 will auto privilege (#) upon login
+
+2. 
+conf t
+ip domain-name arthurProtocol.com
+crypto key generate rsa
+	512 -. 1024
+ip ssh version 2
+ip ssh time-out 120
+end
+
+//secureCRT SSH2 - accept and save create key - checkwireshark SSH - Folow tcp stream
+
+3. NTP: network time protocol: Windows can be an ntp via Powershell
+windows server can be an ntp: via powershell.
+
+/devs/ntp.ps1
+copy ->
+
+nmap -sU 10.41.1.10
+
+//old
+conf t
+ntp server 10.41.1.10
+end
+---------------------------
+//new
+conf t
+ntp server 10.41.1.10
+end
+sh ntp status
+sh ntp associations
+
+4. Network Address Translation //"pa hotspot"
+
+10.3.3.116 - ipNgPhone
+conf t
+ip route 0.0.0.0 0.0.0.0 200.0.0.1
+do ping 8.8.8.8
+
+4.1. accessList	2. NAT in/out	3. NAT pool + overload //magaming gagamit
+@edge
+conf t
+access-list 8 permit 10.41.0.0 0.0.255.255
+int gi 0/0/0
+ip nat inside
+int gi 0/0/1
+ip nat outside
+ip nat inside source list 8 interface gi 0/0/1 overload 
+end
+
+WIFIGAMET: tracert -d 8.8.8.8
+@PC, cmd
+route delete 0.0.0.0
+route add 0.0.0.0 mask 0.0.0.0 10.41.1.4
+ping 8.8.8.8
+tracert -d 8.8.8.8
+
+route delete 0.0.0.0
+route add 0.0.0.0 mask 0.0.0.0 10.3.3.1
+ping 8.8.8.8
+tracert -d 8.8.8.8
+
+//
+How to master IPv6:
+IPv4 - 32bits
+IPv6 - 128bits
+
+every character in an IPv6 is /4
+:Fe80:
+/16
+
