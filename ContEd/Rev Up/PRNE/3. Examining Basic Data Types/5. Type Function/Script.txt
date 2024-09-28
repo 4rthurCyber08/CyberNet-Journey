@@ -1,0 +1,16 @@
+type() Function
+
+- 01
+
+Python has several different data types. You have learned about four so far; strings, integers, floats, and Booleans and before you complete this section you will also learn about list, tuples, set, and dictionaries. One thing about Python, it’s a loosely typed language. A loosely type language means that you don’t have to define variable data types. While this behavior is great for programmers, sometimes it can cause issues. This issue happens when you are expecting a variable to be a certain data type, but it got changed, and is causing errors. To help solve these issues, Python has a built-in function called type(). The type() function returns the data type of the object that was passed to it.
+
+The image above shows three examples where the type() function is used.
+
+The first example is using the type function on the object 25_000_000. If you want to make a large number easier to read, you need to use underscores instead of commas. If you pass 25_000_000 to the type() function as shown, you see that the data type is an ‘int’ for integer.
+
+>>> type(25_000_000)
+<class 'int'>
+
+You will also see in the examples that the type for 5.5 is a ‘float’ and the type for True is ‘bool’ for Boolean.
+
+Using the type() function allows you to check a variables data type before you execute code on it or to help troubleshoot issues if you are receiving an error.

@@ -1,0 +1,14 @@
+ First Python Program
+
+This topic will look at a simple program. There is no expectation that you will completely understand, but you will get an idea of the look and feel of a basic Python program.
+
+- 01
+
+This program makes an SSH connection to a device and displays the output of a show version command. Start at the top and work your way down to understand the code.
+
+The first line, import netmiko, imports the library called netmiko. A library is a reusable chunk of code written by another programmer, which you can use in your program. Netmiko is a multivendor library that simplifies the process of creating SSH connections to different network devices.
+
+The next block of code contains the variables. A variable is a name that holds one or more values that can be used later in the code. There is a variable for the device’s IP address, username, password, device type, and port in this program.
+
+The last block of code contains the netmiko commands that create the SSH connection, run the show version command, and display the output. You will notice that the variables defined earlier are used in the first command to make the SSH connection. The more experience you gain with coding, the better your understanding and confidence in writing code to solve your organization’s problems.
+

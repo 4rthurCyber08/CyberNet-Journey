@@ -1,0 +1,14 @@
+ Integer Data Type
+
+An integer is a whole number with no decimal places. The only constraint for how long an integer can be is the amount of memory your system has.
+
+The numbers 25, -25, and 25000000 are integers, but 25.0 is not.
+
+You cannot use commas to make large numbers easier to read. Looking at the second example above if you put commas in an integer the interpreter recognizes it as a tuple. Tuples will be discussed later in the section. If you need to make a large number easier to read, use underscores. So, 25000000 can be represented as 25_000_000.
+
+You also can convert numbers with decimals, such as 4.55, or strings, such as "4.55", to an integer. This is possible because Python data types are not strongly typed. There is a built-in function called int() that converts non-int values to ints. The example shows how to use int() and the results:
+
+>>> int(4.55)
+4
+>>> int("4.55")
+4

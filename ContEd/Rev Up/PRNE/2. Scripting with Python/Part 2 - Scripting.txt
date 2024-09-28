@@ -1,0 +1,41 @@
+Scripting with Python, PEP, and Getting Help
+
+Understanding Python
+- Interpreted Language
+- Compiles code into byte code
+- Line by line execution
+- Easy to get started
+
+Running a Python Script
+Interactive Shell - python program that runs in the terminal
+Terminal - \Documents>python HelloPRNE.py
+IDE or Editor - save and manage python files
+File Manager of your System - double clicking python files
+
+Python Interactive Shell
+Read
+	>>>
+Evaluate
+Print
+Loop
+
+Editors and IDEs
+Code Editor
+	Simple text editor with syntax highlighing, code formatting and some debugging capabilities.
+
+Integrated Development Engine (IDE)
+	Software for building applications that combines common developer tools into a single graphical user interface.
+	
+Popular Code Editors
+- Visual Studio Code
+- Notepad++
+
+	//linux n mac
+- Sublime Text
+- Vim
+
+Popular IDEs
+- Visual Studio
+- Spyder
+- PyCharm
+- IDLE

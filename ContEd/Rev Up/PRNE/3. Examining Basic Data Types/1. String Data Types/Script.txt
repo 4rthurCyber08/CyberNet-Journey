@@ -1,0 +1,23 @@
+Strings are sequences of characters represented by single quotes, double quotes, or triple quotes. All the characters between the opening quote and matching closing quote are part of the string, but the quotes are not. A string can be any length in the range of empty to the maximum number of characters possible, which is limited only by your computer's memory.
+
+- 01
+
+Choosing single quotes or double quotes to represent your string is a personal preference, but PEP 8 recommends you pick a style and stick with it throughout your code. If you need to span strings over multiple lines you can use triple quotes. The triple quotes can be either triple single or triple double quotes.
+
+Watch out for quotes inside your string. You want to use a different quote to represent your string than what is used inside the string; otherwise, you will have an error. The example shows the error.
+
+>>> 'This is Bill's script.'
+    File "<stdin>", line 1
+    'This is Bill's script.'
+                          ^
+SyntaxError: invalid syntax
+
+In the example string, the open and closing quotes are single. The problem is that you also have a single quote in "Bill's," so this single quote ends your string and you will get an error. To solve this issue, use double quotes on the outside of the string.
+
+>>> "This is Bill's script."
+
+The string type in Python is called str. To determine an object’s type, Python has a built-in function known as "type." For now, know that functions are prebuilt code that you can use. The type() function allows you to determine the data type of an object.
+
+>>> type("This is Bill's script")
+<class 'str'>
+

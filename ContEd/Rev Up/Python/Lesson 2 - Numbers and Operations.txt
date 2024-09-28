@@ -1,0 +1,90 @@
+Numbers and Operations
+
+Linux/UNIX
+Installing Python
+	Useally Python is already installed
+
+Type python -V in the terminal
+	py 3.x.x you have py3
+	py 2.x.x try python3 -V
+
+If no py3, install it with the package manager
+
+Windows/Mac OSX
+Go to https://www.python.org/downloads/
+Download the latest py3
+Install it
+	*Note on windows make sure to select Add Python to PATH
+
+Interactive Interpreter
+Read-Eval-Print Loop (REPL)
+test small pieces of code or functions
+
+Two prompts: >>> and ...
+... -more code is needed
+
+Integers: 1,2,3
+Floating point numbers: 2.0, 3.14
+Booleans: True and False
+Comments: everything that follows a #
+Operators: +, *, /, **, ==, >
+Exceptions: SyntaxError
+
+Operators
+
+	unary: only one operand
+	- prefix: operator before operand
+	- postfix: operand before operator
+	binary: two operands
+	- infix: operator between operands
+
+	Mathematical: +, -< *, /, // (Floor Division = gives you integer instead of full decimal), %(calculate remainder), **
+	Comparison: ==, !=, <, >, <=, >=
+	Identity: is, is not
+		is
+			obj1 is obj2	
+				True if obj1 and obj2 refer to the same object, False otherwise
+				
+	Containment: in, not in
+		in
+			elem in seq
+				True if elem is an element of the sequence, False otherwise
+	
+	Bitwise: &, |, ~, ^, <<, >>
+		Bitwise AND	&
+		Bitwise OR	|
+		Bitwise Not	~
+		Bitwise XOR	^
+		Left Shift	<<
+		Right Shift	>>
+		
+	Boolean: and, or, not
+		not x
+			True if the operator is false
+			
+	Assignment: =, +=, -+, ...
+		
+	Highest Precedence
+		**
+		+X, -X
+		*, /, //, %
+		+, -
+		==, !=, <, <=, >, >=, in, not in, is, is not
+		not x
+		and
+		or
+	Lowest Precedence
+	
+	Change Precedence ()
+	
+	Boolean: True, False, None
+	 Short Circuit Evaluation
+	 
+	 Truthness
+		true values		false values
+		True			False, None
+		"non-zero"		"zero"
+		-10, 0.001		0, 0.0
+		non-empty		empty sequences	
+		'hello', (3,5)	'', (), [], {}
+		[1, 2, 3]

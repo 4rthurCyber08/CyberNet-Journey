@@ -1,0 +1,29 @@
+Data Set Types
+
+Sets are used to store multiple objects that are unordered and unindexed. Sets do not allow for duplicate values.
+
+- 01
+
+Sets are written with curly brackets, similar to dictionaries, but they do not include key:value pairs, just objects. Sets are also mutable, so you can add or remove objects from a set.
+
+- 02
+
+Sets are useful if you want to remove duplicate data from a list or to perform the union or intersection of two groups of data. A union is the joining of two sets, while an intersection defines what is common in the two sets.
+
+This example shows a union:
+
+>>> Router_1 = {"R1", "IOS-XE"}
+>>> Router_2 = {"R2", "IOS-XE"}
+>>> Router_1.union(Router_2)
+{"R1", "R2", "IOS-XE"}
+
+In this union example, you combine the sets Router_1 and Router_2. When you combine sets, the values of both sets will be combined, but there will be no duplicate values.
+
+The second example shows an intersection:
+
+>>> Router_1 = {"R1", "IOS-XE"}
+>>> Router_2 = {"R2", "IOS-XE"}
+>>> Router_1.intersection(Router_2)
+{'IOS-XE'}
+
+In this intersection example, you are looking for what is common in both sets. The intersection method can be useful if you have a list of devices with their corresponding operating systems, and, from that list, you wanted to know the different types of operating systems in the network without having to look at the entire list.

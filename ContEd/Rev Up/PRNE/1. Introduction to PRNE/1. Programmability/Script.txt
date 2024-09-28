@@ -1,0 +1,169 @@
+ Programmability
+
+The traditional method of device configuration by network engineers generally included the following steps:
+
+    Connect to a single device through the console port, by Telnet, or by SSH.
+
+    Configure the device.
+
+    Copy the configuration to Notepad.
+
+    Search the configuration for all the variables that need to be changed on each device.
+
+    Connect to the device and copy the edited configuration back to the device.
+
+- 01
+
+While this process has been used for many years, it is not optimal for larger networks. Configuring one device at a time via the CLI is slow because the speed is based on human interaction as you copy and manipulate configurations for multiple devices. Furthermore, the process is error-prone and not repeatable because it involves copying and manipulating configurations for multiple devices.
+
+To solve this problem, a group of engineers met to discuss the growing need for a standard for managing IP devices. From that meeting and many more, Simple Network Management Protocol (SNMP) was introduced in 1988. SNMP provides its users with a simple set of operations that allows devices to be managed machine-to-machine. While SNMP was written for configuring and monitoring devices, it is best known for its monitoring ability. Instead of a single user connecting to a device for information, a network management server polls devices for information. The devices reply with the requested data, but because of shortcomings with SNMP, it has never really been used for configuring devices, so while SNMP solved one problem, it did not solve all problems.
+
+- 02
+
+With CLI and SNMP as the primary methods for managing networks, let’s look at how a network team might scale and operate as the network grows. Even if your network is not growing with additional routers and switches, other devices and services such as wireless, security, and network fabric controllers make networks more complex to manage.
+
+Consider a network engineer who manages a small network. To successfully manage the network, they will need to know things such as routing protocols (EIGRP, OSPF), Spanning Tree, security policies, segmentation, and quality of service (QoS). When they learn these technologies, the engineer can manage the devices through the CLI without too much trouble. But what happens as the network grows and more services are added?
+
+In the beginning, the engineer might handle everything by using Bash scripts along with the CLI. However, at some point they won’t be able to keep up with the network’s growth. Most companies handle this by hiring more engineers. New people bring new ideas for the best way to manage the network. Some engineers might use Ansible, others may prefer Python or Perl scripts. All these tools help to manage multiple devices simultaneously while also minimizing errors and allowing the engineers to be more productive. However, there is a downside: although the network engineers are more productive, these tools do not create an automation strategy. Automation in production requires proper control as part of a cohesive network management strategy.
+
+Now that you have considered network growth problems and how they have been managed, let's take an in-depth look at network programmability and automation.
+
+Network programmability refers to a set of tools for deploying, managing, and troubleshooting network devices. Its benefits include the following:
+
+    Saving time and money
+
+    Reducing human error
+
+    Increasing innovation through an agile network
+
+    Increasing network insight and control
+
+    Increasing the strategic workforce
+
+- 03
+
+Conversations about network programmability often mention automation and orchestration.
+
+    Automation: Accomplishing repeatable tasks without human intervention
+
+    Orchestration: Combining a series of tasks to accomplish a process or workflow
+
+Automation and orchestration bring many benefits to an organization.
+
+    Time and cost savings: Because automation reduces your infrastructure’s complexities, fewer hours are required for configuring, provisioning, and managing the network.
+
+    Fewer errors: By removing the chance for human errors, companies can offer and deliver a higher level of services with more consistency.
+
+    Agile network: Automation enables companies to develop operational models that improve the time-to-market. They can add new services and test new applications, resulting in greater competitiveness and more profit.
+
+    Greater insight and network control: Automation helps IT operations become more responsive to change through analytics. You gain more visibility into the network to control and adapt it as needed.
+
+    Increase in strategic workforce: By utilizing automation, companies can increase productivity, allowing them to drive business improvements and innovation and create new job opportunities. 
+
+A programmability-enabled network is driven by intelligent software that can work with a single device or a group of devices. The intelligent software uses application programming interfaces (APIs), which allow different applications to talk to each other.
+
+Let’s discuss the different network programmability options.
+
+- 04
+
+The left side of the graphic depicts the traditional way networks have been managed using the CLI and SNMP. However, as you move from left to right, you can see the evolution of network devices, from the traditional way of managing networks through the transition to controller-based networks.
+
+When programmability first started, Cisco and other vendors began offering vendor-specific APIs to program and control network devices. An excellent example of the early vendor-specific API would be the Cisco Nexus API (NX-API) used in the Cisco Nexus Data Center Switches. Later, vendors added open APIs like Network Configuration Protocol (NETCONF) and Representational State Transfer Configuration Protocol (RESTCONF).
+
+The last example uses a controller to manage the network devices. In this approach, the application will communicate to the controller through northbound APIs. These are standard open APIs. The controller then communicates with the network device using a southbound API, normally NETCONF, RESTCONF, or a vendor-specific API. Examples of Cisco controllers include the Digital Network Architecture Center (Cisco DNA Center) and the Application Policy Infrastructure Controller (Cisco APIC). Through this evolution, you can see the importance of learning programmability to develop applications that communicate directly to devices or understand the communication on the northbound and southbound APIs of a controller.
+
+You may be wondering “What exactly is an API?” and “What are the benefits of using one?”
+
+An API is a software intermediary that allows two applications to talk to each other and is characterized as follows:
+
+    Separates functionality into building blocks
+
+    Provides faster prototyping
+
+    Specifies how information is exchanged
+
+    Provides documentation
+	
+- 05
+
+One of the most significant advantages of APIs is that you do not have to build the communication from scratch. All of that has been taken care of by the vendor. This allows for faster prototyping to prove if an idea will work and increase implementation speed.
+
+APIs separate functionality into blocks. A client runs the application while the server runs the API. The only thing you need to understand is how information is exchanged, which is usually well documented.
+
+Throughout the years, there have been many types of API. One of the earliest forms of API was Remote Procedure Call (RPC); then, there was XML-RPC, JSON-RPC, and Simple Object Access (SOAP). Today one of the most popular types of API is Representational State Transfer (REST). Let’s take a deeper looking into REST.
+Representational State Transfer
+
+Representational State Transfer (REST) is a set of formal and informal guides defined by Dr. Roy Fielding in 2000 that provide constraints to improve communication between systems.
+
+- 06
+
+... REST is described as a set of formal and informal guides used in creating "constraints" to provided standards between computer systems making it easier for communication.
+
+REST is not a protocol but more of an architectural style. The popularity of REST is due to its simplicity and its use of the HTTP protocol. Because it uses HTTP, you will not need to install libraries or additional software, making it very simple to implement. Because REST APIs can handle multiple types of requests and return different data formats (XML, JSON, YAML), it makes it very flexible. Think of data formats as a way to structure data that can be read by multiple systems, this will be discussed in more detail later. REST APIs’ simplicity and flexibility allow you to build an application that meets your needs or your customers’ needs.
+
+- 07
+
+REST describes six constraints that must be met if an interface is going to be considered RESTful. These constraints are discussed below. As you read through these, you will see that each successive constraint builds on top of the previous one. This creates a very powerful and flexible API.
+
+    Client/server: The idea behind the client/server constraint is that the client and the server should be separate from each other. This allows you to make changes to your application without impacting the resource on the device. At the same time, I should be able to modify the resource without affecting my application.
+
+    Stateless: The stateless constraint means that requests can be made independently of one another. For this to work, each request must contain all the data necessary to be successful.
+
+    Cache: Because REST APIs are stateless, it could increase the device’s overhead by handling many incoming requests or outgoing responses. To help alleviate this possible problem, REST APIs are designed so the data can be cacheable. Caching is performed on the client.
+
+    Uniform Interface: A uniform interface is a common language for any client to communicate with any REST API. The uniform Interface constrain states that requests and responses must follow a common way of formatting their messages.
+
+    Layered System: The layered system constraint requires that messages always be processed regardless of the number of layers (device) between them.
+
+    Code on Demand: Code on Demand is the last constrain and the only one that is optional. Code on Demand allows you to create more intelligent applications because it will enable you to transmit code over the API to use within the application.
+
+As you work with REST APIs, there are three components that you need to understand: client, endpoint, and resource. Looking at the image below, the client could be an application running on a computer. This application could be one you’ve built using Python. The endpoint could be a network device such as Cisco DNA Center shown in the image below, or it could be Cisco Webex, StealthWatch, Cisco SD-WAN, or other Cisco devices. The resource is the data you are after. In the example below, since you are using Cisco DNA Center, the resource could be client information such as MAC address health status or other client details.
+
+- 08
+
+HTTP Request/Response
+
+The REST API works in a Request/Response fashion. The client makes a request to the endpoint to either retrieve data or make a configuration change. The endpoint then responds to the request with a response.
+
+When a client makes a request to an endpoint, there is certain information that is required. For example, you will need an HTTP method that defines the operation performed on the endpoint. This could be to get data or write data.
+
+- 09
+
+ou will also need to define the URI, which is the resource you are after, and possible other header information for authentication, Content-Type, and Accept. Optionally depending on the method, you are using, you could have data in the body. If you are modifying a resource, the new data would be sent in the request’s body. In the image above, we are retrieving client detail information from Cisco DNA Center. You will learn more about methods in just a minute but for now, know that you are using the GET method, which retrieves information from a device. The resource you are retrieving is located at http://DNA_Center/dna/intent/api/v1/client-details. DNA_Center in the URL is the IP address or Fully Qualified Domain Name of the Cisco DNA Center; the rest of the URL is found in the Cisco DNA Center API documentation.
+
+Once Cisco DNA Center processes the request, it will send back a response for client-details. A response generally consists of a status code, which lets you know if your request was processed correctly or failed. It will also include a header with information about the body’s content-type and data if you are retrieving information.
+
+- 10
+
+You will notice that above the response code was “200,” which tells you that the request was processed. The best way to think of response codes is to think about accessing websites on the internet. If you can access a website, the response would be a 200, but we have at one time or another see the response “404 page not found”. The error code 404 means the resource could not be found. There are different error codes, but for now, know if it begins with a 2XX, everything is ok; if it begins with a 4XX, it’s a client-side problem, and if it begins with a 5XX, it’s a server-side problem. The header has a content-type of application/json which means the data in the body will be in a JSON format. And the body contains the information for client-details. The information above is just a small sample of what is returned from Cisco DNA Center.
+Methods
+
+In the REST API request, you must specify a method that tells the endpoint what operation you want to perform. There are four main methods that you can use.
+
+- 11
+
+    GET: Retrieves a specific resource or a collection of resources. The data is returned in either XML or JSON format, and it is considered idempotent. Idempotent means if you make multiple requests using the same method on the same resource, it will not change the resource multiple times. Therefore, you can use the GET method to retrieve the same resource multiple times, but it will not change the resource.
+
+    POST: Creates a new resource. It is not considered idempotent, and if the request is processed ok, it will return a status code of “201.”
+
+    DELETE: Removes a specific resource. It is not idempotent. If the resource is removed successfully, you will receive a status code of 200 in the response.
+
+    PUT: Completely replaces a specific resource. It will not perform a partial update. Put is considered to be idempotent and will return a status code of “200” if the request is processed correctly.
+
+Now that you have a better understanding about REST APIs, let’s talk about why you would use it, where it can be used on the different Cisco platforms and a few use cases. REST API gives you a few advantages when you are trying to retrieve or modify data from a resource. When you are writing programs to automate your network, you want to make it as simple and consistent as possible. This is where REST APIs can help. With REST APIs, you don’t have to know the different commands for every device in your network because you are not sending commands, all you need to understand is the URI to access the resource. You will also get your data back in a structured format so it’s much easier to work with. Lastly, if something fails, you will get an error code letting you know what’s happened.
+
+REST APIs can be used across all Cisco architectures to help you develop applications that solve problems for you and your customers. Listed below are some examples of Cisco products where you can use REST APIs. This is not a complete list.
+Devices that Use REST APIs
+
+- 12
+
+The list below provides examples of use cases from the security, enterprise, and collaboration architectures.
+Note
+
+This is only a small list of possible ways you can use APIs. For a complete list, review the API documentation for each product.
+
+    Security: Stealthwatch Enterprise provides easy-to-use and comprehensive APIs to perform reporting, make configuration changes, manage users, export data.
+
+    Enterprise: The APIs in Cisco DNA Center allow you to create and manage sites, retrieve detailed information about devices, get detailed client information, and receive information about issues. It will also recommend ways to mitigate those issues.
+
+    Collaboration: Webex APIs provide your applications with direct access to the Cisco Webex Platform, giving you the ability to: Create a Webex space and invite people, post messages in a Webex space, and execute a command on a Webex Room OS device.

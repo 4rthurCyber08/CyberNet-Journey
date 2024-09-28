@@ -1,0 +1,52 @@
+ Execute Your First Python Program
+Execute a simple Python script to gather the device software version
+
+- 01
+
+The image depicts the result of 'show version' command pulled from the router. Your script will produce the same output on the final step.
+Activity
+
+    Python scripts or modules are text files with the file extension “.py” that contain Python code. You can create a Python script with almost any text editor, but there are programs designed to assist with developing code in specific languages. Integrated Development Environments (IDEs) are software that combine the functionality of a text editor with improvements and integrations for coding. These features can include linting tools that scan your code to identify errors and formatting issues, auto-completion, documentation that pops up if you hover the cursor over an element of your code, and more.
+
+    Open Microsoft Visual Studio Code IDE (also known as VS Code) by clicking the icon on the workstation Desktop or the blue icon in the task bar at the bottom of the screen.
+
+- 02
+- 03
+
+In VS Code, click File in the top menu bar. Select Open Folder.
+
+- 04
+
+From the Home directory, choose the directory lab_work. Then click OK in the top-right corner of the window.
+
+- 05
+
+You should see the lab_work directory in the VS Code Explorer, which is in the sidebar to the left of the main editor window. Double-click the python script get_software_version.py to open the script in the editor.
+Note
+
+If you do not see the Explorer tab open after opening the lab_work directory, click the Explorer icon at the top of the sidebar on the left of the VS Code window.
+
+- 06
+- 07
+
+In VS Code, open the VS Code Integrated Terminal: choose View from the menu bar and then choose Terminal from the drop-down menu. You should see the VS Code Integrated Terminal pane open below the editor. The terminal window operates in the same directory as the script open in the editor pane, which is the directory open in the explorer section of VS Code.
+
+- 08
+
+In the script, first you import netmiko, which is a collection of code (a library) written to create an SSH connection with the router, issue commands, and get outputs. In lines 3 through 7, you define variables that hold values and then use those values to establish an SSH connection in line 9. Once connected, you send the command show version to the device in line 11. Finally, you output the data to the terminal using print() in line 12.
+
+- 09
+
+In the VS Code Integrated Terminal, type python get_software_version.py and press <enter> to run the script get_software_version.py.
+Note
+
+The output visible in the show me is not all the data that is printed to the terminal. You can scroll up in the terminal to view the full output from this script.
+
+- 10
+- 11
+
+Activity Verification
+
+You have completed this task when you attain these results :
+
+    You successfully ran the 'get_software_version.py' script, which produced the output of the 'show version' command from the router. 

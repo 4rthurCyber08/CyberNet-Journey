@@ -1,0 +1,14 @@
+ Boolean Data Type
+
+The Boolean data type can have one of two values, True or False. Non-Boolean objects such as integers, floats, and strings can also be evaluated in a Boolean context and determined to be True or False. In the examples, you use the bool() function to show how an integer or string can be evaluated to be True or False. If the number is zero, it will always evaluate as False. Any number other than zero (5, 6.5, -4.5) will evaluate to True. With strings, a blank or empty string will evaluate as False. Otherwise, a string will evaluate to True. Evaluating a string to a Boolean value is an easy way to determine if a user entered a value when an input was requested by using the bool() function on the variable where the value was stored. If it evaluates to True, there was an input.
+
+>>> username = input("Please enter a username:")
+Please enter a username:bill
+>>> bool(username)
+True
+
+A Boolean or bool is a data type with two possible values: True or False.
+
+- 01
+
+True and False must also be capitalized; if they are not capitalized, they are not recognized as Boolean values. Know that the Boolean values True and False are keywords in Python and cannot have a value assigned to them. If you try and assign a value to either keyword, you will get an error.
