@@ -1,0 +1,79 @@
+ Reading Data from a Simple Text and CSV File
+
+In this topic, you will learn how to read data from a simple text file (file.txt) and a CSV file.
+Reading from a Text File
+
+There are two steps to reading data from a text file. The first step involves opening the file you want to work with and the second step involves choosing the read method you want to use: read(), readline() or readlines().
+
+- 01
+
+There are a few ways to open files in Python. You can use the open(filename, mode) command or the with open("filename," mode) as f: command.
+
+The components of the with open command are:
+
+    filename: The file you want to open.
+
+    mode:
+
+        r - Opens a file for read-only, returns an error if the file does not exist.
+
+        a - Opens a file appending, creates the file if it does not exist.
+
+        w - Opens a file for write, creates the file if it does not exist.
+
+        x - Creates the specified file, returns an error if the file exists.
+
+    f: The variable that the file object will be referred to as.
+
+The with open command is the easier method to use because you do not have to worry about closing the file when you are done; the with open command takes care of closing the file for you. This behavior is important so that files are not left open, preventing other users from accessing them.
+
+To read the contents of a file, the read() method returns the contents of the file as individual strings, making it easy to manipulate the data inside the file.
+
+The example is broken into three sections: the top section is the contents of a file named Router.txt, the middle section is the code used to open the file to read it, and the last section is the output of the code.
+
+The code in the middle section includes the following:
+
+with open('Router.txt', 'r') as f:
+
+This line of code opens a file named Router.txt for read-only and saves the file object in the variable "f.” In the example, the variable "f” is used, but any variable name can be used.
+
+The file object "f” is then handed to the read() method. The command content = f.read() returns the bytes in a form of a string and saves it in a variable “content.” The code then prints the returned bytes stored in content with the command print(content).
+
+With no parameter specified in the read() method, the complete file is read. If you only want some bytes read, you can specify it with the command f.read(n), where “n” specifies the number of bytes to read. Therefore, if you only wanted to print the word Router1, you could use the command print(f.read(7)), where “7” represents the number of bytes to print.
+
+The second method that you can use to read data in a file is the readline() method. This method returns each line one at a time. Therefore, if you used the command print(f.readline()) in the example, the output would be the first line in the file, "Router1 is located in San Jose."
+
+The third method is readlines(). The readlines() method returns a list of all the lines. Since the returned value is a list, you can control which lines you want by slicing. For example, to print the second line in the file, you would use the command print(f.readlines()[1:2]). The output would be ['Router2 is located in Chicago\n'].
+Reading from a CSV File
+
+Now that you know how to read a .txt file, let’s look at how to read a csv file. 
+
+- 02
+
+The example has three areas. The first area shows the data of a CSV file named devices.csv. This file contains a list of devices with each device’s hostname, vendor, model, and location.
+
+The second area of the example is the script that reads the CSV file. A breakdown of the script follows.
+
+To read a CSV file, you use a built-in Python standard library called csv. To use the library, you need to import it with the command import csv. Notice that the library name is all lowercase csv, not uppercase CSV.
+
+Once you have the library imported, you open the .csv file the same way you do a .txt file with the command:
+
+with open('device.csv', 'r') as f:
+
+The code opens a file named devices.csv for read-only and saves the file object in the variable “f.” In the example, the variable “f” was used, but any variable name can be used.
+
+The file object “f” is then handed to csv.reader(). The csv.reader() iterates over the file and returns the data line by line. In this example, the code stores the iteration in a variable named device.
+
+Next, headers and then the information in each row are printed. To get the header information, use the command header = next(devices). This command reads the first line iterated by csv.reader() and stores it in the variable header. The next() method moves the iterator to the next line and waits for a command.
+
+Finally, the code uses a for loop to iterate the file with the command for row in devices: and prints each line in the file using the command print(row).
+
+If you don’t want to work with a list and prefer to work with a dictionary, you can use the csv.DictReader() method, as in the second example. This works similarly to csv.reader(), but instead of saving each row as a list, each will be saved as a dictionary with headers as keys.
+
+- 03
+
+The middle section of the example shows how to use the csv.DictReader() method. The command takes the contents stored in the variable “f” and saves it as a dictionary stored in the variable “devices.”
+
+devices = csv.DictReader(f)
+
+You can then use a for loop to iterate through each row in devices and print the dictionary.

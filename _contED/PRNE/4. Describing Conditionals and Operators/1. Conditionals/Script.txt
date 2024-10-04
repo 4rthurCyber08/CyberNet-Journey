@@ -1,0 +1,31 @@
+ Conditionals
+
+Control flow tools allow you to execute a line or multiple lines of code when specific criteria are met. The first line in your control structure is an expression that is evaluated for Boolean True or False. Suppose that the expression is evaluated to be True. In that case, the code inside the control structure is executed. If it is evaluated to be false, it skips the code inside and runs the following lines of code in your script.
+
+- 01
+
+The most basic type of control structure is an “if” statement. "If" statements evaluate an expression and execute the line or lines of code grouped under it if it is true. To write the first line of your if statement, you need the expression to be evaluated, followed by a colon (:). To group your lines of code that follow the expression, indent each statement by 4 spaces. Indentation is how Python groups code together.
+
+- 02
+
+The example shows how an if statement works. The top section of the example shows how code is evaluated when a condition is True; the bottom section shows when the condition is False.
+
+Looking at the top section, you will see that the variable x is set to True. The if statement evaluates x to determine if it is True. Since x is equal to True, the statement evaluates to True and the code inside the if statement is executed. The output below the code shows that both the code inside the if statement and outside the if statement ran.
+
+The bottom section has x set to False. When the if statement is evaluated, the code inside the if statement doesn't run. Looking at the output, you will see that only the code outside the if statement ran.
+
+The "if" statement by itself gives you one expression to evaluate and one path to take if the expression is True. What if you have multiple paths your script could take? In these cases, use the "else" or "elif" statements.
+
+Let's first look at using else with the if statement. First, the if statement is evaluated and if it is True, it executes the block of code underneath it. If the expression evaluates to False, it skips to the else statement and runs the code block under it. This gives you two paths, one if the expression is True and one if the expression is False.
+
+- 03
+
+An elif statement can give you more than two paths to take. The "if" statement is evaluated first. If it is True, the code block under it is executed. If it is False, it goes to the first "elif" statement and evaluates it. If it is True, the code block under it is executed, and if it is False, it goes to the next "elif." When a conditional evaluates to True, no other statements will be evaluated. Therefore, it is important that you order your statements correctly for correct functioning of your code. If no elif statements evaluate to True, the statements under the "else" statement will execute.
+
+An example of elif and else follows:
+
+- 04
+
+In the example, there is an if statement that is evaluating x. If x is True, then the code will print "x as True." If x is False, it will evaluate the elif statement to see if y is True. If y is True, the code will print "y as True." If y is False, then the code under the else statement will run and print "x and y as not True."
+
+The top section shows an example of when x = False and y = True. The output here is "y is True." The bottom section is an example of when x = False and y = False. The output here is "x and y are not True."
