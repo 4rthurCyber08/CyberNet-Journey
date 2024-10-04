@@ -1,0 +1,132 @@
+Numbers, Strings, Variables, Functions
+
+Built-in Numeric Data Types
+- Interger: -42, 0, 1, 1337
+	Type int
+	Unlimited precision
+	Binary, octal, hex: 0b1010, 0o777, 0xFF
+		0b -binary
+		0o -octal
+		0x -hex
+- Floating point numbers
+	Type float
+	Usually implemented as a C double
+	Exponential form: 1.5e3, 5e-2
+		1.5 x 10^3
+- Complex numbers
+	Type complex
+
+Additional Numeric Data Types
+	3 built-in: int, float, complex
+	2 non built-in: fractions[rational numbers] & decimal[accurate floating point numbers]
+
+Functions
+	a group of instructions that perform a specific task.
+	0 or more arguments as input
+	1 value as output (always)
+
+	**Syntax
+		fun_name(arg0, arg1, argN)
+		
+			fun_name : name of function object
+			arg0, arg1, argN : arguments
+		
+		fun_name(pos_arg, name=named_arg)
+			
+			pos_arg : positional argument
+			name : argument name
+			named_arg : named argument
+			
+		built-in function
+			bin()
+			oct()
+			hex()
+			
+			bin(15)
+				0b1111	//input int : output string
+			
+			help(obj)	//input obj : output none but prints
+			
+			Strings used to represent txt
+				Type str: 'abs' or "abc"
+				'''...''' and """...""" for multi-line strings
+				r'...' for raw strings
+				
+				immutable sequence of characters
+					Character: any unicode character
+			
+				use \ to escape strings
+					ex.	'I\'m a string'
+						I'm a string
+						
+						as oposed to
+						
+						'I'm a string'
+						
+						I [error]
+					
+					string literals are combined
+						'fire' 'fly'
+						firefly
+					
+					('use this trick to'
+					'break long lines')
+						use this trick to break long lines
+						
+					\n -new lines
+					\t -tab
+					\f -formatted string literals
+					
+					avoid them by using r'...'	-raw string
+					
+					Escape Sequences
+						\\			\
+						\'			'
+						\"			"
+						\n			newline
+						\r			Carriage return
+						\t			tab
+						\xHH		char with hex unicode code point HH
+							ex.
+								'\x61\x62\x63'
+									'abc'
+						\uXXXX		char with hex unicode code point XXXX
+						\UXXXXXXXX	char with hex unicode code point XXXXXXXX
+							ex.
+								'\x58\u0058\U00000058'
+									'XXX'
+						\N{name}	char with unicode name name
+							ex.
+								'I \N{GROWING HEART} \N{SNAKE}'
+								'I 💗 🐍' U+1F497 U+1F40D
+			
+			print(...) is a built-in function
+				was a statement in python 2
+				
+				Input: a variable number of arguments
+				
+				Output: none prints the arguments separated by a space, adds a newline at the end
+			
+			input(prompt)
+				Input: an optional prompt(str)
+					waits for the user to enter some text
+				Output: the text as string
+				
+					input('Enter your name: ')
+						Enter your name: Arthur James
+						'Arthur James'
+					
+					name = input('Enter your name: ')
+						Enter your name: Arthur James
+					name
+						'Arthur James'
+					
+					print('My name is', name)
+						My name is Arthur James
+Variable
+	always start with a letter: abc
+	dashes are not allowed:  var-ble
+	numbers as the first char are not allowed:  2abc
+	
+	The _ variable
+		the _ will always take note of the last evaluated expression
