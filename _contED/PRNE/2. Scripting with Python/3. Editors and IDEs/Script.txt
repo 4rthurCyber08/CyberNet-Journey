@@ -1,0 +1,54 @@
+ Editors and IDEs
+
+While the Python interactive shell is a useful way to execute commands to understand Python concepts and to test code without creating a file, it is limited. 
+
+- 01
+
+If you need to build larger code files, the interactive shell is not the ideal tool. When working with larger files, developers will use either a code editor or an integrated development engine (IDE). Let’s look at the core features a developer needs and then discuss both code editors and IDEs.
+
+There are several core features needed in a coding environment.
+
+    Syntax highlighting: Highlights individual components of the source code according to their syntax in color, making your code easier to read
+
+    Automatic code formatting: Recognizes when the following line should be indented and understands where braces should be used
+
+    Save and reload code files: Saves and reloads code from the previous used state
+
+    Run code from within the environment: Runs code directly from the coding environment
+
+    Debugging support: Has the ability to step through your code as it runs
+
+Let’s look at how these core features fit into code editors and integrated development engines.
+
+Code editors are simple text editors with some further capabilities built in. Most can handle syntax highlighting and code formatting. More advanced editors can execute code, control a debugger, and interact with source code control systems. Code editors usually have a smaller disk footprint and are quicker than IDEs, but don’t have as many features.
+
+An Integrated Development Engine (IDE) is an application specifically designed for software development. Like code editors, IDEs support syntax highlighting, code formatting, code execution, and debugging. They also support multiple languages and contain many more features than an editor. An IDE usually has a larger disk footprint because of these extra features, and may require advanced knowledge.
+
+Now that we understand what code editors and IDEs are, let’s look at different applications that fit in these categories.
+
+- 02
+
+While many code editors are available, four of the most common ones are listed. These applications support the core features that were discussed. Let’s look at five of the most common ones.
+
+    Sublime: A very popular code editor written by Google. Supported on all platforms and has built-in support for Python code editing and additional packages that extend these features.
+
+    Atom: A sleek interface that is available on all platforms. It supports Python through extensions that need to be installed.
+
+    Visual Studio Code: An editor designed by Microsoft, also known as VS Code. VS Code should not be confused with Visual Studio, which is a complete IDE. VS Code works on Linux, Mac OS X, and Windows platforms. Support for Python can be downloaded from the Marketplace.
+
+    Notepad++: A free source code editor and Notepad replacement that supports several languages. Running in the MS Windows environment, its use is governed by GNU General Public License.
+
+    Vim: A highly configurable text editor that is included as "vi" with most UNIX systems and with Apple OS X.
+	
+- 03
+
+The IDEs listed are just a few examples of those available. Let’s look at a few of these.
+
+    IDLE: Python’s Integrated Development and Learning Environment. IDLE is included with the Python installer for Windows by default. However, you will need to install it separately for Linux. IDLE allows you to execute a single command like you can in the interactive shell or create and execute Python scripts.
+
+    Visual Studio: A full-featured IDE developed by Microsoft. Visual Studio only works on Mac OS X and Windows and is offered in both free and paid versions. Support for Python is enabled by installing Python Tools for Visual Studio.
+
+    PyCharm: An IDE specifically for Python developed by JETBrains. PyCharm works on Windows, Mac OS and Linux. There is a free and paid version available.
+
+    Spyder: A free and open-source scientific environment written in Python, for Python. Spyder has standalone installers on Windows and macOS. For Linux, it is recommended to use the cross-platform Anaconda distribution.
+

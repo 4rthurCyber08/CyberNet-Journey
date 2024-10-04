@@ -1,0 +1,18 @@
+ Float Data Type
+
+The float type in Python represents a number with a decimal point. The character e (exponential) followed by a positive or negative integer is also considered a float data type. The maximum floating-point number depends on your system, but a value such as 2e400 will be well beyond the capabilities of most machines. Anything beyond the capability of your system will be represented as inf (infinity).
+
+- 01
+
+Python’s interpreter will only display a number up to 17 digits. Any number longer than 17 digits will be represented in an exponential format.
+
+>>> x = 19999999999999999999.99999
+>>> print(x)
+2e+19
+
+As with integers, you can convert numbers without decimals, such as 4, or strings, such as "4.5", to floating-points. There is a built-in function called float() that converts the value for you. The example shows how to use float() and the results:
+
+>>> float(4)
+4.0
+>>> float("4.55")
+4.55

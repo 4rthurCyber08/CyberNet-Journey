@@ -1,0 +1,144 @@
+Data Types
+
+- Sequence
+	- String: 'x'
+	- List: []
+	- Tuple: ()
+	
+- Boolean: True, False
+- Dictionary
+- Numberic
+	- Interger: 1, 25, -100
+	- Float: 5.5, 12.01, 0.0001
+	- Complex: 7a, 2b
+
+String Data Types
+	Single Quotes - 'allows embedded "Double" Quotes'
+	Double Quotes - "Allows Embedded 'Single' Quotes"
+	Triple Quotes - """Single Quotes or Double Quotes can be used to span Strings over multiple lines"""
+	Error - 'This is Bill's Script'
+	
+Integer Data Types
+	Integers:
+		25
+		-25
+		25000000
+		25_000_000
+		
+	*Commas cannot be integers
+		25,000,000
+		
+	
+	print(type(int("23")))
+		<class 'int'>
+
+Floating Data Types
+	100000.0
+	-4.5
+	4.5
+	1e6
+		1000000.0
+	
+	Python only displays 7 digits of a float
+	
+	float("45")
+		45.0
+		
+Boolean Data Type
+	True or False
+		1 or 0
+		'X' or ''
+		
+		bool(1)
+			True
+			
+		Must Be Capitalized: True, False
+
+Type Function
+	type(object) returns the data type of an object
+	
+	type(25_000_000)
+		<class 'int'>
+	type(5.5)
+		<class 'float'>
+
+Variables
+	Correct Assignment x = 5
+	switch_os = "IOS-XE"
+	
+Lists
+ varName.append('switch1')	- append : to add
+ 
+ varName.insert(3, 'router4') - insert : router 4 to the 3rd index
+ 
+ varName.pop()	- pop the last item (default) or a specified index
+ varName.remove("switch1")	- will remove the first entry only
+ 
+ varName.count() - count the number of times an object appears in a list
+ varName.len() - count the total length of the list
+ 
+ 
+___
+
+List : []
+devices = ["r1", "r2", "r3"]
+devices.append("r4")			//Adds an item at the end of a list
+devices.insert(3, "r4")			//Adds an item to a specified index of a list
+devices.pop()					//Remove the last item from a list
+devices.pop(3)					//Remove a specified item from a list
+devices.remove("r1")			//Remove the first entry in the list using a named values
+devices.count("r1")				//Count the number of entries of a specified item
+len(devices)					//Count the total number of items in a list
+
+Tuple : ()
+os = ("IOS", "IOS-XR", "IOX-XE", "NX-OS")
+os.count("IOS")					//Count the number of entries of a specified item
+os.index("IOS-XR")				//Identify the index location of a specified value
+
+Set : {}
+router_1 = {"R1", "IOS-XE"}
+router_2 = {"R2", "IOS-XE"}
+router_1.union(router_2)		//Combine values between sets but does not include duplicates
+router_1.intersection(router_2)	//Identify a common item between sets
+
+Dictionary : {}
+router = {}
+router["vendor"] = Cisco		//Add a key:value into the dictionary
+router.get("vendor")			//Get the value of a key
+router.items()					//list all key and value in the dictionary
+router.keys()					//list all keys in the dictionary
+router.values()					//list all values in the dictionary
+router.pop("vendor")			//remove a specified item in a dictionary
+router.update("router2")		//merges two dictionary
+router.clear()					//clears the dictionary and make it empty
+
+String: "X"
+"string".capitalize()			//Capitalize the first letter of the string
+"string".title()				//Capitalize all the words in the string
+"string".upper()				//Set all letters to uppercase
+"string".lower()				//Set all letters to lowercase
+"string".swapcase()				//Swap lower and uppercase letters
+"cisco 3800 IOS-XE".split()		//Split every object in the string via a comma. (default is white space)
+"cisco.3800".split(".", 1)		//Split using the specified object and how many times.
+dir(int)						//provide a list of all possible modifications for that data type
+help(str)						//provide documentation for the specified data type
+"string cisco"[2:5]				//slice a range using the index value
+"strA" + "strB"					//Combine to strings
+ip.strip()						//Removes whitespaces from beginning to end
+ip.lstrip()						//Removes whitespaces on the left
+ip.rstrip()						//Removes whitespaces on the righ
+"Hello {0} World".format("A")	//Apply a string in another string specifically using a {i} value
+f"Hello {A} World"				//Same as format but has a better ease of use
+
+\\								// \
+\'								//'
+\"								//"
+\x48							//H Hex
+\OOO							//1/2 octal
+\n								//New Line
+\b								//Backspace
+\t								//Tab
+
+str.count(sub, start, end)
+str.find(sub, start, end)
+str.startswith(prefix, start, end)	//True or False
