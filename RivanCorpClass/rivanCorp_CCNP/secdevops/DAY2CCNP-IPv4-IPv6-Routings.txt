@@ -1,0 +1,956 @@
+git clone https://github.com/rivancorp/encorNARSI
+
+
+//if walang IP address sa VM-RSTHayup
+rm -rf /etc/udev/rule (pindot tab)/70 (pindot tab)
+
+
+@@@ CONFIGURE RST AGAIN.
+D1:
+CONFIG T
+ip dhcp excluded-add 10.2.1.1 10.2.1.99
+ip dhcp excluded-add 10.2.1.200 10.2.1.254
+!
+ip dhcp pool vlan10
+  network 10.2.1.0 255.255.255.0
+  default-router 10.2.1.254
+!
+D2:
+CONFIG T
+ip dhcp excluded-add 10.2.1.1 10.2.1.199
+ip dhcp excluded-add 10.2.1.250 10.2.1.254
+!
+ip dhcp pool vlan10
+  network 10.2.1.0 255.255.255.0
+  default-router 10.2.1.254
+!
+A1:
+config t
+int e0/0
+ switchport mode access
+ switchport access vlan 10
+A2:
+config t
+int e1/0
+ switchport mode access
+ switchport access vlan 10
+p1:
+config t
+int e0/0
+ ip add dhcp
+ no shut
+p2:
+config t
+int e1/0
+ ip add dhcp
+ no shut
+
+TASK9.1: Combined d1 and d2 for hsrp:
+d1:
+config t
+int vlan 10
+ standby 10 ip 10.2.1.254
+ standby 10 preempt
+ standby 10 priority 150
+ standby 10 track e1/1 60
+end
+@@d2:
+config t
+int vlan 10
+ standby 10 ip 10.2.1.254
+ standby 10 preempt
+ standby 10 priority 100
+end
+
+TASK.9.2: SUPER BASIC EIGRP FOR D1/D2:
+D1:
+D1#sh ip route connected | inc C
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+C        10.1.4.4/30 is directly connected, Ethernet1/1
+C        10.2.1.0/24 is directly connected, Vlan10
+C        10.2.2.0/24 is directly connected, Vlan20
+C        192.168.1.128/27 is directly connected, Vlan200
+
+D1:
+config t
+router eigrp 100
+ no auto-summary
+ network 10.1.4.4 0.0.0.3
+ network 10.2.1.0 0.0.0.255
+ network 10.2.2.0 0.0.0.255
+ network 192.168.1.128 0.0.0.31
+end
+
+or NEXUS-like
+
+conf t
+	router eigrp CCNPLEVEL
+		address-family ipv4 unicast autonomous-system 100
+		network 10.1.4.6 0.0.0.0
+		network 10.2.1.1 0.0.0.0
+		network 10.2.2.1 0.0.0.0
+		network 192.168.1.129 0.0.0.0
+		end
+
+
+D2:
+config t
+router eigrp 100
+ no auto-summary
+ network 10.1.4.8 0.0.0.3
+ network 10.2.1.0 0.0.0.255
+ network 10.2.2.0 0.0.0.255
+ network 192.168.1.128 0.0.0.31
+end
+show ip eigrp neighbor
+
+or NEXUS-like
+
+conf t
+	router eigrp CCNPLEVEL
+		address-family ipv4 unicast autonomous-system 100
+		network 10.1.4.10 0.0.0.0
+		network 10.2.1.2 0.0.0.0
+		network 10.2.2.2 0.0.0.0
+		network 192.168.1.130 0.0.0.0
+		end
+	sh ip eigrp nei
+
+R4:
+config t
+router eigrp 100
+ no auto-summary
+ network 10.1.4.8 0.0.0.3
+ network 10.1.4.4 0.0.0.3
+ end
+
+OSPF NETWORK:
+R4:
+config t
+router ospf 1
+network 10.1.1.8 0.0.0.3 area 34
+
+R3:
+config t
+router ospf 1
+network 10.1.1.4 0.0.0.3 area 0
+network 10.1.1.8 0.0.0.3 area 34
+
+R2:
+config t
+router ospf 1
+network 10.1.1.4 0.0.0.3 area 0
+network 10.1.1.0 0.0.0.3 area 12
+
+R1:
+config t
+router ospf 1
+network 10.1.1.0 0.0.0.3 area 12
+
+@@@
+TASK9.3: BASIC eBGP FOR ISPS and R1.
+R1 BGP:
+config t
+router bgp 1
+ bgp log-neighbor-changes
+ neighbor 208.8.8.4 remote-as 45
+ neighbor 207.7.7.2 remote-as 2
+ neighbor 209.9.9.3 remote-as 3
+ network 10.0.0.0 Mask 255.255.255.252
+ network 207.7.7.0
+ network 208.8.8.0
+ network 209.9.9.0
+end
+@@@ISP1:
+CONFIG T
+router bgp 45
+bgp log-neighbor-changes
+neighbor 24.2.4.2 remote-as 2
+neighbor 45.4.5.5 remote-as 45
+neighbor 208.8.8.1 remote-as 1
+network 208.8.8.0
+network 24.2.4.0 mask 255.255.255.0
+network 44.44.44.44 mask 255.255.255.255
+network 45.4.5.0 mask 255.255.255.0
+!PretentInternet
+network 0.0.0.0
+ip route 0.0.0.0 0.0.0.0 null 0
+ip route 10.0.0.0 255.0.0.0 208.8.8.1
+end
+
+@@@ISP2:
+config t
+router bgp 2
+bgp log-neighbor-changes
+neighbor 24.2.4.4 remote-as 45
+neighbor 25.2.5.5 remote-as 45
+neighbor 32.3.2.3 remote-as 3
+neighbor 207.7.7.1 remote-as 1
+network 207.0.0.0 mask 255.255.255.0
+network 22.22.22.22 mask 255.255.255.255
+network 24.2.4.0 mask 255.255.255.0
+network 25.2.5.0 mask 255.255.255.0
+network 32.3.2.0 mask 255.255.255.0
+!fakeInternet
+network 0.0.0.0
+ip route 0.0.0.0 0.0.0.0 null 0
+ip route 10.0.0.0 255.0.0.0 207.7.7.1
+end
+@@ISP3:
+CONFIG T
+router bgp 3
+bgp log-neighbor-changes
+neighbor 32.3.2.2 remote-as 2
+neighbor 35.3.5.5 remote-as 45
+neighbor 209.9.9.1 remote-as 1
+network 209.9.9.0
+network 32.3.2.0 mask 255.255.255.0
+network 33.33.33.33 mask 255.255.255.255
+network 35.3.5.0 mask 255.255.255.0
+network 0.0.0.0
+ip route 0.0.0.0 0.0.0.0 null 0
+ip route 10.0.0.0 255.0.0.0 209.9.9.1
+end
+
+Isp4:
+config t
+int lo 8
+ ip add 8.8.8.8 255.255.255.255
+router bgp 45
+ bgp log-neighbor-changes
+ neighbor 25.2.5.2 remote-as 2
+ neighbor 35.3.5.3 remote-as 3
+ neighbor 45.4.5.4 remote-as 45
+ network 8.8.8.8 mask 255.255.255.255
+ network 55.55.55.55 mask 255.255.255.255
+ network 25.2.5.0 mask 255.255.255.0
+ network 35.3.5.0 mask 255.255.255.0
+ network 45.4.5.0 mask 255.255.255.0
+end
+
+Task9.5: Redistribution Skills for CCNP
+R4:
+config t
+!ipasok ang eigrp sa mundo ng ospf
+router ospf 1
+  redistribute eigrp 100 subnets
+  exit
+!ipasok ang ospf sa mundo ng eigrp
+router eigrp 100
+  redistribute ospf 1 metric 1544 2000 255 1 1500
+
+R1:
+!redistrubte internet routes to ospf from BGP.
+config t
+router ospf 1
+ default-information originate always
+end
+
+R2#
+ping 8.8.8.8
+
+
+@@static default routing in P1:
+P1:
+config t
+ip route 0.0.0.0 0.0.0.0 10.2.1.1
+do sh ip route static
+
+@@static default routing in p2:
+p2:
+config t
+ip route 0.0.0.0 0.0.0.0 10.2.1.2
+
+
+!P1 and P2
+ping 8.8.8.8 (tagos na dapat)
+
+
+
+
+@@@@@IPVV6@@@@@@@@@@
+######################################################################
+
+!!!Palitawin yung RST Topology ipv6
+
+
+!!!!! Lagay mga ito sa lahat except A1/A2 !!!
+conf t
+alias exec bp6 show ipv6 int brief | exc down
+alias exec sr6 show ipv6 route
+alias exec sc show run | sec
+end
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~IPV6~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+IPV6 ADDRESSING FOR THE ISP'S
+@ISP4
+	conf t
+		ipv6 unicast-routing
+		int Lo8
+                        ipv6 add 2001:4860:4860::8888/64
+			!eto si google dns v6
+		int e0/1
+			ipv6 add b:1:4:b::5/64
+		int e0/2
+			ipv6 add b:2:4:b::5/64
+		int e0/3
+			ipv6 add b:3:4:b::5/64
+			end
+				!so far wala sa exam about identifying the definite IPv6
+@ISP3
+	config t
+		ipv6 unicast-routing
+		int e1/1
+			ipv6 add b:3:4:b::3/64
+		int e1/2
+			ipv6 add b:1:2:b::3/64
+		int e1/3
+			ipv6 add b:1:33:b::3/64
+			end
+			
+@ISP2
+	config t
+		ipv6 unicast-routing
+		int e0/2
+			ipv6 add b:2:4:b::2/64
+		int e1/1
+			ipv6 add b:2:1:b::2/64
+		int e1/3
+			ipv6 add b:1:22:b::2/64
+		int e1/2
+			ipv6 add b:1:2:b::2/64
+			end
+
+@ISP1
+	config t
+		ipv6 unicast-routing
+		int e1/2
+			ipv6 add b:1:4:b::4/64
+		int e1/1
+			ipv6 add b:2:1:b::4/64
+		int e1/3
+			ipv6 add b:1:11:b::4/64
+			end
+
+@R1
+	config t
+		ipv6 unicast-routing
+		int e1/3
+			ipv6 add b:1:33:b::1/64
+		int e1/2
+			ipv6 add b:1:22:b::1/64
+		int e1/1
+			ipv6 add b:1:11:b::1/64
+			end
+                ###################
+	!!!before proceding, punta sa ISP2 at ping ang mga direct neighbors, confirm 4 pingings
+	!!! re-write sa paper ng topology yung mga ASes ng ISP's
+
+				~~~~~~~~~~~~~~~~~~~~~~~~~IPV6 BGP Configuration~~~~~~~~~~~~~~~~~~~~~~~
+@ISP4		!!!similar yung config from ipv4 but with some changes.
+	conf t
+	ipv6 unicast-routing
+	int lo4
+		ipv6 add b55::1/128
+	router bgp 45
+!!!*pag inalis yung comment sa dalawa below, todays ipv4 routing, mas maganda mag-dualstack <3
+	    !no bgp default ipv4-unicast
+		!bgp log-neighbor-changes
+		neigh b:3:4:b::3 remote-as 3
+		neigh b:2:4:b::2 remote-as 2
+		neigh b:1:4:b::4 remote-as 45
+		address-family ipv6
+!!!na-encounter ko sa encor exam yung activate, kaya sya nanjan.
+			neigh b:3:4:b::3 activate
+			neigh b:2:4:b::2 activate
+			neigh b:1:4:b::4 activate
+			network b55::1/128
+			network 2001:4860:4860::/64
+			network b:3:4:b::/64
+			network b:2:4:b::/64
+			network b:1:4:b::/64
+			end
+			
+@ISP3
+	conf t
+		ipv6 unicast-routing
+		int lo3
+			ipv6 add b33::1/128
+		router bgp 3
+			neigh b:3:4:b::5 remote-as 45
+			neigh b:1:2:b::2 remote-as 2
+			neigh b:1:33:b::1 remote-as 1
+			address-family ipv6
+				neigh b:3:4:b::5 activate
+				neigh b:1:2:b::2 activate
+				neigh b:1:33:b::1 activate
+				network b:3:4:b::/64
+				network b:1:2:b::/64
+				network b:1:33:b::/64
+				network b33::1/128
+				end
+				
+@ISP2   !!!eto yung pini-ping kanina na direct neighbors bago mag-continue :)
+	conf t
+	ipv6 unicast-routing
+	int lo2
+		ipv6 add b22::1/128
+		router bgp 2
+			neigh b:2:1:b::4 remote-as 45
+			neigh b:2:4:b::5 remote-as 45
+			neigh b:1:2:b::3 remote-as 3
+			neigh b:1:22:b::1 remote-as 1
+			address-family ipv6
+				neigh b:2:4:b::5 activate
+				neigh b:2:1:b::4 activate
+				neigh b:1:2:b::3 activate
+				neigh b:1:22:b::1 activate
+				!!!*kulang ito sa script 
+				network b:2:4:b::/64
+				!!!*hue hue hue, napansin kaya nila :P
+				network b:1:2:b::/64
+				network b:2:1:b::/64
+				network b:1:22:b::/64
+				network b22::1/128
+				end
+				ping b55::1
+				ping 2001:4860:4860::8888
+				
+				
+@ISP1
+	conf t
+	ipv6 unicast-routing
+	int lo1
+		ipv6 add b44::1/128
+		router bgp 45
+			neigh b:1:4:b::5 remote-as 45
+			neigh b:2:1:b::2 remote-as 2
+			neigh b:1:11:b::1 remote-as 1
+			address-family ipv6
+				neigh b:1:4:b::5 activate
+				neigh b:2:1:b::2 activate
+				neigh b:1:11:b::1 activate
+				network b:1:4:b::/64
+				network b:2:1:b::/64
+				network b:1:11:b::/64
+				network b44::1/128
+				end
+				
+@R1  !!!! hold here, blank sa kanila :) #MostImportant for originate
+	conf t
+		ipv6 unicast-routing
+		router bgp 1
+			neigh b:1:33:b::3 remote-as 3
+			neigh b:1:22:b::2 remote-as 2
+			neigh b:1:11:b::4 remote-as 45
+			address-family ipv6
+				neigh b:1:33:b::3 activate
+				neigh b:1:22:b::2 activate
+				neigh b:1:11:b::4 activate
+				network FEC0:1::/122
+				network b:1:33:b::/64
+				network b:1:22:b::/64
+				network b:1:11:b::/64
+				end
+TEST:
+!!!old school
+R1#show bgp ipv6 summary
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+B:1:11:B::4     4           45      10      10       13    0    0 00:02:14       11
+B:1:22:B::2     4            2       8      10       13    0    0 00:02:17       12
+B:1:33:B::3     4            3      10      10       13    0    0 00:02:22       11
+% NOTE: This command is deprecated. Please use 'show bgp ipv6 unicast'
+
+
+ISP2#show bgp ipv6 summary
+
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+B:1:2:B::3      4            3      10       9       13    0    0 00:03:11        9
+B:1:22:B::1     4            1      11       9       13    0    0 00:02:59        9
+B:2:1:B::4      4           45      11       9       13    0    0 00:03:06        9
+B:2:4:B::5      4           45      10       9       13    0    0 00:03:09       10
+% NOTE: This command is deprecated. Please use 'show bgp ipv6 unicast'
+
+!#Test connectivity from R1. Dapat mag ping lahat, lalo na yung Google ipv6.
+ping b55::1
+ping 2001:4860:4860::8888
+!hndi ma-ping (but tama lahat ng configs, wait lang baka may hndi pa tapos mag-NOKU)
+
+sr6 bgp
+!dapat maraming B B B B B B
+
+!Kapag shoot sa banga lahat, potentially ubra na mag-work sa TELCO
+
+			
+@ISP4
+	ping b:3:4:b::3 !ISP4
+	ping b:2:4:b::2 !ISP2
+	ping b:1:4:b::4 !ISP1
+	
+@ISP2
+	ping b:1:2:b::3 !ISP3
+	ping b:2:4:b::5 !ISP4
+	ping b:2:1:b::4 !ISP1
+	ping b:1:22:b::1 !R1
+	
+@R1
+	ping b:1:33:b::3 !ISP3
+	ping b:1:22:b::2 !ISP2
+	ping b:1:11:b::4 !ISP1
+
+show ipv6 route
+!patience is a virtue
+R1:
+
+
+#CHECKING!
+@ISP2
+    show bgp ipv6 unicast
+	show bgp ipv6 nei
+	show bgp ipv6 sum !Dapat Apat ang lumabas
+	
+@R1
+
+R1#sh ipv6 route bgp
+B   B:1:2:B::/64 [20/0]
+     via FE80::A8BB:CCFF:FE00:E31, Ethernet1/2
+B   B:1:4:B::/64 [20/0]
+     via FE80::A8BB:CCFF:FE00:F31, Ethernet1/1
+B   B:2:1:B::/64 [20/0]
+     via FE80::A8BB:CCFF:FE00:E31, Ethernet1/2
+B   B:2:4:B::/64 [20/0]
+     via FE80::A8BB:CCFF:FE00:F31, Ethernet1/1
+B   B:3:4:B::/64 [20/0]
+     via FE80::A8BB:CCFF:FE00:D31, Ethernet1/3
+B   B22::1/128 [20/0]
+     via FE80::A8BB:CCFF:FE00:E31, Ethernet1/2
+
+	ping b55::1
+	ping b44::1
+	ping b33::1
+	ping b22::1
+############################################################################
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Configure ipv6 address on the ospf AREA~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~
+!!!re-write ang mga areas sa topology
+!!!Tunneling ang ginagawa pag ang ISP is not ready for full ipv6
+!!!guhit tunnel bet. r4 (EIGRP) to R3(OSPF)
+
+
+@R1   !!!Hold at may blank sa kanila :)
+	conf t
+		ipv6 unicast-routing
+		interface Loopback1
+			description Test I/F for BGP, OSPFv2 & OSPFv3 Routing
+			ip address 1.1.1.1 255.255.255.255
+			ipv6 address FEC0:1::1/122
+		int e1/0
+			ipv6 address 2026::12:1/122
+			end
+
+@R2
+	conf t
+		ipv6 unicast-routing
+		interface Loopback2
+			description Test I/F for OSPFv2 & OSPFv3 Routing
+			ip address 2.2.2.2 255.255.255.255
+			ipv6 address FEC0:2::2/122
+		int e1/2
+			ipv6 address 2026::12:2/122
+		int e1/1
+			ipv6 address 2026::1:1/122
+			end
+
+@R3  !!! OOOPPPPSSSIE... Blank again to them :)
+	conf t
+		ipv6 unicast-routing
+		interface Loopback3
+			description Test I/F for OSPFv2 & OSPFv3 Routing
+			ip address 3.3.3.3 255.255.255.255
+			ipv6 address FEC0:3::3/122
+		interface Tunnel34
+			no ip address
+		!!!*since hindi ready si ISP (from R4) sa ipv6, may need na ipv4 na pingable from R4 kay R3
+		!!!*tunneling requires source and destination
+			ipv6 address 2026::34:1/122
+			tunnel source lo3
+			tunnel destination 4.4.4.4
+			tunnel mode ipv6ip
+		int e1/1
+			ipv6 address 2026::1:2/122
+			end
+
+@R4
+	conf t
+		ipv6 unicast-routing
+		interface Loopback4
+			description Test I/F for OSPFv2 & OSPFv3 Routing
+			ip address 4.4.4.4 255.255.255.255
+			ipv6 address FEC0::4:4/122
+		interface e1/0
+			description L3 Link to DSW1
+			ip address 10.1.4.5 255.255.255.252
+			ipv6 address 2026::2:1/122 
+		interface e1/1
+			description L3 Link to DSW2 fa0/14
+			ip address 10.1.4.9 255.255.255.252
+		interface Loopback14
+			description Test I/F for RIPng Routing
+			no ip address
+			ipv6 address FEC0::14:4/122
+		interface Loopback21
+			description Test I/F for EIGRPv4 Routing & IP(v4) Helper Loopback I/F
+			ip address 10.1.21.129 255.255.255.224
+		interface Tunnel34
+	    !creating a tunnel for the ipv6 connection of router 3 and router 4
+			no ip address
+			ipv6 address 2026::34:2/122
+			tunnel source lo4
+			tunnel destination 3.3.3.3
+			tunnel mode ipv6ip
+			end
+			
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			end
+##################################
+
+####################################################################################################
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ROUTING FOR OSPF~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
+@R1
+	conf t
+		ipv6 router ospf 6
+			!!!ospf (any number) ginawa nlang 6
+			router-id 1.1.1.1
+			!!! weird sya kasi need ipv4 to route OSPF in ipv6 thru tunnel
+		int lo1
+			ipv6 ospf 6 area 12
+		int e1/0
+			ipv6 ospf 6 area 12
+			end
+			
+@R2    		!!!blanks here :)
+	conf t
+		ipv6 router ospf 6
+			router-id 2.2.2.2
+		int lo2
+			ipv6 ospf 6 area 0
+		int e1/1
+			ipv6 ospf 6 area 0
+		int e1/2
+			ipv6 ospf 6 area 12
+			end
+@R3
+	conf t
+		ipv6 router ospf 6
+			router-id 3.3.3.3
+		int lo3
+			ipv6 ospf 6 area 0
+		interface Tunnel34
+			ipv6 ospf 6 area 34
+		int e1/1
+			ipv6 ospf 6 area 0
+			end
+
+@R4    !!!blanks too  
+	conf t
+		ipv6 router ospf 6
+			router-id 4.4.4.4
+		int lo4
+			ipv6 ospf 6 area 34
+		interface Tunnel34
+			ipv6 ospf 6 area 34
+			end
+####################################################################################################
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~!!TUNNELING!!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+!!!!kunin si 2026::34:2/122 sa R4, IPv6 nya ito sa Tunnel nya.
+
+#TESTING TIME! IPv6 is dependent on IPv4
+
+@R3
+	ping 2026::34:1 !Mag piping ito
+	ping 2026::34:2 !Di mag piping ito, kasi nga hindi ipv6 native
+	show run | sec ospf !show ospf routes xxx
+	conf t
+		router ospf 1
+			network 3.3.3.3 0.0.0.0 area 34
+			network 10.1.1.8 0.0.0.3 area 34
+			end
+			
+@R4   !!!! Kailangan ma-fix itong OSPF pang ipv4 muna sa area34
+	show run | sec ospf !show ospf routes xxx
+	conf t
+		router ospf 1
+			network 4.4.4.4 0.0.0.0 area 34
+			!!!ipv4 LO ni R4
+			network 10.1.1.8 0.0.0.3 area 34
+			!!!ip kalye ni .10.1.1.10 and 10.1.1.9
+			end
+
+	!!!mejo wait mga 1 min. kasi may mga states na dadaan pa
+	!!!Down,Attempt,Init,2-Way,Exstart,Exchange,Loading,Full.
+	!!! ping 2026::34:2 sa R1, hindi ma-ping kanina... lusot na now :)
+
+#TESTING
+@R4	!nandon na yung di pingable kanina, at limang OI na naka-tunnel.
+	show ipv6 route ospf
+	ping 2026::12:1
+	
+#MOVING ON
+
+
+#################################
+!!!!same pa rin sa ipv6, ORIGINATE lang para pumasok si BGP sa mundo ni OSPF <3
+!!!! extra nga lang yung world na ALWAYS.
+!!!! may ganyang ORIGINATE ALWAYS din sa exam ko noong Aug.2022 #CCNPWars
+
+R1:
+config t
+ipv6 router ospf 6
+  default-information originate always
+  redistribute bgp 1 metric 69
+  
+OSPFv3 to BGP:
+R1 pa rin:
+config t
+router bgp 1
+  address-family ipv6 unicast
+   redistribute ospf 6 match internal external 1 external 2
+
+
+!!!puntanan yung kadulu-duluhan which is R4, dapat tagos na kay google :)
+!!! sr6 ospf kay google --->  andami na routes compare sa kanina na 5 OI lang
+!!! ping and traceroute 2001:4860:4860::8888
+  
+ ####################################################################################################
+~~~~~~~~~~~~~~~~~~~~~~~CONFIGURE INTERNAL NETWORK  IPV6 ADDRESSING~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+@R4   !!!Blank AGAD :)
+	!!! baka kulang yung topology D1 to R4 kalye 10:1:4:14::4/64 :)
+	!!! baka kulang yung topology D2 to R4 kalye 10:1:4:24::4/64 :)
+
+	config t
+		int e 1/0
+			ipv6 add 10:1:4:14::4/64
+		int e 1/1
+			ipv6 add 10:1:4:24::4/64
+			end
+
+@D1
+	conf t
+		ipv6 unicast-routing
+		interface Loopback1
+			description IPv4, IPv6 & RIPng Test I/F
+			ip address 11.11.11.11 255.255.255.255
+			ipv6 add 11:11:11:11::1/128
+			ipv6 address FEC0::11:1/122
+		interface e1/1
+			description L3 UpLink to R4
+			no switchport
+			ip address 10.1.4.6 255.255.255.252
+			ipv6 address 2026::2:2/122
+			ipv6 add 10:1:4:14::1/64
+		interface vlan 200
+			description IPv6 Link to DSW2
+			ipv6 address 2026::3:1/122
+			ipv6 add 192:168:1:1234::1/64
+		int vlan 10
+			ipv6 add 10:2:1:12::1/64
+		int vlan 20
+			ipv6 add 10:2:2:12::1/64
+			end
+@D2
+	conf t
+		ipv6 unicast-routing
+		interface Loopback2
+			description IPv4, IPv6 & RIPng Test I/F
+			ip address 22.22.22.22 255.255.255.255
+			ipv6 add 22:22:22:22::2/128
+			ipv6 address FEC0::22:2/122
+		int e 1/1
+			ipv6 add 10:1:4:24::2/64
+		interface vlan 200
+			description IPv6 Link to DSW1
+			ipv6 address 2026::3:2/122
+			ipv6 add 192:168:1:1234::2/64
+		int vlan 10
+			ipv6 add 10:2:1:12::2/64
+		int vlan 20
+			ipv6 add 10:2:2:12::2/64
+			end
+			
+			
+##########################################################
+
+#######################################################################################################
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#CONFIGURE EIGRP FOR R4, D1 and D2~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#CONFIGURE EIGRP FOR R4, D1 and D2~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+@R4    !!!any number for router eigrp ## basta same-same sa implem
+	conf t
+		ipv6 router eigrp 10
+			eigrp router-id 4.4.4.4
+			no shut
+		!!!mga bubuhaying 3 interfaces
+		int lo4
+			ipv6 eigrp 10
+		int e1/0
+			ipv6 eigrp 10
+		int e1/1
+			ipv6 eigrp 10
+			end
+
+!!!bp6 kay D1 to determine mga vlans na may ipv6 na bubuhayin...
+
+@D1 !!! Blank ulit :)
+	conf t
+		int lo1
+			ipv6 add 11:11:11:11::1/64
+		ipv6 router eigrp 10
+			eigrp router-id 1.1.1.1
+			no shut
+		int lo1
+			ipv6 eigrp 10
+		int e1/1
+			ipv6 eigrp 10
+		int vlan 10
+			ipv6 eigrp 10
+		int vlan 20
+			ipv6 eigrp 10
+		int vlan 200
+			ipv6 eigrp 10
+			end
+			
+@D2
+	conf t
+		int lo1
+			ipv6 add 22:22:22:22::2/64
+		ipv6 router eigrp 10
+			eigrp router-id 2.2.2.2
+			no shut
+		int lo1
+			ipv6 eigrp 10
+		int e1/1
+			ipv6 eigrp 10
+		int vlan 10
+			ipv6 eigrp 10
+		int vlan 20
+			ipv6 eigrp 10
+		int vlan 200
+			ipv6 eigrp 10
+			end
+			
+
+
+!!!punta kay R4, meron na syang mga D!!!
+			
+
+####################################################################################################
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~END DEVICES CONFIGURATION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!!!sa pag-acquire ng IP's, sa IPv4... dalawa... STATIC/DYNAMIC
+!!!sa IPv6... tatlo... how??? ... BP kay D1 (meron) ... bp6 (wala)
+!!! (1) static (like kay @P1)   (2)autoconfig   (3)
+
+
+
+#Moving On
+@A1
+	cn
+	show run int e0/0
+	
+@A2
+	cn
+	show run int e0/0
+	
+@P1
+	conf t
+		ipv6 unicast-routing
+		int e0/0
+		ipv6 en
+		ipv6 add 10:2:1:12::B00B/64
+		end
+	ping 10:2:1:12::B00B
+	ping 10:2:1:12::2
+	conf t
+		ipv6 unicast-routing
+		!*mag-u-usap-usap silang mga connected.
+		int e0/0
+		ipv6 add autoconfig
+		end
+	ping 10:2:1:12::2
+	show ipv6 int brief
+	
+	!show something... payag si ipv6 na multiple assign sa interface
+	sh run int e0/0
+
+	!bp6 - para makita isa pang binigay na 10:2:1:12:A8BB:CCFF:FE00:100, also ping to prove alive.
+
+
+	
+@P2
+	!*eto naman yung sa 3rd way to get ipv6... Extended Unique Identifier 64 (EUI-64 pinagarang MAC)
+		!sh int e1/0 and find the MAC, then bp6 to prove na malinis pa 
+
+	config t
+	ipv6 unicast-routing
+	ipv6 route ::/0 10:2:1:12::2
+	int e1/0
+		ipv6 address 10:2:1:12::/64 eui-64
+		end
+	bp6
+	!see to it na yung mac ginawang ipv6-ish, get it then ping kay P1
+
+	ping 10:2:1:12::2
+	show ipv6 int brief
+	show ipv6 int brief
+
+
+##############################TRy This!!!###########################################################
+!!!ping 2001:4860:4860::8888  ... di pa ubra kasi meron pang racist na pampam
+
+R4:
+!REDISTRIBUTE EIGRP TO OSPF
+!i-REcall yung RACIST pa rin kahit ipv6
+
+
+conf t
+	ipv6 router ospf 6
+		redistribute eigrp 10 include-connected 
+	!!!ospf kain eigrp	
+		
+
+!REDISTRIBUTE OSPF TO EIGRP
+config t
+	ipv6 router eigrp 10
+		redistribute ospf 6 metric 10000 100 255 1 1500 include-connected
+
+	!!!EIGRP kain ospf 
+
+!!!punta kay D1, sr6 eigrp, supposedly nadnyan na ang google. EX 2001:4860:4860::/64
+!!!ping 2001:4860:4860::8888   ---> D1 lang ang makaka-ping, wala pa sa P1/P2
+!!! so far.. B pasok sa O... O pasok sa D... wala pang STATIC/Default Route
+
+
+####################################################################################################
+~~~~~~~~~~~~~~~~~~~~~~~~~~~CONFIGURE IPV6 DEFAULT STATIC ROUTING FOR P1 & P2~~~~~~~~~~~~~~~~~~~~~~~~
+!!!wala pang parang ip route 0.0.0.0 0.0.0.0 <next hop> pang ipv6
+
+@P1
+	conf t
+		ipv6 route ::/0 10:2:1:12::1
+		end
+		!!! ni-route lang kay ipv6 ni VLAN 10, bp6 kay D1 para mahanap.
+@P2
+	conf t
+		ipv6 route ::/0 10:2:1:12::2
+		end
+
+ping 2001:4860:4860::8888
+ping 8.8.8.8
+
+!!! DUAL-STACK B*TCH*S :)  
+
+#GG
