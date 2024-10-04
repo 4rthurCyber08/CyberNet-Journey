@@ -1,0 +1,92 @@
+Intro
+
+Pay attention to the Python online community
+The traditional method of device configuration by network engineers generally included the following steps:
+
+    Connect to a single device through the console port, by Telnet, or by SSH.
+
+    Configure the device.
+
+    Copy the configuration to Notepad.
+
+    Search the configuration for all the variables that need to be changed on each device.
+
+    Connect to the device and copy the edited configuration back to the device.
+	
+
+
+Programmability
+	A set of tools for deploying, managing, and troubleshooting network devices.
+	
+	Network Engineer - CLI
+	Network & NetSec Engineer - CLI, Scripts, Ansible
+	Network, Wireless, & NetSec Engineer - CLI, Scripts, Ansible, Python, MongoDB, Perl
+	
+	Provide consistent and efficient workflow without humen error
+
+	Benefits:
+	- Saving time and money
+	- reducing human error
+	- increasing innovation through an agile network
+	- increasing network insight and control
+	- increasing the strategic workforce
+
+	How does programmability work?
+		through API, Application Programming Interface
+		- NETCONF
+		- RESTCONF
+		- Vendor Specific
+		
+		Controller-Based	- the power of controller based is the centralization of management
+		- North-Bound APIs
+		- Open APIs
+		
+		- South-Bound APIs
+		- NETCONF
+		- RESTCONF
+		- Vendro Specific
+	
+	REST (Representational State Transfer)
+	- simple
+	- makes use of HTTP
+	
+		HTTP Request/Response
+			GET http://DNA_Center/dna/intent/api/v1/client-details
+	
+	Devices that Use REST APIs
+		Security
+		- Cisco SecureX
+		- Cisco Umbrella
+		- Cisco Stealthwatch
+		- AMP Threat Grid
+		
+		Enterprise
+		- DNA Center
+		
+		Collaboration
+		- Cisco webEx
+
+-
+
+The need for Python
+
+** device_version.py
+import netmiko
+
+ip = '10.254.0.1'
+username = 'cisco'
+password = 'cisco'
+device_type = 'cisco_ios'
+port = '22'
+
+net_connect = netmiko.ConnectHandler(
+	ip = ip
+	device_type = device_type,
+	username = username,
+	password = password,
+	port = port
+)
+
+show_version = net_connect.send_command('show version')
+print(show_version)
+**
