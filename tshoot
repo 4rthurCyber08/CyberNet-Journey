@@ -1,0 +1,8 @@
+fix redis netflow issue
+
+run
+open netplwiz.exe
+
+>advance
+>Iusrmgr
+delete RedisService User upon uninstall of Redis
