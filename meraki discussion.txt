@@ -1,0 +1,76 @@
+Meraki GUI and CLI counterpart
+
+	Create 2 vlans
+	
+		conf t
+		 vlan [vlanID]
+		  name [vlanName]
+		 
+	
+	Add VLAN
+	
+		conf t
+		 int vlan [vlanID]
+		  ip add 10.24.20.1 255.255.255.255
+		  no shut
+		
+	
+	Per-port VLAN (MX LAN ports)
+	
+		Access
+			conf t
+			 int fa x/x
+			  switchport mode access
+			  switchport access vlan 
+		
+		Trunk
+			conf t
+			 int fa x/x
+			  switchport trunk encapsulation dot1q
+			  switchport mode trunk
+			  switchport trunk allowed vlan 20,30
+			  switchport trunk native 
+	
+	SSID
+
+		conf t
+		hostname aironet-20
+		 dot11 ssid 20-autoNetmiko
+		 vlan 20
+		 authentication open
+		 authentication key-management wpa
+		 wpa-psk ascii C1sc0123
+		 guest-mode
+		 default int dot11radio 0
+		 default interface gigabitEthernet 0
+		int dot11radio 0
+		 no shut
+		 channel 9
+		 encryption mode ciphers tkip
+		 encryption vlan 20 mode ciphers tkip 
+		 ssid 20-autoNetmiko
+		int dot11radio 0.20
+		 encapsulation dot1q 20 native
+		 bridge-group 1
+	
+	**check wifi history
+		Admin cmd
+			netsh wlan show profile
+		
+		*check wifi history password
+			netsh wlan show profile name=aer1nPot key=clear
+			
+		*delete a single profile
+			netsh wlan delete profile [wireless network name]
+		
+		*delete all profile
+			netsh wlan delete profile *
+	
+	DHCP
+		
+		conf t
+		 ip dhcp excluded address
+		 ip dhcp pool [poolName]
+		  
+		  dns-server
+		  lease
