@@ -109,5 +109,10 @@ Step 14: Open Semaphore
 
 
 **************
+remove key: 
+ssh-keygen -f "/root/.ssh/known_hosts" -R "10._.1.4"
+
+xtra for CoreBABA
+ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 -c aes256-cbc admin@10._.1.4
 
 Import repository: https://github.com/rivan16/sshansible
